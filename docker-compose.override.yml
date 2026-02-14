@@ -57,7 +57,7 @@ services:
 
   redis:
     image: redis:8-alpine
-    command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
     volumes:
       - redis-data:/data
     networks:
