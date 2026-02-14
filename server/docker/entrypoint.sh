@@ -23,8 +23,8 @@ for d in $TARGETS; do
             echo "✅ Permissões corretas em: $d"
         fi
 
-        # 5. Garante permissão de escrita (rwx para usuário e grupo)
-        chmod -R 775 "$d" || echo "⚠️ Aviso: Falha ao definir chmod em $d"
+        find "%d" -type d -exec chmod 775 {} \;
+        find "%d" -type f -exec chmod 664 {} \;
     fi
 done
 
