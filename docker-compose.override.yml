@@ -72,7 +72,9 @@ services:
     ports:
       - "${FORWARD_SSE_PORT:-8080}:8080"
     env_file:
-      - ./sse/.env
+      - .env
+    depends_on:
+      - redis
 
   # Serviços exclusivos de DEV
   composer:
