@@ -53,6 +53,9 @@ func main() {
 	}
 	log.Println("Conectado ao Redis com sucesso!")
 
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Serviço SSE está rodando.")
+	})
 	http.HandleFunc("/stream", sseHandler)
 
 	port := os.Getenv("SSE_PORT")
