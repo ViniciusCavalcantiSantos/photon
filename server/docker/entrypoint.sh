@@ -23,8 +23,8 @@ for d in $TARGETS; do
             echo "✅ Permissões corretas em: $d"
         fi
 
-        find "%d" -type d -exec chmod 775 {} \;
-        find "%d" -type f -exec chmod 664 {} \;
+        find "$d" -type d -exec chmod 775 {} \;
+        find "$d" -type f -exec chmod 664 {} \;
     fi
 done
 
