@@ -1,12 +1,12 @@
 'use client'
 
-import React, {createContext, useCallback, useContext, useMemo} from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import User from "@/types/User";
 import getDateFormatByCountry from "@/lib/getDateFormatByCountry";
 import apiFetch from "@/lib/apiFetch";
-import {useRouter} from "next/navigation";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {fetchUser} from "@/lib/api/users/fetchUser";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchUser } from "@/lib/api/users/fetchUser";
 
 interface UserContextType {
   user: User | null;
@@ -29,7 +29,7 @@ export const UserProvider = (
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const {data: user} = useQuery({
+  const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: () => fetchUser(),
     initialData: initialUser,
@@ -37,9 +37,12 @@ export const UserProvider = (
     refetchOnWindowFocus: true,
   });
 
-  const {mutate: logout, isPending: isLoggingOut} = useMutation({
+  const { mutate: logout, isPending: isLoggingOut } = useMutation({
     mutationFn: async () => {
-      await apiFetch('/logout', {method: 'POST'});
+      const isTokenMode = process.env.NEXT_PUBLIC_AUTH_TYPE === 'token';
+      const baseURL = isTokenMode ? process.env.NEXT_PUBLIC_APP_URL : undefined;
+      const path = isTokenMode ? '/api/auth/logout' : '/logout';
+      await apiFetch(path, { method: 'POST', baseURL });
     },
     onSuccess: () => {
       queryClient.setQueryData(['user'], null);

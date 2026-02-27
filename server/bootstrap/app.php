@@ -11,14 +11,18 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
+        commands: __DIR__ . '/../routes/console.php',
+        channels: __DIR__ . '/../routes/channels.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(LanguageSelector::class);
+        // Pre-auth routes called by the Next.js server proxy (no Bearer token yet)
+        $middleware->validateCsrfTokens(except: ['api/auth/*']);
+        // Authenticated routes in token mode: exempt when Bearer token is present
+        $middleware->web(prepend: [\App\Http\Middleware\VerifyCsrfToken::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->renderable(function (AuthenticationException $e, $request) {

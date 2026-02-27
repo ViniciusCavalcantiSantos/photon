@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Mail\EmailConfirmation;
 use App\Mail\EmailPasswordReset;
+use App\Models\EmailVerification;
 use App\Models\Organization;
 use App\Models\User;
 use App\Models\UserSocialIdentity;
@@ -85,15 +86,15 @@ class AuthController extends Controller
         if (session()->has('auth_social_locale')) {
             App::setLocale(session()->get('auth_social_locale'));
         }
-        
+
         if (!in_array($provider, $this->getProvidersAvailable())) {
-            return redirect(config('app.url_client').'/signin?error=invalid_provider');
+            return redirect(config('app.url_client') . '/signin?error=invalid_provider');
         }
 
         try {
             $providerUser = Socialite::driver($provider)->stateless()->user();
         } catch (\Exception $e) {
-            return redirect(config('app.url_client').'/signin?error=auth_failed');
+            return redirect(config('app.url_client') . '/signin?error=auth_failed');
         }
 
         $socialIdentity = UserSocialIdentity
@@ -165,7 +166,7 @@ class AuthController extends Controller
                     'height' => $height,
                     'mime_type' => $mime,
                 ]);
-            } catch (ConnectionException|\Exception $e) {
+            } catch (ConnectionException | \Exception $e) {
                 Log::error("Falha ao processar avatar social: {$e->getMessage()}", [
                     'user_id' => $user->id,
                     'url' => $avatarUrl,
@@ -175,9 +176,17 @@ class AuthController extends Controller
         }
 
         Auth::login($user, true);
-        return redirect(config('app.url_client').'/app')
+        return redirect(config('app.url_client') . '/app')
             ->withCookie(
-                'logged_in', '1', 60 * 24 * 7, '/', null, true, false, false, 'Lax'
+                'logged_in',
+                '1',
+                60 * 24 * 7,
+                '/',
+                null,
+                true,
+                false,
+                false,
+                'Lax'
             );
     }
 
@@ -196,8 +205,15 @@ class AuthController extends Controller
         try {
             $code = strtoupper(Str::random(6));
 
-            $request->session()->put('confirmation_code', $code);
-            $request->session()->put('confirmation_email', $request->email);
+            if ($request->input('type') === 'token') {
+                EmailVerification::updateOrCreate(
+                    ['email' => $request->email],
+                    ['code' => $code, 'verified_at' => null]
+                );
+            } else {
+                $request->session()->put('confirmation_code', $code);
+                $request->session()->put('confirmation_email', $request->email);
+            }
 
             Mail::to($request->email)->send(new EmailConfirmation($code));
 
@@ -354,36 +370,52 @@ class AuthController extends Controller
         }
 
         try {
-            $attempts = $request->session()->get('confirmation_attempts', 0);
-            $attemptsMax = config('auth.max_email_confirmation_attempts');
-            if ($attempts >= $attemptsMax) {
-                return response()->json([
-                    'status' => 'max_attempts',
-                    'message' => __('Maximum number of attempts reached'),
-                ], 422);
+            if ($request->input('type') === 'token') {
+                $verification = EmailVerification::where('email', $request->email)
+                    ->where('code', $request->code)
+                    ->first();
+
+                if (!$verification) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('The verification code entered is invalid'),
+                    ], 422);
+                }
+
+                $verification->update(['verified_at' => now()]);
+            } else {
+                $attempts = $request->session()->get('confirmation_attempts', 0);
+                $attemptsMax = config('auth.max_email_confirmation_attempts');
+                if ($attempts >= $attemptsMax) {
+                    return response()->json([
+                        'status' => 'max_attempts',
+                        'message' => __('Maximum number of attempts reached'),
+                    ], 422);
+                }
+
+                $code = $request->code;
+                $email = $request->email;
+
+                $codeSession = $request->session()->get('confirmation_code');
+                $emailSession = $request->session()->get('confirmation_email');
+                if (!$codeSession || !$emailSession) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('Verification code has expired'),
+                    ], 422);
+                }
+
+                $request->session()->put('confirmation_attempts', $attempts + 1);
+                if ($code !== $codeSession || $email !== $emailSession) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('The verification code entered is invalid'),
+                    ], 422);
+                }
+
+                $request->session()->put('email_verified_at', now()->toDateTimeString());
             }
 
-            $code = $request->code;
-            $email = $request->email;
-
-            $codeSession = $request->session()->get('confirmation_code');
-            $emailSession = $request->session()->get('confirmation_email');
-            if (!$codeSession || !$emailSession) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => __('Verification code has expired'),
-                ], 422);
-            }
-
-            $request->session()->put('confirmation_attempts', $attempts + 1);
-            if ($code !== $codeSession || $email !== $emailSession) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => __('The verification code entered is invalid'),
-                ], 422);
-            }
-
-            $request->session()->put('email_verified_at', now()->toDateTimeString());
             return response()->json([
                 'status' => 'success',
                 'message' => __('Email verified successfully'),
@@ -398,11 +430,28 @@ class AuthController extends Controller
 
     public function register(Request $request): JsonResponse
     {
+        if ($request->input('type') !== 'token') {
+            $request->merge([
+                'email' => $request->session()->get('confirmation_email'),
+                'email_verified_at' => $request->session()->get('email_verified_at'),
+            ]);
+        } else {
+            // Validate if the email was verified in the database
+            $verification = EmailVerification::where('email', $request->email)
+                ->whereNotNull('verified_at')
+                ->first();
 
-        $request->merge([
-            'email' => $request->session()->get('confirmation_email'),
-            'email_verified_at' => $request->session()->get('email_verified_at'),
-        ]);
+            if (!$verification) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('Email not verified'),
+                ], 422);
+            }
+
+            $request->merge([
+                'email_verified_at' => $verification->verified_at->format('Y-m-d H:i:s'),
+            ]);
+        }
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -444,6 +493,16 @@ class AuthController extends Controller
             ], 422);
         }
 
+        if ($request->input('type') === 'token') {
+            $token = $user->createToken('api-token')->plainTextToken;
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Registration completed successfully'),
+                'user' => new UserResource($user),
+                'token' => $token,
+            ]);
+        }
+
         Auth::login($user);
 
         return response()->json([
@@ -451,16 +510,27 @@ class AuthController extends Controller
             'message' => __('Registration completed successfully'),
             'user' => new UserResource($user),
         ])->cookie(
-            'logged_in', '1', 240, '/', null, true, false, false, 'Lax'
+            'logged_in',
+            '1',
+            240,
+            '/',
+            null,
+            true,
+            false,
+            false,
+            'Lax'
         );
     }
 
     public function login(Request $request): JsonResponse
     {
+        $isTokenMode = $request->input('type') === 'token';
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|string',
-            'remember_me' => 'boolean'
+            'remember_me' => 'boolean',
+            'device_name' => 'string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -470,27 +540,50 @@ class AuthController extends Controller
             ], 422);
         }
 
-        if (!Auth::attempt($request->only('email', 'password'), $request->remember_me)) {
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => 'error',
                 'message' => __('Email or Password is incorrect'),
             ], 401);
         }
 
+        $user->load('address');
+
+        if ($isTokenMode) {
+            $deviceName = $request->device_name ?? 'web';
+            $token = $user->createToken($deviceName)->plainTextToken;
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Login successfully'),
+                'user' => new UserResource($user),
+                'token' => $token,
+            ]);
+        }
+
+        Auth::login($user, $request->boolean('remember_me'));
         $request->session()->regenerate();
 
-        $minutes = $request->remember_me
+        $minutes = $request->boolean('remember_me')
             ? 60 * 24 * 7
             : 60 * 2;
-
-        $user = Auth::user()->load('address');
 
         return response()->json([
             'status' => 'success',
             'message' => __('Login successfully'),
             'user' => new UserResource($user),
         ])->cookie(
-            'logged_in', '1', $minutes, '/', null, true, false, false, 'Lax'
+            'logged_in',
+            '1',
+            $minutes,
+            '/',
+            null,
+            true,
+            false,
+            false,
+            'Lax'
         );
     }
 
@@ -525,6 +618,14 @@ class AuthController extends Controller
 
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
+        if ($request->user()->currentAccessToken()) {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Logout successfully'),
+            ]);
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
@@ -534,7 +635,15 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => __('Logout successfully'),
         ])->cookie(
-            'logged_in', '', -1, '/', null, true, false, false, 'Lax'
+            'logged_in',
+            '',
+            -1,
+            '/',
+            null,
+            true,
+            false,
+            false,
+            'Lax'
         );
     }
 }

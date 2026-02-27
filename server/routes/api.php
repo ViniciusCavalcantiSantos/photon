@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\LocationController;
 use Illuminate\Http\Request;
@@ -9,8 +10,10 @@ use Symfony\Component\Process\Process;
 
 Route::get('/locations/countries', [LocationController::class, 'getCountries']);
 Route::get('/locations/countries/{country_cca2}/states', [LocationController::class, 'getStates']);
-Route::get('/locations/countries/{country_cca2}/states/{state_code}/cities',
-    [LocationController::class, 'getCities']);
+Route::get(
+    '/locations/countries/{country_cca2}/states/{state_code}/cities',
+    [LocationController::class, 'getCities']
+);
 
 Route::post('/public/clients/register/{linkId}', [ClientController::class, 'storePublic']);
 
@@ -24,7 +27,7 @@ Route::post('/deploy/webhook', function (Request $request) {
 
     $signature = $request->header('X-Hub-Signature-256');
 
-    $hash = 'sha256='.hash_hmac('sha256', $request->getContent(), $githubSecret);
+    $hash = 'sha256=' . hash_hmac('sha256', $request->getContent(), $githubSecret);
     if (!hash_equals($signature, $hash)) {
         Log::warning('DEPLOY RECUSADO: Assinatura do webhook inválida.');
         abort(403, 'Assinatura inválida.');
@@ -49,4 +52,3 @@ Route::post('/deploy/webhook', function (Request $request) {
 
     return response()->json(['status' => 'sucesso', 'output' => $process->getOutput()]);
 });
-
