@@ -19,6 +19,8 @@ class NotificationController extends Controller
         Redis::setex("sse_auth:{$ticket}", 60, $userId);
 
         return response()->json([
+            'status' => 'success',
+            'message' => 'Ticket obtained successfully',
             'ticket' => $ticket,
         ]);
     }

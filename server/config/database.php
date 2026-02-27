@@ -148,7 +148,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => '',
+            'prefix' => env('REDIS_PREFIX', ''),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
