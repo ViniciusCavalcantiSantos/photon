@@ -15,13 +15,34 @@ import {UserProvider} from "@/contexts/UserContext";
 import User from "@/types/User";
 import SessionWatcher from "@/components/common/SessionWatcher";
 
-const queryClient = new QueryClient()
+function makeQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000,
+      },
+    },
+  })
+}
+
+let browserQueryClient: QueryClient | undefined = undefined
+
+function getQueryClient() {
+  if (typeof window === 'undefined') {
+    return makeQueryClient()
+  } else {
+    if (!browserQueryClient) browserQueryClient = makeQueryClient()
+    return browserQueryClient
+  }
+}
 
 export default function Providers({children, lang, user, theme}: PropsWithChildren<{
   lang: string,
   user: User | null,
   theme: Theme
 }>) {
+
+  const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
