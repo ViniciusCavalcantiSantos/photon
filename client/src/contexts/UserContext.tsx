@@ -32,9 +32,9 @@ export const UserProvider = (
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: () => fetchUser(),
-    initialData: initialUser,
+    initialData: initialUser === undefined ? null : initialUser,
     staleTime: Infinity,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
   const { mutate: logout, isPending: isLoggingOut } = useMutation({
@@ -47,8 +47,7 @@ export const UserProvider = (
     onSuccess: () => {
       queryClient.setQueryData(['user'], null);
       queryClient.clear();
-      router.refresh();
-      router.replace('/signin');
+      window.location.replace('/signin');
     }
   });
 
