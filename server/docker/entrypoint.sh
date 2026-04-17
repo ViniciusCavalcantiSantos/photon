@@ -42,7 +42,7 @@ if [ "$CONTAINER_ROLE" = "app" ] || [ "${AUTO_BOOTSTRAP:-true}" = "true" -a -z "
 
         if [ $RETRIES -lt $MAX_RETRIES ]; then
             echo "🗃️  Running migrations..."
-            php artisan migrate --force
+            php artisan migrate --seed --force
         else
             echo "⚠️  Database not reachable after ${MAX_RETRIES} attempts, skipping migrations."
         fi
