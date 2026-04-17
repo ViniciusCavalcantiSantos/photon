@@ -1,66 +1,208 @@
+# ==============================================================
+# Photon – Development Docker Compose
+# ==============================================================
+# Usage:  docker compose up
+# All defaults are baked in — no .env file required.
+# Create a root .env only to override ports or passwords.
+# ==============================================================
+
 services:
+
+  # ─── Nginx reverse proxy ────────────────────────────────────
   webserver:
     image: nginx:alpine
+    ports:
+      - "${FORWARD_APP_PORT:-8000}:80"
+    volumes:
+      - ./server/docker/nginx/conf.d/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./server:/var/www
+      - ./server/public:/var/www/public
     depends_on:
       - app
     networks:
-      - vinmo-network
+      - photon-network
 
+  # ─── Laravel PHP-FPM ────────────────────────────────────────
   app:
-    env_file:
-      - .env
-      - ./server/.env
     build:
       context: ./server
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.dev
     working_dir: /var/www
-    networks:
-      - vinmo-network
-
-  queue:
-    env_file:
-      - .env
-      - ./server/.env
-    build:
-      context: ./server
-      dockerfile: docker/Dockerfile
-    working_dir: /var/www
-    networks:
-      - vinmo-network
-    depends_on:
-      - app
-
-  scheduler:
-    env_file:
-      - .env
-      - ./server/.env
-    build:
-      context: ./server
-      dockerfile: docker/Dockerfile
-    working_dir: /var/www
-    networks:
-      - vinmo-network
-    depends_on:
-      - app
-
-  sse:
-    env_file:
-      - .env
+    volumes:
+      - ./server:/var/www
     environment:
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      REDIS_PORT: ${REDIS_PORT}
+      PHP_IDE_CONFIG: "serverName=docker-xdebug"
+      AUTO_MIGRATE: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - photon-network
+    command: sh -c "php artisan config:clear && php-fpm"
+
+  # ─── Queue worker ──────────────────────────────────────────
+  queue:
+    build:
+      context: ./server
+      dockerfile: docker/Dockerfile.dev
+    working_dir: /var/www
+    volumes:
+      - ./server:/var/www
+    command: php artisan queue:listen --sleep=1 --tries=3
+    depends_on:
+      - app
+    networks:
+      - photon-network
+
+  # ─── Task scheduler ────────────────────────────────────────
+  scheduler:
+    build:
+      context: ./server
+      dockerfile: docker/Dockerfile.dev
+    working_dir: /var/www
+    volumes:
+      - ./server:/var/www
+    command: php artisan schedule:work
+    depends_on:
+      - app
+    networks:
+      - photon-network
+
+  # ─── Next.js client ────────────────────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - "${FORWARD_CLIENT_PORT:-3000}:3000"
+    volumes:
+      - ./client:/app
+      - client_node_modules:/app/node_modules
+    environment:
+      NEXT_PUBLIC_APP_NAME: "Photon Cloud"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+      NEXT_PUBLIC_API_URL: "http://localhost:8000"
+      NEXT_PUBLIC_AUTH_TYPE: "session"
+    networks:
+      - photon-network
+
+  # ─── SSE microservice (Go) ─────────────────────────────────
+  sse:
     build:
       context: ./sse
       dockerfile: Dockerfile
+    ports:
+      - "${FORWARD_SSE_PORT:-8080}:8080"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: "${REDIS_PASSWORD:-12345678}"
+      REDIS_PREFIX: "${REDIS_PREFIX:-photon}"
+      SSE_PORT: "8080"
+      SSE_ALLOWED_ORIGINS: "${SSE_ALLOWED_ORIGINS:-http://localhost:3000}"
+    depends_on:
+      redis:
+        condition: service_healthy
     networks:
-      - vinmo-network
+      - photon-network
+
+  # ─── MySQL ─────────────────────────────────────────────────
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-root}"
+      MYSQL_DATABASE: "${DB_DATABASE:-photon}"
+      MYSQL_USER: "${DB_USERNAME:-photon}"
+      MYSQL_PASSWORD: "${DB_PASSWORD:-12345678}"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - photon-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ─────────────────────────────────────────────────
+  redis:
+    image: redis:8-alpine
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD:-12345678}"
+    volumes:
+      - redis-data:/data
+    networks:
+      - photon-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-12345678}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Mailpit (dev mail) ────────────────────────────────────
+  mailpit:
+    image: axllent/mailpit:v1.29
+    ports:
+      - "${FORWARD_MAILPIT_PORT:-8025}:8025"
+    networks:
+      - photon-network
+    environment:
+      MP_MAX_MESSAGES: 5000
+
+  # ─── MinIO (dev S3) ────────────────────────────────────────
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: server /data --console-address ":9001"
+    ports:
+      - "${FORWARD_MINIO_PORT:-9000}:9000"
+      - "${FORWARD_MINIO_CONSOLE_PORT:-9001}:9001"
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minio}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minio12345}"
+    volumes:
+      - minio-data:/data
+    networks:
+      - photon-network
+
+  minio-setup:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    depends_on:
+      - minio
+    entrypoint: >
+      sh -c "
+        mc alias set local http://minio:9000 $${MINIO_ROOT_USER:-minio} $${MINIO_ROOT_PASSWORD:-minio12345} &&
+        mc mb -p local/${MINIO_BUCKET:-vinmo-dev} || true &&
+        mc anonymous set download local/${MINIO_BUCKET:-vinmo-dev}
+      "
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minio}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minio12345}"
+    networks:
+      - photon-network
+
+  # ─── Composer utility ──────────────────────────────────────
+  composer:
+    build:
+      context: ./server
+      dockerfile: docker/Dockerfile.dev
+    working_dir: /var/www
+    volumes:
+      - ./server:/var/www
+    entrypoint: ["composer", "--ansi", "--no-interaction", "--no-progress"]
+    profiles:
+      - tools
+    networks:
+      - photon-network
 
 volumes:
   mysql-data:
   redis-data:
-  assets_volume:
+  minio-data:
+  client_node_modules:
 
 networks:
-  vinmo-network:
+  photon-network:
     driver: bridge
