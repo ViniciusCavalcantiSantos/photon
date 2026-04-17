@@ -5,43 +5,58 @@ set -e
 # 1. Auto-bootstrap (dev only)
 # ──────────────────────────────────────────────
 
-# Install composer dependencies if vendor/ is missing
-if [ ! -d "/var/www/vendor" ]; then
-    echo "📦 vendor/ not found — running composer install..."
-    composer install --no-interaction --no-progress --optimize-autoloader
-fi
+if [ "$CONTAINER_ROLE" = "app" ] || [ "${AUTO_BOOTSTRAP:-true}" = "true" -a -z "$CONTAINER_ROLE" ]; then
+    # We are the main app container. Do the bootstrap.
+    
+    # Install composer dependencies if vendor/ is missing
+    if [ ! -d "/var/www/vendor" ]; then
+        echo "📦 vendor/ not found — running composer install..."
+        composer install --no-interaction --no-progress --optimize-autoloader
+    fi
 
-# Create .env from .env.example if it doesn't exist
-if [ ! -f "/var/www/.env" ]; then
-    echo "📄 .env not found — copying from .env.example..."
-    cp /var/www/.env.example /var/www/.env
-fi
+    # Create .env from .env.example if it doesn't exist
+    if [ ! -f "/var/www/.env" ]; then
+        echo "📄 .env not found — copying from .env.example..."
+        cp /var/www/.env.example /var/www/.env
+    fi
 
-# Generate APP_KEY if empty
-APP_KEY=$(grep -E "^APP_KEY=" /var/www/.env | cut -d '=' -f2-)
-if [ -z "$APP_KEY" ]; then
-    echo "🔑 APP_KEY is empty — generating..."
-    php artisan key:generate --ansi --force
-fi
+    # Generate APP_KEY if empty
+    APP_KEY=$(grep -E "^APP_KEY=" /var/www/.env | cut -d '=' -f2-)
+    if [ -z "$APP_KEY" ]; then
+        echo "🔑 APP_KEY is empty — generating..."
+        php artisan key:generate --ansi --force
+    fi
 
-# ──────────────────────────────────────────────
-# 2. Wait for MySQL and run migrations
-# ──────────────────────────────────────────────
+    # ──────────────────────────────────────────────
+    # 2. Wait for MySQL and run migrations
+    # ──────────────────────────────────────────────
 
-if [ "${AUTO_MIGRATE:-true}" = "true" ]; then
-    echo "⏳ Waiting for database..."
-    MAX_RETRIES=30
-    RETRIES=0
-    until php artisan db:monitor --databases=mysql > /dev/null 2>&1 || [ $RETRIES -ge $MAX_RETRIES ]; do
-        RETRIES=$((RETRIES + 1))
-        sleep 2
-    done
+    if [ "${AUTO_MIGRATE:-true}" = "true" ]; then
+        echo "⏳ Waiting for database..."
+        MAX_RETRIES=30
+        RETRIES=0
+        until php artisan db:monitor --databases=mysql > /dev/null 2>&1 || [ $RETRIES -ge $MAX_RETRIES ]; do
+            RETRIES=$((RETRIES + 1))
+            sleep 2
+        done
 
-    if [ $RETRIES -lt $MAX_RETRIES ]; then
-        echo "🗃️  Running migrations..."
-        php artisan migrate --force
-    else
-        echo "⚠️  Database not reachable after ${MAX_RETRIES} attempts, skipping migrations."
+        if [ $RETRIES -lt $MAX_RETRIES ]; then
+            echo "🗃️  Running migrations..."
+            php artisan migrate --force
+        else
+            echo "⚠️  Database not reachable after ${MAX_RETRIES} attempts, skipping migrations."
+        fi
+    fi
+else
+    # We are a worker/queue container
+    if [ ! -d "/var/www/vendor" ] || [ ! -f "/var/www/vendor/autoload.php" ]; then
+        echo "⏳ Sub-container waiting for vendor/ to be created by main app..."
+        while [ ! -f "/var/www/vendor/autoload.php" ]; do
+            sleep 2
+        done
+        echo "✅ vendor/ is ready!"
+        # Small delay to give app time to finish DB migrations before we start listening
+        sleep 5 
     fi
 fi
 

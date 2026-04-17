@@ -6,6 +6,18 @@
 # Create a root .env only to override ports or passwords.
 # ==============================================================
 
+# ─── Shared Laravel Environment ─────────────────────────────
+x-laravel-env: &laravel-env
+  DB_HOST: "mysql"
+  DB_PORT: "3306"
+  DB_DATABASE: "${DB_DATABASE:-photon}"
+  DB_USERNAME: "${DB_USERNAME:-photon}"
+  DB_PASSWORD: "${DB_PASSWORD:-12345678}"
+  REDIS_HOST: "redis"
+  REDIS_PASSWORD: "${REDIS_PASSWORD:-12345678}"
+  REDIS_PORT: "6379"
+  REDIS_PREFIX: "${REDIS_PREFIX:-photon}"
+
 services:
 
   # ─── Nginx reverse proxy ────────────────────────────────────
@@ -31,8 +43,10 @@ services:
     volumes:
       - ./server:/var/www
     environment:
+      <<: *laravel-env
       PHP_IDE_CONFIG: "serverName=docker-xdebug"
       AUTO_MIGRATE: "true"
+      CONTAINER_ROLE: "app"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -52,6 +66,10 @@ services:
     working_dir: /var/www
     volumes:
       - ./server:/var/www
+    environment:
+      <<: *laravel-env
+      CONTAINER_ROLE: "worker"
+    restart: always
     command: php artisan queue:listen --sleep=1 --tries=3
     depends_on:
       - app
@@ -66,6 +84,10 @@ services:
     working_dir: /var/www
     volumes:
       - ./server:/var/www
+    environment:
+      <<: *laravel-env
+      CONTAINER_ROLE: "worker"
+    restart: always
     command: php artisan schedule:work
     depends_on:
       - app
@@ -95,6 +117,7 @@ services:
     build:
       context: ./sse
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "${FORWARD_SSE_PORT:-8080}:8080"
     environment:
