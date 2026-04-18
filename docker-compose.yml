@@ -39,6 +39,9 @@ services:
     build:
       context: ./server
       dockerfile: docker/Dockerfile.dev
+      args:
+        WWWUSER: "${WWWUSER:-1000}"
+        WWWGROUP: "${WWWGROUP:-1000}"
     working_dir: /var/www
     volumes:
       - ./server:/var/www
@@ -56,13 +59,16 @@ services:
         condition: service_healthy
     networks:
       - photon-network
-    command: sh -c "php artisan config:clear && php-fpm"
+    command: php-fpm
 
   # ─── Queue worker ──────────────────────────────────────────
   queue:
     build:
       context: ./server
       dockerfile: docker/Dockerfile.dev
+      args:
+        WWWUSER: "${WWWUSER:-1000}"
+        WWWGROUP: "${WWWGROUP:-1000}"
     working_dir: /var/www
     volumes:
       - ./server:/var/www
@@ -81,6 +87,9 @@ services:
     build:
       context: ./server
       dockerfile: docker/Dockerfile.dev
+      args:
+        WWWUSER: "${WWWUSER:-1000}"
+        WWWGROUP: "${WWWGROUP:-1000}"
     working_dir: /var/www
     volumes:
       - ./server:/var/www
@@ -193,6 +202,9 @@ services:
     build:
       context: ./server
       dockerfile: docker/Dockerfile.dev
+      args:
+        WWWUSER: "${WWWUSER:-1000}"
+        WWWGROUP: "${WWWGROUP:-1000}"
     working_dir: /var/www
     volumes:
       - ./server:/var/www
