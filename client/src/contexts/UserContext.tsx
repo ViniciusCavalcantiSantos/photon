@@ -7,13 +7,13 @@ import apiFetch from "@/lib/apiFetch";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchUser } from "@/lib/api/users/fetchUser";
+import { ApiStatus } from '@/types/ApiResponse';
 
 interface UserContextType {
   user: User | null;
   setUser: (user: User) => void;
   logout: () => void;
   defaultDateFormat: string;
-  isLoggingOut: boolean;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -37,19 +37,15 @@ export const UserProvider = (
     refetchOnWindowFocus: false,
   });
 
-  const { mutate: logout, isPending: isLoggingOut } = useMutation({
-    mutationFn: async () => {
-      const isTokenMode = process.env.NEXT_PUBLIC_AUTH_TYPE === 'token';
-      const baseURL = isTokenMode ? process.env.NEXT_PUBLIC_APP_URL : undefined;
-      const path = isTokenMode ? '/api/auth/logout' : '/logout';
-      await apiFetch(path, { method: 'POST', baseURL });
-    },
-    onSuccess: () => {
-      queryClient.setQueryData(['user'], null);
-      queryClient.clear();
-      window.location.replace('/signin');
+  const logout = async function () {
+    const isTokenMode = process.env.NEXT_PUBLIC_AUTH_TYPE === 'token';
+    const baseURL = isTokenMode ? process.env.NEXT_PUBLIC_APP_URL : undefined;
+    const path = isTokenMode ? '/api/auth/logout' : '/logout';
+    const res = await apiFetch(path, { method: 'POST', baseURL });
+    if (res.status === ApiStatus.SUCCESS) {
+      router.replace('/signin')
     }
-  });
+  }
 
   const setUser = useCallback((newUser: User) => {
     queryClient.setQueryData(['user'], newUser);
@@ -65,8 +61,7 @@ export const UserProvider = (
     setUser,
     logout,
     defaultDateFormat,
-    isLoggingOut
-  }), [user, setUser, logout, defaultDateFormat, isLoggingOut]);
+  }), [user, setUser, logout, defaultDateFormat]);
 
   return (
     <UserContext.Provider value={value}>
