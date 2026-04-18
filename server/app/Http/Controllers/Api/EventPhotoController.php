@@ -8,9 +8,19 @@ use App\Http\Resources\ImageResource;
 use App\Models\Event;
 use App\Services\EventPhotoService;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Attributes as OA;
 
 class EventPhotoController extends Controller
 {
+    #[OA\Post(
+        path: '/api/events/photos',
+        summary: 'Faz o upload de uma foto para o evento',
+        security: [['sanctum' => []]],
+        tags: ['EventPhotos'],
+        responses: [
+            new OA\Response(response: 200, description: 'Foto salva com sucesso')
+        ]
+    )]
     public function store(EventPhotoRequest $request, EventPhotoService $eventService)
     {
         $eventId = $request->input('event_id');

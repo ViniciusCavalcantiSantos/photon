@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\PendingFaceReconciliation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Attributes as OA;
 
 class AssignmentController extends Controller
 {
@@ -15,6 +16,27 @@ class AssignmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/api/clients/{client}/assignments',
+        summary: 'Atribui eventos a um cliente',
+        security: [['sanctum' => []]],
+        tags: ['Assignments'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'assignments', type: 'array', items: new OA\Items(type: 'integer'), description: 'Array de IDs dos eventos')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Atribuições atualizadas'),
+            new OA\Response(response: 422, description: 'Erro de validação')
+        ]
+    )]
     public function store(Request $request, Client $client)
     {
         $validator = Validator::make($request->all(), [
@@ -73,6 +95,25 @@ class AssignmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/api/clients/assignments/bulk',
+        summary: 'Atribui eventos em lote para múltiplos clientes',
+        security: [['sanctum' => []]],
+        tags: ['Assignments'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'client_ids', type: 'array', items: new OA\Items(type: 'integer'), description: 'Array de IDs dos clientes'),
+                    new OA\Property(property: 'assignments', type: 'array', items: new OA\Items(type: 'integer'), description: 'Array de IDs dos eventos a serem atribuídos')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Atribuições atualizadas em lote'),
+            new OA\Response(response: 422, description: 'Erro de validação')
+        ]
+    )]
     public function storeBulk(Request $request)
     {
         $validator = $this->validateBulk($request);
@@ -122,6 +163,25 @@ class AssignmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Delete(
+        path: '/api/clients/assignments/bulk',
+        summary: 'Remove atribuições de eventos em lote para múltiplos clientes',
+        security: [['sanctum' => []]],
+        tags: ['Assignments'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'client_ids', type: 'array', items: new OA\Items(type: 'integer'), description: 'Array de IDs dos clientes'),
+                    new OA\Property(property: 'assignments', type: 'array', items: new OA\Items(type: 'integer'), description: 'Array de IDs dos eventos a serem removidos')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Atribuições removidas em lote'),
+            new OA\Response(response: 422, description: 'Erro de validação')
+        ]
+    )]
     public function destroyBulk(Request $request)
     {
         $validator = $this->validateBulk($request);
@@ -154,6 +214,18 @@ class AssignmentController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/api/clients/{client}/assignments',
+        summary: 'Lista os IDs dos eventos atribuídos a um cliente',
+        security: [['sanctum' => []]],
+        tags: ['Assignments'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Atribuições recuperadas com sucesso')
+        ]
+    )]
     public function show(Client $client)
     {
         return response()->json([

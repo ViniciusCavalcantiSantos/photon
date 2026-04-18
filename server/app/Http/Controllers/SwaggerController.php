@@ -13,6 +13,14 @@ namespace App\Http\Controllers;
  *     url="http://localhost:8000",
  *     description="Servidor local"
  * )
+ *
+ * @OA\SecurityScheme(
+ *     securityScheme="sanctum",
+ *     type="http",
+ *     name="Authorization",
+ *     in="header",
+ *     scheme="bearer"
+ * )
  */
 class SwaggerController extends Controller
 {

@@ -12,9 +12,21 @@ use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use OpenApi\Attributes as OA;
 
 class ImageController extends Controller
 {
+    #[OA\Get(
+        path: '/api/images/{image}',
+        summary: 'Exibe uma imagem',
+        tags: ['Images'],
+        parameters: [
+            new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Stream da imagem')
+        ]
+    )]
     public function show(Request $request, Image $image): StreamedResponse
     {
         $disk = Storage::disk($image->disk);
@@ -47,6 +59,17 @@ class ImageController extends Controller
         );
     }
 
+    #[OA\Get(
+        path: '/api/images/{image}/download',
+        summary: 'Baixa a imagem original',
+        tags: ['Images'],
+        parameters: [
+            new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Download da imagem')
+        ]
+    )]
     public function download(Request $request, Image $image)
     {
         $disk = Storage::disk($image->disk);
@@ -58,6 +81,17 @@ class ImageController extends Controller
     }
 
 
+    #[OA\Get(
+        path: '/api/images/{image}/metadata',
+        summary: 'Recupera os metadados da imagem',
+        tags: ['Images'],
+        parameters: [
+            new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Metadados recuperados')
+        ]
+    )]
     public function metadata(Image $image)
     {
         if ($image->parent_id) {
@@ -71,6 +105,17 @@ class ImageController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/images/{image}/clients',
+        summary: 'Retorna a lista de clientes identificados em uma imagem',
+        tags: ['Images'],
+        parameters: [
+            new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Clientes recuperados')
+        ]
+    )]
     public function clientOnImage(Image $image)
     {
         $image = $image->parent_id ? $image->original : $image;
@@ -83,6 +128,18 @@ class ImageController extends Controller
     }
 
 
+    #[OA\Get(
+        path: '/api/images/{image}/clients/{client}/crop',
+        summary: 'Obtém o recorte do rosto do cliente na imagem',
+        tags: ['Images'],
+        parameters: [
+            new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer')),
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Recorte obtido')
+        ]
+    )]
     public function getClientCrop(Image $image, Client $client)
     {
         $image = $image->parent_id ? $image->original : $image;
@@ -95,6 +152,18 @@ class ImageController extends Controller
         ]);
     }
 
+    #[OA\Delete(
+        path: '/api/images/{image}',
+        summary: 'Remove uma imagem',
+        security: [['sanctum' => []]],
+        tags: ['Images'],
+        parameters: [
+            new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Imagem removida')
+        ]
+    )]
     public function destroy(Image $image)
     {
         if ($image->parent_id) {

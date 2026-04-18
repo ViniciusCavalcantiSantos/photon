@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
 {
@@ -52,6 +53,14 @@ class AuthController extends Controller
         return $available;
     }
 
+    #[OA\Get(
+        path: '/api/auth/available-providers',
+        summary: 'Lista os provedores de autenticação social disponíveis',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Provedores disponíveis')
+        ]
+    )]
     public function availableProviders()
     {
         return response()->json([
@@ -61,6 +70,17 @@ class AuthController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/auth/{provider}/redirect',
+        summary: 'Redireciona para o provedor de autenticação (OAuth)',
+        tags: ['Auth'],
+        parameters: [
+            new OA\PathParameter(name: 'provider', required: true, description: 'Nome do provedor (ex: google)', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'URL de redirecionamento gerada')
+        ]
+    )]
     public function redirectToProvider($provider)
     {
         if (!in_array($provider, $this->getProvidersAvailable())) {
@@ -81,6 +101,17 @@ class AuthController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/auth/{provider}/callback',
+        summary: 'Callback do provedor de autenticação',
+        tags: ['Auth'],
+        parameters: [
+            new OA\PathParameter(name: 'provider', required: true, description: 'Nome do provedor (ex: google)', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 302, description: 'Redirecionamento para o app')
+        ]
+    )]
     public function handleProviderCallback($provider)
     {
         if (session()->has('auth_social_locale')) {
@@ -190,6 +221,14 @@ class AuthController extends Controller
             );
     }
 
+    #[OA\Post(
+        path: '/api/auth/send-code',
+        summary: 'Envia o código de verificação para o email',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Código enviado')
+        ]
+    )]
     public function sendCode(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -229,6 +268,14 @@ class AuthController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/auth/send-recovery-link',
+        summary: 'Envia o link de recuperação de senha',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Link enviado com sucesso')
+        ]
+    )]
     public function sendRecoveryLink(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -269,6 +316,14 @@ class AuthController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/auth/validate-recovery-token',
+        summary: 'Valida o token de recuperação de senha',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Token válido')
+        ]
+    )]
     public function validateRecoveryToken(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -311,6 +366,14 @@ class AuthController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/auth/change-password',
+        summary: 'Altera a senha do usuário',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Senha alterada')
+        ]
+    )]
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -356,6 +419,14 @@ class AuthController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/auth/confirm-code',
+        summary: 'Confirma o código enviado para o email',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Código confirmado')
+        ]
+    )]
     public function confirmCode(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -428,6 +499,14 @@ class AuthController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/auth/register',
+        summary: 'Registra um novo usuário',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Usuário registrado')
+        ]
+    )]
     public function register(Request $request): JsonResponse
     {
         if ($request->input('type') !== 'token') {
@@ -522,6 +601,14 @@ class AuthController extends Controller
         );
     }
 
+    #[OA\Post(
+        path: '/api/auth/login',
+        summary: 'Realiza login na aplicação',
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Login efetuado com sucesso')
+        ]
+    )]
     public function login(Request $request): JsonResponse
     {
         $isTokenMode = $request->input('type') === 'token';
@@ -587,26 +674,16 @@ class AuthController extends Controller
         );
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/me",
-     *     summary="Current authenticated user",
-     *     description="Retorna o usuário autenticado.",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful response",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             required={"user"},
-     *             @OA\Property(
-     *                 property="user",
-     *                 ref="#/components/schemas/User"
-     *             )
-     *         )
-     *     ),
-     *     security={{"sanctum": {}}}
-     * )
-     */
+    #[OA\Get(
+        path: '/api/me',
+        summary: 'Current authenticated user',
+        description: 'Retorna o usuário autenticado.',
+        security: [['sanctum' => []]],
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Successful response')
+        ]
+    )]
     public function me(Request $request): JsonResponse
     {
         return response()->json([
@@ -616,6 +693,15 @@ class AuthController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/logout',
+        summary: 'Realiza logout e invalida o token',
+        security: [['sanctum' => []]],
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: 200, description: 'Logout efetuado com sucesso')
+        ]
+    )]
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
         // Delete the Sanctum token if the request was authenticated via Bearer

@@ -10,12 +10,26 @@ use App\Models\ContractCategory;
 use App\Services\ContractService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use OpenApi\Attributes as OA;
 
 class ContractController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/api/contracts',
+        summary: 'Lista contratos',
+        security: [['sanctum' => []]],
+        tags: ['Contracts'],
+        parameters: [
+            new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Contratos retornados')
+        ]
+    )]
     public function index(Request $request)
     {
         $organizationId = auth()->user()->organization_id;
@@ -50,6 +64,16 @@ class ContractController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/api/contracts',
+        summary: 'Cria um novo contrato',
+        security: [['sanctum' => []]],
+        tags: ['Contracts'],
+        responses: [
+            new OA\Response(response: 200, description: 'Contrato criado'),
+            new OA\Response(response: 422, description: 'Erro de validação')
+        ]
+    )]
     public function store(ContractRequest $request, ContractService $contractService)
     {
         Gate::authorize('create', Contract::class);
@@ -73,6 +97,18 @@ class ContractController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/api/contracts/{contract}',
+        summary: 'Exibe os detalhes de um contrato',
+        security: [['sanctum' => []]],
+        tags: ['Contracts'],
+        parameters: [
+            new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Detalhes do contrato')
+        ]
+    )]
     public function show(Contract $contract)
     {
         Gate::authorize('view', $contract);
@@ -87,6 +123,18 @@ class ContractController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/api/contracts/{contract}',
+        summary: 'Atualiza um contrato',
+        security: [['sanctum' => []]],
+        tags: ['Contracts'],
+        parameters: [
+            new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Contrato atualizado')
+        ]
+    )]
     public function update(ContractRequest $request, Contract $contract, ContractService $contractService)
     {
         Gate::authorize('update', $contract);
@@ -112,6 +160,18 @@ class ContractController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/contracts/{contract}',
+        summary: 'Remove um contrato',
+        security: [['sanctum' => []]],
+        tags: ['Contracts'],
+        parameters: [
+            new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Contrato deletado')
+        ]
+    )]
     public function destroy(Contract $contract)
     {
         Gate::authorize('delete', $contract);
@@ -129,6 +189,15 @@ class ContractController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/contracts/categories',
+        summary: 'Lista as categorias de contrato',
+        security: [['sanctum' => []]],
+        tags: ['Contracts'],
+        responses: [
+            new OA\Response(response: 200, description: 'Categorias retornadas')
+        ]
+    )]
     public function getCategories()
     {
         $categories = ContractCategory::all()->map(function ($category) {

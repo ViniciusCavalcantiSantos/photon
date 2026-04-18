@@ -12,29 +12,1376 @@
         }
     ],
     "paths": {
+        "/api/clients/{client}/assignments": {
+            "get": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Lista os IDs dos eventos atribuídos a um cliente",
+                "description": "Display the specified resource.",
+                "operationId": "f3f31d009bdda4ab74c01d54e9dfc5cd",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Atribuições recuperadas com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Atribui eventos a um cliente",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "e360cad7aaabc9ce1d9e126de14bec15",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "assignments": {
+                                        "description": "Array de IDs dos eventos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Atribuições atualizadas"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients/assignments/bulk": {
+            "post": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Atribui eventos em lote para múltiplos clientes",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "e79b731619353e463a09902b547a1546",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "client_ids": {
+                                        "description": "Array de IDs dos clientes",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "assignments": {
+                                        "description": "Array de IDs dos eventos a serem atribuídos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Atribuições atualizadas em lote"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Remove atribuições de eventos em lote para múltiplos clientes",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "0bed1a61a7294bf1005c1a2f18e5b833",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "client_ids": {
+                                        "description": "Array de IDs dos clientes",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "assignments": {
+                                        "description": "Array de IDs dos eventos a serem removidos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Atribuições removidas em lote"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/available-providers": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Lista os provedores de autenticação social disponíveis",
+                "operationId": "522e21daa0a96ab89de410f1219423a7",
+                "responses": {
+                    "200": {
+                        "description": "Provedores disponíveis"
+                    }
+                }
+            }
+        },
+        "/api/auth/{provider}/redirect": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Redireciona para o provedor de autenticação (OAuth)",
+                "operationId": "a056a975024516894ed584b37735aaae",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Nome do provedor (ex: google)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "URL de redirecionamento gerada"
+                    }
+                }
+            }
+        },
+        "/api/auth/{provider}/callback": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Callback do provedor de autenticação",
+                "operationId": "cddf551d3b6e72e7b88f1e884cb3c79a",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Nome do provedor (ex: google)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirecionamento para o app"
+                    }
+                }
+            }
+        },
+        "/api/auth/send-code": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Envia o código de verificação para o email",
+                "operationId": "0f2ff5da3d5883ef973571776bfcbc27",
+                "responses": {
+                    "200": {
+                        "description": "Código enviado"
+                    }
+                }
+            }
+        },
+        "/api/auth/send-recovery-link": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Envia o link de recuperação de senha",
+                "operationId": "f9cec95b81add2be08c454123bccd664",
+                "responses": {
+                    "200": {
+                        "description": "Link enviado com sucesso"
+                    }
+                }
+            }
+        },
+        "/api/auth/validate-recovery-token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Valida o token de recuperação de senha",
+                "operationId": "ac946ba9f9c37e55ef77fd4bd0a2bdad",
+                "responses": {
+                    "200": {
+                        "description": "Token válido"
+                    }
+                }
+            }
+        },
+        "/api/auth/change-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Altera a senha do usuário",
+                "operationId": "58e67cdbde52513b62902b05abf9abcb",
+                "responses": {
+                    "200": {
+                        "description": "Senha alterada"
+                    }
+                }
+            }
+        },
+        "/api/auth/confirm-code": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Confirma o código enviado para o email",
+                "operationId": "3445143da2aa0898b49d6847a0811e34",
+                "responses": {
+                    "200": {
+                        "description": "Código confirmado"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registra um novo usuário",
+                "operationId": "c7bb21a0d87049e161b8e4c9b0d909f2",
+                "responses": {
+                    "200": {
+                        "description": "Usuário registrado"
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Realiza login na aplicação",
+                "operationId": "dd51a484b7fa0f97c7680fdbde14cf5f",
+                "responses": {
+                    "200": {
+                        "description": "Login efetuado com sucesso"
+                    }
+                }
+            }
+        },
         "/api/me": {
             "get": {
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "Current authenticated user",
                 "description": "Retorna o usuário autenticado.",
                 "operationId": "8367feff40ba10e43187792cad3132c1",
                 "responses": {
                     "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "user"
-                                    ],
-                                    "properties": {
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
+                        "description": "Successful response"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Realiza logout e invalida o token",
+                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "responses": {
+                    "200": {
+                        "description": "Logout efetuado com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients": {
+            "get": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Lista clientes",
+                "description": "Display a listing of the resource.",
+                "operationId": "413c12320d4121431e38339f45ecaa7c",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Termo de busca",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Clientes retornados"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Cria um novo cliente",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "f909473745c1a1d469e0c5a5b54682b8",
+                "responses": {
+                    "200": {
+                        "description": "Cliente criado"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/public/clients/register/{linkId}": {
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Registra um cliente via link público",
+                "operationId": "502bad6e3c22f09e708d4a3a2175edec",
+                "parameters": [
+                    {
+                        "name": "linkId",
+                        "in": "path",
+                        "description": "ID codificado em base64 do link",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente cadastrado com sucesso"
+                    }
+                }
+            }
+        },
+        "/api/clients/{client}": {
+            "get": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Exibe detalhes do cliente",
+                "description": "Display the specified resource.",
+                "operationId": "2852fa5d6ec28da5a92fa47749faa1e1",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente recuperado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Atualiza os dados de um cliente",
+                "description": "Update the specified resource in storage.",
+                "operationId": "15591365886417bc26fb290a81016499",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente atualizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Remove um cliente",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "833eb8e223eda0f71bee956a8153f8aa",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente removido"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients/links": {
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Gera um link de cadastro público de clientes",
+                "operationId": "5c48f879c305b476dcef4d91d8971b4e",
+                "responses": {
+                    "201": {
+                        "description": "Link criado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients/links/{linkId}": {
+            "get": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Recupera as informações de um link público",
+                "operationId": "dfad60e72754cde36b69ee1335f82d64",
+                "parameters": [
+                    {
+                        "name": "linkId",
+                        "in": "path",
+                        "description": "ID codificado em base64",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informações do link"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contracts": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Lista contratos",
+                "description": "Display a listing of the resource.",
+                "operationId": "971f1fdec41a8eaf0830d94e9ee15496",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Termo de busca",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contratos retornados"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Cria um novo contrato",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "73a91076ec6423051d986a4149fa8d87",
+                "responses": {
+                    "200": {
+                        "description": "Contrato criado"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contracts/{contract}": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Exibe os detalhes de um contrato",
+                "description": "Display the specified resource.",
+                "operationId": "3efe2c45b2170cb9f4400d6dd66106fd",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do contrato"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Atualiza um contrato",
+                "description": "Update the specified resource in storage.",
+                "operationId": "3e85ddb8b10c94bb01c376bb06f4be03",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contrato atualizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Remove um contrato",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "d1ff21f53377f46c99d6cf407e68ca14",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contrato deletado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contracts/categories": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Lista as categorias de contrato",
+                "operationId": "9ae8f03b8087b524a56f136ad022f86b",
+                "responses": {
+                    "200": {
+                        "description": "Categorias retornadas"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Lista eventos",
+                "operationId": "e529c81e6aaec82f49950a87ed881f57",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Termo de busca",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "with_contract",
+                        "in": "query",
+                        "description": "Carrega o contrato relacionado",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eventos retornados"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Cria um novo evento",
+                "operationId": "e958e1c6c275d5f9b7ebcd837903d0ef",
+                "responses": {
+                    "200": {
+                        "description": "Evento criado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{event}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Exibe os detalhes de um evento",
+                "operationId": "2f5e4d4d8d7989ca1f72be9c20d9daac",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do evento"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Atualiza um evento",
+                "operationId": "0c0cf4026635d252353fad3e5b48591c",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento atualizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Remove um evento",
+                "operationId": "b9043fb311444b3c3bcb101e1a643a9f",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento removido"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/types/{contract}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Retorna os tipos de evento permitidos para um contrato",
+                "operationId": "c46b71d2e6c3179de743596dd0043d52",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipos de evento retornados"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{event}/images": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Retorna as imagens de um evento",
+                "operationId": "510c80a3da181fcc15985f736ca258a7",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imagens retornadas"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/photos": {
+            "post": {
+                "tags": [
+                    "EventPhotos"
+                ],
+                "summary": "Faz o upload de uma foto para o evento",
+                "operationId": "9a3ee6c95e56dae0639e7b7053aa5877",
+                "responses": {
+                    "200": {
+                        "description": "Foto salva com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/images/{image}": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Exibe uma imagem",
+                "operationId": "bb3175b3e40a396bcc3e52c5f7581065",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stream da imagem"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Remove uma imagem",
+                "operationId": "25687ab67804accc883dc67eeec16d21",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imagem removida"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/images/{image}/download": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Baixa a imagem original",
+                "operationId": "a3ceaedf365f1f2b46ebf66f56b2c619",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Download da imagem"
+                    }
+                }
+            }
+        },
+        "/api/images/{image}/metadata": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Recupera os metadados da imagem",
+                "operationId": "27d2168a6a62464feb894a887e72f209",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Metadados recuperados"
+                    }
+                }
+            }
+        },
+        "/api/images/{image}/clients": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Retorna a lista de clientes identificados em uma imagem",
+                "operationId": "06024e37ab06d28d42e807c9a525575f",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Clientes recuperados"
+                    }
+                }
+            }
+        },
+        "/api/images/{image}/clients/{client}/crop": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Obtém o recorte do rosto do cliente na imagem",
+                "operationId": "a996404dd897ef0561cee457b4871e74",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recorte obtido"
+                    }
+                }
+            }
+        },
+        "/api/locations/countries": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Obtém a lista de países",
+                "operationId": "de7461346fbefe8cd459142cd740618d",
+                "responses": {
+                    "200": {
+                        "description": "Lista de países obtida"
+                    }
+                }
+            }
+        },
+        "/api/locations/countries/{country_cca2}/states": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Obtém a lista de estados de um país",
+                "operationId": "6dce5fd76bb73ac391ff8b0e557327dd",
+                "parameters": [
+                    {
+                        "name": "country_cca2",
+                        "in": "path",
+                        "description": "Código CCA2 do país (ex: BR)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de estados obtida"
+                    },
+                    "404": {
+                        "description": "País não encontrado"
+                    }
+                }
+            }
+        },
+        "/api/locations/countries/{country_cca2}/states/{state_code}/cities": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Obtém a lista de cidades de um estado",
+                "operationId": "0d75e8710e086c19923c93f1e23d3833",
+                "parameters": [
+                    {
+                        "name": "country_cca2",
+                        "in": "path",
+                        "description": "Código CCA2 do país (ex: BR)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state_code",
+                        "in": "path",
+                        "description": "Código do estado (ex: SP)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de cidades obtida"
+                    },
+                    "404": {
+                        "description": "País ou estado não encontrado"
+                    }
+                }
+            }
+        },
+        "/api/notifications/sse-ticket": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Obtém um ticket para conexão Server-Sent Events (SSE)",
+                "operationId": "4833c7f6d950b93462606585b7e9d134",
+                "responses": {
+                    "200": {
+                        "description": "Ticket obtido com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Lista as notificações do usuário",
+                "operationId": "6d56a555955089a73fdf3f7229e8ead8",
+                "responses": {
+                    "200": {
+                        "description": "Notificações obtidas com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}/read": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Marca uma notificação como lida",
+                "operationId": "cde64b28769413444ae4ae3c3de1bff5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da notificação",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notificação marcada como lida"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/read-all": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Marca todas as notificações como lidas",
+                "operationId": "a938b29776d5df701355702f21a24149",
+                "responses": {
+                    "200": {
+                        "description": "Notificações atualizadas com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}/dismiss": {
+            "delete": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Remove uma notificação",
+                "operationId": "0d3519c4807504e5f2b257ec73721d43",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da notificação",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notificação removida com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/stream": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Stream de notificações via SSE",
+                "operationId": "a0dd9a008b949544c5284d565026bf7d",
+                "responses": {
+                    "200": {
+                        "description": "Stream estabelecida"
                     }
                 },
                 "security": [
@@ -951,6 +2298,52 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "bearer"
+            }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Assignments",
+            "description": "Assignments"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Clients",
+            "description": "Clients"
+        },
+        {
+            "name": "Contracts",
+            "description": "Contracts"
+        },
+        {
+            "name": "Events",
+            "description": "Events"
+        },
+        {
+            "name": "EventPhotos",
+            "description": "EventPhotos"
+        },
+        {
+            "name": "Images",
+            "description": "Images"
+        },
+        {
+            "name": "Locations",
+            "description": "Locations"
+        },
+        {
+            "name": "Notifications",
+            "description": "Notifications"
+        }
+    ]
 }

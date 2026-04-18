@@ -14,12 +14,26 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Attributes as OA;
 
 class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/api/clients',
+        summary: 'Lista clientes',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Clientes retornados')
+        ]
+    )]
     public function index(Request $request)
     {
         $organizationId = auth()->user()->organization_id;
@@ -54,6 +68,16 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/api/clients',
+        summary: 'Cria um novo cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        responses: [
+            new OA\Response(response: 200, description: 'Cliente criado'),
+            new OA\Response(response: 422, description: 'Erro de validação')
+        ]
+    )]
     public function store(ClientRequest $request, ClientService $clientService)
     {
         Gate::authorize('create', Client::class);
@@ -76,6 +100,17 @@ class ClientController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/public/clients/register/{linkId}',
+        summary: 'Registra um cliente via link público',
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'linkId', required: true, description: 'ID codificado em base64 do link', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Cliente cadastrado com sucesso')
+        ]
+    )]
     public function storePublic(string $linkIdEncoded, ClientPublicRequest $request, ClientService $clientService)
     {
         $linkId = base64_decode($linkIdEncoded);
@@ -112,6 +147,18 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/api/clients/{client}',
+        summary: 'Exibe detalhes do cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Cliente recuperado')
+        ]
+    )]
     public function show(Client $client)
     {
         Gate::authorize('view', $client);
@@ -127,6 +174,18 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/api/clients/{client}',
+        summary: 'Atualiza os dados de um cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Cliente atualizado')
+        ]
+    )]
     public function update(ClientRequest $request, Client $client, ClientService $clientService)
     {
         Gate::authorize('update', $client);
@@ -152,6 +211,18 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/clients/{client}',
+        summary: 'Remove um cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Cliente removido')
+        ]
+    )]
     public function destroy(ClientService $clientService, Client $client)
     {
         Gate::authorize('delete', $client);
@@ -171,6 +242,15 @@ class ClientController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/clients/links',
+        summary: 'Gera um link de cadastro público de clientes',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        responses: [
+            new OA\Response(response: 201, description: 'Link criado')
+        ]
+    )]
     public function generateLink(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -211,6 +291,18 @@ class ClientController extends Controller
         }
     }
 
+    #[OA\Get(
+        path: '/api/clients/links/{linkId}',
+        summary: 'Recupera as informações de um link público',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'linkId', required: true, description: 'ID codificado em base64', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Informações do link')
+        ]
+    )]
     public function getLinkInfo($linkIdEncoded)
     {
         $linkId = base64_decode($linkIdEncoded);

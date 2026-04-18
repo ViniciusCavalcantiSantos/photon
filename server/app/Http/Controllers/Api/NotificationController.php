@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use OpenApi\Attributes as OA;
 
 class NotificationController extends Controller
 {
+    #[OA\Get(
+        path: '/api/notifications/sse-ticket',
+        summary: 'Obtém um ticket para conexão Server-Sent Events (SSE)',
+        security: [['sanctum' => []]],
+        tags: ['Notifications'],
+        responses: [
+            new OA\Response(response: 200, description: 'Ticket obtido com sucesso')
+        ]
+    )]
     public function getSseTicket(Request $request)
     {
         $ticket = Str::uuid()->toString();
@@ -25,6 +35,15 @@ class NotificationController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/notifications',
+        summary: 'Lista as notificações do usuário',
+        security: [['sanctum' => []]],
+        tags: ['Notifications'],
+        responses: [
+            new OA\Response(response: 200, description: 'Notificações obtidas com sucesso')
+        ]
+    )]
     public function index(Request $request)
     {
         return response()->json([
@@ -34,6 +53,18 @@ class NotificationController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/notifications/{id}/read',
+        summary: 'Marca uma notificação como lida',
+        security: [['sanctum' => []]],
+        tags: ['Notifications'],
+        parameters: [
+            new OA\PathParameter(name: 'id', required: true, description: 'ID da notificação', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Notificação marcada como lida')
+        ]
+    )]
     public function read(Request $request, $id)
     {
         $notification = $request->user()->notifications()->findOrFail($id);
@@ -45,6 +76,15 @@ class NotificationController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/notifications/read-all',
+        summary: 'Marca todas as notificações como lidas',
+        security: [['sanctum' => []]],
+        tags: ['Notifications'],
+        responses: [
+            new OA\Response(response: 200, description: 'Notificações atualizadas com sucesso')
+        ]
+    )]
     public function readAll(Request $request)
     {
         $request->user()->unreadNotifications->markAsRead();
@@ -54,6 +94,18 @@ class NotificationController extends Controller
         ]);
     }
 
+    #[OA\Delete(
+        path: '/api/notifications/{id}/dismiss',
+        summary: 'Remove uma notificação',
+        security: [['sanctum' => []]],
+        tags: ['Notifications'],
+        parameters: [
+            new OA\PathParameter(name: 'id', required: true, description: 'ID da notificação', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Notificação removida com sucesso')
+        ]
+    )]
     public function dismiss(Request $request, $id)
     {
         $request->user()->notifications()->find($id)?->delete();
@@ -64,6 +116,15 @@ class NotificationController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/notifications/stream',
+        summary: 'Stream de notificações via SSE',
+        security: [['sanctum' => []]],
+        tags: ['Notifications'],
+        responses: [
+            new OA\Response(response: 200, description: 'Stream estabelecida')
+        ]
+    )]
     public function stream(Request $request)
     {
         set_time_limit(0);

@@ -12,9 +12,24 @@ use App\Models\EventType;
 use App\Services\EventService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use OpenApi\Attributes as OA;
 
 class EventController extends Controller
 {
+    #[OA\Get(
+        path: '/api/events',
+        summary: 'Lista eventos',
+        security: [['sanctum' => []]],
+        tags: ['Events'],
+        parameters: [
+            new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string')),
+            new OA\QueryParameter(name: 'with_contract', required: false, description: 'Carrega o contrato relacionado', schema: new OA\Schema(type: 'boolean'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Eventos retornados')
+        ]
+    )]
     public function index(Request $request)
     {
         $organizationId = auth()->user()->organization_id;
@@ -70,6 +85,15 @@ class EventController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/events',
+        summary: 'Cria um novo evento',
+        security: [['sanctum' => []]],
+        tags: ['Events'],
+        responses: [
+            new OA\Response(response: 200, description: 'Evento criado')
+        ]
+    )]
     public function store(EventRequest $request, EventService $eventService)
     {
         Gate::authorize('create', Event::class);
@@ -90,6 +114,18 @@ class EventController extends Controller
         }
     }
 
+    #[OA\Get(
+        path: '/api/events/{event}',
+        summary: 'Exibe os detalhes de um evento',
+        security: [['sanctum' => []]],
+        tags: ['Events'],
+        parameters: [
+            new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Detalhes do evento')
+        ]
+    )]
     public function show(Request $request, Event $event)
     {
         Gate::authorize('view', $event);
@@ -118,6 +154,18 @@ class EventController extends Controller
         ]);
     }
 
+    #[OA\Put(
+        path: '/api/events/{event}',
+        summary: 'Atualiza um evento',
+        security: [['sanctum' => []]],
+        tags: ['Events'],
+        parameters: [
+            new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Evento atualizado')
+        ]
+    )]
     public function update(EventRequest $request, EventService $eventService, Event $event)
     {
         Gate::authorize('update', $event);
@@ -139,6 +187,18 @@ class EventController extends Controller
         }
     }
 
+    #[OA\Delete(
+        path: '/api/events/{event}',
+        summary: 'Remove um evento',
+        security: [['sanctum' => []]],
+        tags: ['Events'],
+        parameters: [
+            new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Evento removido')
+        ]
+    )]
     public function destroy(Event $event)
     {
         Gate::authorize('delete', $event);
@@ -156,6 +216,18 @@ class EventController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/events/types/{contract}',
+        summary: 'Retorna os tipos de evento permitidos para um contrato',
+        security: [['sanctum' => []]],
+        tags: ['Events'],
+        parameters: [
+            new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Tipos de evento retornados')
+        ]
+    )]
     public function getEventTypes(\Request $request, Contract $contract)
     {
         Gate::authorize('view', $contract);
@@ -177,6 +249,18 @@ class EventController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/events/{event}/images',
+        summary: 'Retorna as imagens de um evento',
+        security: [['sanctum' => []]],
+        tags: ['Events'],
+        parameters: [
+            new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Imagens retornadas')
+        ]
+    )]
     public function getImages(Event $event)
     {
         Gate::authorize('view', $event);
