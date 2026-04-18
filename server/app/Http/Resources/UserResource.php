@@ -6,21 +6,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * @OA\Schema(
- *   schema="User",
- *   type="object",
- *   required={"id", "name", "email", "address"},
- *   @OA\Property(property="id", type="integer", example=1),
- *   @OA\Property(property="name", type="string", example="Vinicius"),
- *   @OA\Property(property="email", type="string", example="vinicius@example.com"),
- *   @OA\Property(property="picture", type="string", format="uri", example="https://.../picture.jpg", nullable=true),
- *   @OA\Property(
- *      property="address",
- *      ref="#/components/schemas/FullAddress"
- *   )
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    schema: "User",
+    required: ["id", "name", "email", "address"],
+    properties: [
+        new OA\Property(property: "id", type: "integer", example: 1),
+        new OA\Property(property: "name", type: "string", example: "Vinicius"),
+        new OA\Property(property: "email", type: "string", example: "vinicius@example.com"),
+        new OA\Property(property: "picture", type: "string", format: "uri", nullable: true, example: "https://.../picture.jpg"),
+        new OA\Property(property: "address", ref: "#/components/schemas/FullAddress")
+    ]
+)]
 class UserResource extends JsonResource
 {
     /**

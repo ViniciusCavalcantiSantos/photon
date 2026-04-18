@@ -5,33 +5,46 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @OA\Schema(
- *   schema="ImageMeta",
- *   type="object",
- *   description="Metadados EXIF e técnicos da imagem",
- *   @OA\Property(property="camera", type="object",
- *     @OA\Property(property="make", type="string", example="Canon"),
- *     @OA\Property(property="model", type="string", example="Canon EOS 6D Mark II"),
- *     @OA\Property(property="lens", type="string", example="EF85mm f/1.8 USM"),
- *     @OA\Property(property="software", type="string", example="Adobe Lightroom Classic 14.5"),
- *     @OA\Property(property="capturedAt", type="string", example="2025-08-03 21:30:33")
- *   ),
- *   @OA\Property(property="exposure", type="object",
- *     @OA\Property(property="exposureProgram", type="string", example="1"),
- *     @OA\Property(property="exposureTime", type="string", example="1/160"),
- *     @OA\Property(property="fNumber", type="string", example="f/2.5"),
- *     @OA\Property(property="iso", type="integer", example=320),
- *     @OA\Property(property="focalLength", type="string", example="85mm"),
- *     @OA\Property(property="flash", type="integer", example=9)
- *   ),
- *   @OA\Property(property="location", type="object",
- *     @OA\Property(property="latitude", type="number", example=-8.3312),
- *     @OA\Property(property="longitude", type="number", example=-36.4201)
- *   ),
- *   @OA\Property(property="other", type="object", description="Metadados adicionais não padronizados")
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    schema: "ImageMeta",
+    description: "Metadados EXIF e técnicos da imagem",
+    properties: [
+        new OA\Property(
+            property: "camera",
+            type: "object",
+            properties: [
+                new OA\Property(property: "make", type: "string", example: "Canon"),
+                new OA\Property(property: "model", type: "string", example: "Canon EOS 6D Mark II"),
+                new OA\Property(property: "lens", type: "string", example: "EF85mm f/1.8 USM"),
+                new OA\Property(property: "software", type: "string", example: "Adobe Lightroom Classic 14.5"),
+                new OA\Property(property: "capturedAt", type: "string", example: "2025-08-03 21:30:33")
+            ]
+        ),
+        new OA\Property(
+            property: "exposure",
+            type: "object",
+            properties: [
+                new OA\Property(property: "exposureProgram", type: "string", example: "1"),
+                new OA\Property(property: "exposureTime", type: "string", example: "1/160"),
+                new OA\Property(property: "fNumber", type: "string", example: "f/2.5"),
+                new OA\Property(property: "iso", type: "integer", example: 320),
+                new OA\Property(property: "focalLength", type: "string", example: "85mm"),
+                new OA\Property(property: "flash", type: "integer", example: 9)
+            ]
+        ),
+        new OA\Property(
+            property: "location",
+            type: "object",
+            properties: [
+                new OA\Property(property: "latitude", type: "number", example: -8.3312),
+                new OA\Property(property: "longitude", type: "number", example: -36.4201)
+            ]
+        ),
+        new OA\Property(property: "other", description: "Metadados adicionais não padronizados", type: "object")
+    ]
+)]
 class ImageMetaResource extends JsonResource
 {
     /**

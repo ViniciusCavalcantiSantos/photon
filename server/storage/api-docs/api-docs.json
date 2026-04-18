@@ -2239,11 +2239,11 @@
                     },
                     "type": {
                         "type": "string",
-                        "example": "App\\\\Notifications\\\\SystemNotification"
+                        "example": "App\\Notifications\\SystemNotification"
                     },
                     "notifiableType": {
                         "type": "string",
-                        "example": "App\\\\Models\\\\User"
+                        "example": "App\\Models\\User"
                     },
                     "notifiableId": {
                         "type": "integer",
