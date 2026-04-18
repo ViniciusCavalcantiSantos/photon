@@ -94,24 +94,6 @@ services:
     networks:
       - photon-network
 
-  # ─── Next.js client ────────────────────────────────────────
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    ports:
-      - "${FORWARD_CLIENT_PORT:-3000}:3000"
-    volumes:
-      - ./client:/app
-      - client_node_modules:/app/node_modules
-    environment:
-      NEXT_PUBLIC_APP_NAME: "Photon Cloud"
-      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
-      NEXT_PUBLIC_API_URL: "http://localhost:8000"
-      NEXT_PUBLIC_AUTH_TYPE: "session"
-    networks:
-      - photon-network
-
   # ─── SSE microservice (Go) ─────────────────────────────────
   sse:
     build:
@@ -146,7 +128,7 @@ services:
     networks:
       - photon-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -160,7 +142,7 @@ services:
     networks:
       - photon-network
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-12345678}", "ping"]
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-12345678}", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -214,7 +196,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./server:/var/www
-    entrypoint: ["composer", "--ansi", "--no-interaction", "--no-progress"]
+    entrypoint: [ "composer", "--ansi", "--no-interaction", "--no-progress" ]
     profiles:
       - tools
     networks:
@@ -225,6 +207,7 @@ volumes:
   redis-data:
   minio-data:
   client_node_modules:
+
 
 networks:
   photon-network:
