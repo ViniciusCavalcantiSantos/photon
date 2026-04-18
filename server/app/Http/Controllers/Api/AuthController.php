@@ -58,7 +58,21 @@ class AuthController extends Controller
         summary: 'Lista os provedores de autenticação social disponíveis',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Provedores disponíveis')
+            new OA\Response(
+                response: 200,
+                description: 'Provedores disponíveis',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Available providers obtained successfully'),
+                        new OA\Property(
+                            property: 'providers',
+                            type: 'array',
+                            items: new OA\Items(type: 'string', example: 'google')
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function availableProviders()
@@ -78,7 +92,27 @@ class AuthController extends Controller
             new OA\PathParameter(name: 'provider', required: true, description: 'Nome do provedor (ex: google)', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'URL de redirecionamento gerada')
+            new OA\Response(
+                response: 200,
+                description: 'URL de redirecionamento gerada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Url obtained successfully'),
+                        new OA\Property(property: 'url', type: 'string', format: 'uri')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 400,
+                description: 'Provedor inválido',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Provider not supported')
+                    ]
+                )
+            )
         ]
     )]
     public function redirectToProvider($provider)
@@ -226,7 +260,16 @@ class AuthController extends Controller
         summary: 'Envia o código de verificação para o email',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Código enviado')
+            new OA\Response(
+                response: 200,
+                description: 'Código enviado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Code sent successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function sendCode(Request $request)
@@ -273,7 +316,16 @@ class AuthController extends Controller
         summary: 'Envia o link de recuperação de senha',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Link enviado com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Link enviado com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Code sent successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function sendRecoveryLink(Request $request)
@@ -321,7 +373,16 @@ class AuthController extends Controller
         summary: 'Valida o token de recuperação de senha',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Token válido')
+            new OA\Response(
+                response: 200,
+                description: 'Token válido',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Token validated successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function validateRecoveryToken(Request $request)
@@ -371,7 +432,16 @@ class AuthController extends Controller
         summary: 'Altera a senha do usuário',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Senha alterada')
+            new OA\Response(
+                response: 200,
+                description: 'Senha alterada',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Your password was successfully changed')
+                    ]
+                )
+            )
         ]
     )]
     public function changePassword(Request $request)
@@ -424,7 +494,16 @@ class AuthController extends Controller
         summary: 'Confirma o código enviado para o email',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Código confirmado')
+            new OA\Response(
+                response: 200,
+                description: 'Código confirmado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Email verified successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function confirmCode(Request $request)
@@ -504,7 +583,18 @@ class AuthController extends Controller
         summary: 'Registra um novo usuário',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Usuário registrado')
+            new OA\Response(
+                response: 200,
+                description: 'Usuário registrado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Registration completed successfully'),
+                        new OA\Property(property: 'user', ref: '#/components/schemas/User'),
+                        new OA\Property(property: 'token', type: 'string', nullable: true, example: '1|tokenstring')
+                    ]
+                )
+            )
         ]
     )]
     public function register(Request $request): JsonResponse
@@ -606,7 +696,18 @@ class AuthController extends Controller
         summary: 'Realiza login na aplicação',
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Login efetuado com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Login efetuado com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Login successfully'),
+                        new OA\Property(property: 'user', ref: '#/components/schemas/User'),
+                        new OA\Property(property: 'token', type: 'string', nullable: true, example: '1|tokenstring')
+                    ]
+                )
+            )
         ]
     )]
     public function login(Request $request): JsonResponse
@@ -681,7 +782,17 @@ class AuthController extends Controller
         security: [['sanctum' => []]],
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Successful response')
+            new OA\Response(
+                response: 200,
+                description: 'Successful response',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'User successfully obtained'),
+                        new OA\Property(property: 'user', ref: '#/components/schemas/User')
+                    ]
+                )
+            )
         ]
     )]
     public function me(Request $request): JsonResponse
@@ -699,7 +810,16 @@ class AuthController extends Controller
         security: [['sanctum' => []]],
         tags: ['Auth'],
         responses: [
-            new OA\Response(response: 200, description: 'Logout efetuado com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Logout efetuado com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Logout successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function logout(Request $request): \Illuminate\Http\JsonResponse

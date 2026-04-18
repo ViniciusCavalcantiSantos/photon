@@ -24,7 +24,12 @@ class ImageController extends Controller
             new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Stream da imagem')
+            new OA\Response(
+                response: 200,
+                description: 'Stream da imagem',
+                content: new OA\MediaType(mediaType: 'application/octet-stream')
+            ),
+            new OA\Response(response: 404, description: 'Não encontrado')
         ]
     )]
     public function show(Request $request, Image $image): StreamedResponse
@@ -67,7 +72,11 @@ class ImageController extends Controller
             new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Download da imagem')
+            new OA\Response(
+                response: 200,
+                description: 'Download da imagem',
+                content: new OA\MediaType(mediaType: 'application/octet-stream')
+            )
         ]
     )]
     public function download(Request $request, Image $image)
@@ -89,7 +98,17 @@ class ImageController extends Controller
             new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Metadados recuperados')
+            new OA\Response(
+                response: 200,
+                description: 'Metadados recuperados',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Event images retrieved'),
+                        new OA\Property(property: 'metadata', ref: '#/components/schemas/ImageMeta')
+                    ]
+                )
+            )
         ]
     )]
     public function metadata(Image $image)
@@ -113,7 +132,21 @@ class ImageController extends Controller
             new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Clientes recuperados')
+            new OA\Response(
+                response: 200,
+                description: 'Clientes recuperados',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client on image retrieved successfully'),
+                        new OA\Property(
+                            property: 'clients',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Client')
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function clientOnImage(Image $image)
@@ -137,7 +170,17 @@ class ImageController extends Controller
             new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Recorte obtido')
+            new OA\Response(
+                response: 200,
+                description: 'Recorte obtido',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client on image retrieved successfully'),
+                        new OA\Property(property: 'faceMatch', ref: '#/components/schemas/FaceCropMatch')
+                    ]
+                )
+            )
         ]
     )]
     public function getClientCrop(Image $image, Client $client)
@@ -161,7 +204,26 @@ class ImageController extends Controller
             new OA\PathParameter(name: 'image', required: true, description: 'ID da imagem', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Imagem removida')
+            new OA\Response(
+                response: 200,
+                description: 'Imagem removida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Image deleted')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: 'Erro',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Could not perform action')
+                    ]
+                )
+            )
         ]
     )]
     public function destroy(Image $image)

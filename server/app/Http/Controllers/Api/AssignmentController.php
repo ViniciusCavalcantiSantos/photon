@@ -33,8 +33,26 @@ class AssignmentController extends Controller
             )
         ),
         responses: [
-            new OA\Response(response: 200, description: 'Atribuições atualizadas'),
-            new OA\Response(response: 422, description: 'Erro de validação')
+            new OA\Response(
+                response: 200,
+                description: 'Atribuições atualizadas',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Assignments updated')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Erro de validação',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'The selected event was not found in the system')
+                    ]
+                )
+            )
         ]
     )]
     public function store(Request $request, Client $client)
@@ -110,8 +128,26 @@ class AssignmentController extends Controller
             )
         ),
         responses: [
-            new OA\Response(response: 200, description: 'Atribuições atualizadas em lote'),
-            new OA\Response(response: 422, description: 'Erro de validação')
+            new OA\Response(
+                response: 200,
+                description: 'Atribuições atualizadas em lote',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Assignments updated')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Erro de validação',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'The selected client was not found in the system')
+                    ]
+                )
+            )
         ]
     )]
     public function storeBulk(Request $request)
@@ -178,8 +214,26 @@ class AssignmentController extends Controller
             )
         ),
         responses: [
-            new OA\Response(response: 200, description: 'Atribuições removidas em lote'),
-            new OA\Response(response: 422, description: 'Erro de validação')
+            new OA\Response(
+                response: 200,
+                description: 'Atribuições removidas em lote',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Assignments updated')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Erro de validação',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'The selected client was not found in the system')
+                    ]
+                )
+            )
         ]
     )]
     public function destroyBulk(Request $request)
@@ -223,7 +277,21 @@ class AssignmentController extends Controller
             new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Atribuições recuperadas com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Atribuições recuperadas com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Assignments retrieved'),
+                        new OA\Property(
+                            property: 'assignments',
+                            type: 'array',
+                            items: new OA\Items(type: 'integer', example: 1)
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function show(Client $client)

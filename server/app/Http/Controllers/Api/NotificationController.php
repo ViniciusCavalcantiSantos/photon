@@ -18,7 +18,17 @@ class NotificationController extends Controller
         security: [['sanctum' => []]],
         tags: ['Notifications'],
         responses: [
-            new OA\Response(response: 200, description: 'Ticket obtido com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Ticket obtido com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Ticket obtained successfully'),
+                        new OA\Property(property: 'ticket', type: 'string', format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000')
+                    ]
+                )
+            )
         ]
     )]
     public function getSseTicket(Request $request)
@@ -41,7 +51,33 @@ class NotificationController extends Controller
         security: [['sanctum' => []]],
         tags: ['Notifications'],
         responses: [
-            new OA\Response(response: 200, description: 'Notificações obtidas com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Notificações obtidas com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Notifications obtained successfully'),
+                        new OA\Property(
+                            property: 'notifications',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Notification')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total', type: 'integer', example: 100),
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 10),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 10),
+                                new OA\Property(property: 'from', type: 'integer', example: 1),
+                                new OA\Property(property: 'to', type: 'integer', example: 10),
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function index(Request $request)
@@ -62,7 +98,16 @@ class NotificationController extends Controller
             new OA\PathParameter(name: 'id', required: true, description: 'ID da notificação', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Notificação marcada como lida')
+            new OA\Response(
+                response: 200,
+                description: 'Notificação marcada como lida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Notifications updated successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function read(Request $request, $id)
@@ -82,7 +127,16 @@ class NotificationController extends Controller
         security: [['sanctum' => []]],
         tags: ['Notifications'],
         responses: [
-            new OA\Response(response: 200, description: 'Notificações atualizadas com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Notificações atualizadas com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Notifications updated successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function readAll(Request $request)
@@ -103,7 +157,16 @@ class NotificationController extends Controller
             new OA\PathParameter(name: 'id', required: true, description: 'ID da notificação', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Notificação removida com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Notificação removida com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Notification dismissed successfully')
+                    ]
+                )
+            )
         ]
     )]
     public function dismiss(Request $request, $id)
@@ -122,7 +185,11 @@ class NotificationController extends Controller
         security: [['sanctum' => []]],
         tags: ['Notifications'],
         responses: [
-            new OA\Response(response: 200, description: 'Stream estabelecida')
+            new OA\Response(
+                response: 200,
+                description: 'Stream estabelecida',
+                content: new OA\MediaType(mediaType: 'text/event-stream')
+            )
         ]
     )]
     public function stream(Request $request)

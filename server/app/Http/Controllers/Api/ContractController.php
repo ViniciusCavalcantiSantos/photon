@@ -27,7 +27,33 @@ class ContractController extends Controller
             new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Contratos retornados')
+            new OA\Response(
+                response: 200,
+                description: 'Contratos retornados',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Contracts retrieved successfully'),
+                        new OA\Property(
+                            property: 'contracts',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Contract')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total', type: 'integer', example: 100),
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 10),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 15),
+                                new OA\Property(property: 'from', type: 'integer', example: 1),
+                                new OA\Property(property: 'to', type: 'integer', example: 15),
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function index(Request $request)
@@ -70,8 +96,27 @@ class ContractController extends Controller
         security: [['sanctum' => []]],
         tags: ['Contracts'],
         responses: [
-            new OA\Response(response: 200, description: 'Contrato criado'),
-            new OA\Response(response: 422, description: 'Erro de validação')
+            new OA\Response(
+                response: 200,
+                description: 'Contrato criado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Contract created'),
+                        new OA\Property(property: 'contract', ref: '#/components/schemas/Contract')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: 'Erro',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Could not perform action')
+                    ]
+                )
+            )
         ]
     )]
     public function store(ContractRequest $request, ContractService $contractService)
@@ -106,7 +151,17 @@ class ContractController extends Controller
             new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Detalhes do contrato')
+            new OA\Response(
+                response: 200,
+                description: 'Detalhes do contrato',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Contract retrieved'),
+                        new OA\Property(property: 'contract', ref: '#/components/schemas/Contract')
+                    ]
+                )
+            )
         ]
     )]
     public function show(Contract $contract)
@@ -132,7 +187,27 @@ class ContractController extends Controller
             new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Contrato atualizado')
+            new OA\Response(
+                response: 200,
+                description: 'Contrato atualizado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Contract updated'),
+                        new OA\Property(property: 'contract', ref: '#/components/schemas/Contract')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: 'Erro',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Could not perform action')
+                    ]
+                )
+            )
         ]
     )]
     public function update(ContractRequest $request, Contract $contract, ContractService $contractService)
@@ -169,7 +244,16 @@ class ContractController extends Controller
             new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Contrato deletado')
+            new OA\Response(
+                response: 200,
+                description: 'Contrato deletado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Contract deleted')
+                    ]
+                )
+            )
         ]
     )]
     public function destroy(Contract $contract)
@@ -195,7 +279,27 @@ class ContractController extends Controller
         security: [['sanctum' => []]],
         tags: ['Contracts'],
         responses: [
-            new OA\Response(response: 200, description: 'Categorias retornadas')
+            new OA\Response(
+                response: 200,
+                description: 'Categorias retornadas',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'All categories obtained'),
+                        new OA\Property(
+                            property: 'categories',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['name', 'slug'],
+                                properties: [
+                                    new OA\Property(property: 'name', type: 'string', example: 'Formatura Universitaria'),
+                                    new OA\Property(property: 'slug', type: 'string', example: 'university_graduation')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function getCategories()

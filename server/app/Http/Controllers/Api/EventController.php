@@ -27,7 +27,33 @@ class EventController extends Controller
             new OA\QueryParameter(name: 'with_contract', required: false, description: 'Carrega o contrato relacionado', schema: new OA\Schema(type: 'boolean'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Eventos retornados')
+            new OA\Response(
+                response: 200,
+                description: 'Eventos retornados',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Events retrieved successfully'),
+                        new OA\Property(
+                            property: 'events',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Event')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total', type: 'integer', example: 100),
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 10),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 15),
+                                new OA\Property(property: 'from', type: 'integer', example: 1),
+                                new OA\Property(property: 'to', type: 'integer', example: 15),
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function index(Request $request)
@@ -91,7 +117,27 @@ class EventController extends Controller
         security: [['sanctum' => []]],
         tags: ['Events'],
         responses: [
-            new OA\Response(response: 200, description: 'Evento criado')
+            new OA\Response(
+                response: 200,
+                description: 'Evento criado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Event created'),
+                        new OA\Property(property: 'event', ref: '#/components/schemas/Event')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: 'Erro',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Could not perform action')
+                    ]
+                )
+            )
         ]
     )]
     public function store(EventRequest $request, EventService $eventService)
@@ -123,7 +169,17 @@ class EventController extends Controller
             new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Detalhes do evento')
+            new OA\Response(
+                response: 200,
+                description: 'Detalhes do evento',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Event retrieved'),
+                        new OA\Property(property: 'event', ref: '#/components/schemas/Event')
+                    ]
+                )
+            )
         ]
     )]
     public function show(Request $request, Event $event)
@@ -163,7 +219,17 @@ class EventController extends Controller
             new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Evento atualizado')
+            new OA\Response(
+                response: 200,
+                description: 'Evento atualizado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Event updated'),
+                        new OA\Property(property: 'event', ref: '#/components/schemas/Event')
+                    ]
+                )
+            )
         ]
     )]
     public function update(EventRequest $request, EventService $eventService, Event $event)
@@ -196,7 +262,16 @@ class EventController extends Controller
             new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Evento removido')
+            new OA\Response(
+                response: 200,
+                description: 'Evento removido',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Event deleted')
+                    ]
+                )
+            )
         ]
     )]
     public function destroy(Event $event)
@@ -225,7 +300,27 @@ class EventController extends Controller
             new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Tipos de evento retornados')
+            new OA\Response(
+                response: 200,
+                description: 'Tipos de evento retornados',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Event types retrieved'),
+                        new OA\Property(
+                            property: 'eventTypes',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['id', 'name'],
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'name', type: 'string', example: 'Formatura')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function getEventTypes(\Request $request, Contract $contract)
@@ -258,7 +353,21 @@ class EventController extends Controller
             new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Imagens retornadas')
+            new OA\Response(
+                response: 200,
+                description: 'Imagens retornadas',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Event images retrieved'),
+                        new OA\Property(
+                            property: 'images',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Image')
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function getImages(Event $event)

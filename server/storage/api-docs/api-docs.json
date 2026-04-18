@@ -33,7 +33,31 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Atribuições recuperadas com sucesso"
+                        "description": "Atribuições recuperadas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments retrieved"
+                                        },
+                                        "assignments": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer",
+                                                "example": 1
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -81,10 +105,44 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Atribuições atualizadas"
+                        "description": "Atribuições atualizadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Erro de validação"
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected event was not found in the system"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -130,10 +188,44 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Atribuições atualizadas em lote"
+                        "description": "Atribuições atualizadas em lote",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Erro de validação"
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected client was not found in the system"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -177,10 +269,44 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Atribuições removidas em lote"
+                        "description": "Atribuições removidas em lote",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Erro de validação"
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected client was not found in the system"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -199,7 +325,31 @@
                 "operationId": "522e21daa0a96ab89de410f1219423a7",
                 "responses": {
                     "200": {
-                        "description": "Provedores disponíveis"
+                        "description": "Provedores disponíveis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Available providers obtained successfully"
+                                        },
+                                        "providers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "google"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -224,7 +374,48 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "URL de redirecionamento gerada"
+                        "description": "URL de redirecionamento gerada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Url obtained successfully"
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Provedor inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Provider not supported"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -263,7 +454,24 @@
                 "operationId": "0f2ff5da3d5883ef973571776bfcbc27",
                 "responses": {
                     "200": {
-                        "description": "Código enviado"
+                        "description": "Código enviado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code sent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -277,7 +485,24 @@
                 "operationId": "f9cec95b81add2be08c454123bccd664",
                 "responses": {
                     "200": {
-                        "description": "Link enviado com sucesso"
+                        "description": "Link enviado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code sent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -291,7 +516,24 @@
                 "operationId": "ac946ba9f9c37e55ef77fd4bd0a2bdad",
                 "responses": {
                     "200": {
-                        "description": "Token válido"
+                        "description": "Token válido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token validated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -305,7 +547,24 @@
                 "operationId": "58e67cdbde52513b62902b05abf9abcb",
                 "responses": {
                     "200": {
-                        "description": "Senha alterada"
+                        "description": "Senha alterada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your password was successfully changed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -319,7 +578,24 @@
                 "operationId": "3445143da2aa0898b49d6847a0811e34",
                 "responses": {
                     "200": {
-                        "description": "Código confirmado"
+                        "description": "Código confirmado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email verified successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -333,7 +609,32 @@
                 "operationId": "c7bb21a0d87049e161b8e4c9b0d909f2",
                 "responses": {
                     "200": {
-                        "description": "Usuário registrado"
+                        "description": "Usuário registrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registration completed successfully"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|tokenstring",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -347,7 +648,32 @@
                 "operationId": "dd51a484b7fa0f97c7680fdbde14cf5f",
                 "responses": {
                     "200": {
-                        "description": "Login efetuado com sucesso"
+                        "description": "Login efetuado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successfully"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|tokenstring",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -362,7 +688,27 @@
                 "operationId": "8367feff40ba10e43187792cad3132c1",
                 "responses": {
                     "200": {
-                        "description": "Successful response"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User successfully obtained"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -381,7 +727,24 @@
                 "operationId": "ad65cbbd4e9f201619eae184a5961a98",
                 "responses": {
                     "200": {
-                        "description": "Logout efetuado com sucesso"
+                        "description": "Logout efetuado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -421,7 +784,59 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Clientes retornados"
+                        "description": "Clientes retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Clients retrieved successfully"
+                                        },
+                                        "clients": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Client"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -439,10 +854,47 @@
                 "operationId": "f909473745c1a1d469e0c5a5b54682b8",
                 "responses": {
                     "200": {
-                        "description": "Cliente criado"
+                        "description": "Cliente criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client created"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "422": {
-                        "description": "Erro de validação"
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -472,7 +924,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cliente cadastrado com sucesso"
+                        "description": "Cliente cadastrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client created"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -498,7 +970,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cliente recuperado"
+                        "description": "Cliente recuperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client retrieved"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -527,7 +1019,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cliente atualizado"
+                        "description": "Cliente atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client updated"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -556,7 +1068,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Cliente removido"
+                        "description": "Cliente removido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -575,7 +1104,28 @@
                 "operationId": "5c48f879c305b476dcef4d91d8971b4e",
                 "responses": {
                     "201": {
-                        "description": "Link criado"
+                        "description": "Link criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Link created"
+                                        },
+                                        "link_id": {
+                                            "type": "string",
+                                            "example": "MT1="
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -605,7 +1155,53 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Informações do link"
+                        "description": "Informações do link",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "link retrieved successfully"
+                                        },
+                                        "linkInfo": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "MT1="
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Cadastro Formatura"
+                                                },
+                                                "maxRegisters": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "requireAddress": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "requireGuardianIfMinor": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "defaultLanguage": {
+                                                    "type": "string",
+                                                    "example": "BR"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -645,7 +1241,59 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Contratos retornados"
+                        "description": "Contratos retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contracts retrieved successfully"
+                                        },
+                                        "contracts": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Contract"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -663,10 +1311,47 @@
                 "operationId": "73a91076ec6423051d986a4149fa8d87",
                 "responses": {
                     "200": {
-                        "description": "Contrato criado"
+                        "description": "Contrato criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract created"
+                                        },
+                                        "contract": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "422": {
-                        "description": "Erro de validação"
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -697,7 +1382,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalhes do contrato"
+                        "description": "Detalhes do contrato",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract retrieved"
+                                        },
+                                        "contract": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -726,7 +1431,47 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Contrato atualizado"
+                        "description": "Contrato atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract updated"
+                                        },
+                                        "contract": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -755,7 +1500,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Contrato deletado"
+                        "description": "Contrato deletado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -774,7 +1536,44 @@
                 "operationId": "9ae8f03b8087b524a56f136ad022f86b",
                 "responses": {
                     "200": {
-                        "description": "Categorias retornadas"
+                        "description": "Categorias retornadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All categories obtained"
+                                        },
+                                        "categories": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "name",
+                                                    "slug"
+                                                ],
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Formatura Universitaria"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "university_graduation"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -822,7 +1621,59 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Eventos retornados"
+                        "description": "Eventos retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Events retrieved successfully"
+                                        },
+                                        "events": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -839,7 +1690,47 @@
                 "operationId": "e958e1c6c275d5f9b7ebcd837903d0ef",
                 "responses": {
                     "200": {
-                        "description": "Evento criado"
+                        "description": "Evento criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event created"
+                                        },
+                                        "event": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -869,7 +1760,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalhes do evento"
+                        "description": "Detalhes do evento",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event retrieved"
+                                        },
+                                        "event": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -897,7 +1808,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Evento atualizado"
+                        "description": "Evento atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event updated"
+                                        },
+                                        "event": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -925,7 +1856,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Evento removido"
+                        "description": "Evento removido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -955,7 +1903,44 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Tipos de evento retornados"
+                        "description": "Tipos de evento retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event types retrieved"
+                                        },
+                                        "eventTypes": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "id",
+                                                    "name"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Formatura"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -985,7 +1970,30 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Imagens retornadas"
+                        "description": "Imagens retornadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event images retrieved"
+                                        },
+                                        "images": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Image"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1004,7 +2012,67 @@
                 "operationId": "9a3ee6c95e56dae0639e7b7053aa5877",
                 "responses": {
                     "200": {
-                        "description": "Foto salva com sucesso"
+                        "description": "Foto salva com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Photo uploaded"
+                                        },
+                                        "image": {
+                                            "$ref": "#/components/schemas/Image"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Evento não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1034,7 +2102,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Stream da imagem"
+                        "description": "Stream da imagem",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Não encontrado"
                     }
                 }
             },
@@ -1057,7 +2131,44 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Imagem removida"
+                        "description": "Imagem removida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Image deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1087,7 +2198,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Download da imagem"
+                        "description": "Download da imagem",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
                     }
                 }
             }
@@ -1112,7 +2226,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Metadados recuperados"
+                        "description": "Metadados recuperados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event images retrieved"
+                                        },
+                                        "metadata": {
+                                            "$ref": "#/components/schemas/ImageMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1137,7 +2271,30 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Clientes recuperados"
+                        "description": "Clientes recuperados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client on image retrieved successfully"
+                                        },
+                                        "clients": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Client"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1171,7 +2328,27 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Recorte obtido"
+                        "description": "Recorte obtido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client on image retrieved successfully"
+                                        },
+                                        "faceMatch": {
+                                            "$ref": "#/components/schemas/FaceCropMatch"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1185,7 +2362,44 @@
                 "operationId": "de7461346fbefe8cd459142cd740618d",
                 "responses": {
                     "200": {
-                        "description": "Lista de países obtida"
+                        "description": "Lista de países obtida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All countries obtained"
+                                        },
+                                        "countries": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "value",
+                                                    "label"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "BR"
+                                                    },
+                                                    "label": {
+                                                        "type": "string",
+                                                        "example": "🇧🇷 Brasil (Brasil)"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1210,10 +2424,64 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Lista de estados obtida"
+                        "description": "Lista de estados obtida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All states obtained"
+                                        },
+                                        "states": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "value",
+                                                    "label"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "SP"
+                                                    },
+                                                    "label": {
+                                                        "type": "string",
+                                                        "example": "São Paulo"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "País não encontrado"
+                        "description": "País não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1247,10 +2515,64 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Lista de cidades obtida"
+                        "description": "Lista de cidades obtida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All cities obtained"
+                                        },
+                                        "cities": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "value",
+                                                    "label"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "São Paulo"
+                                                    },
+                                                    "label": {
+                                                        "type": "string",
+                                                        "example": "São Paulo"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "País ou estado não encontrado"
+                        "description": "País ou estado não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1264,7 +2586,29 @@
                 "operationId": "4833c7f6d950b93462606585b7e9d134",
                 "responses": {
                     "200": {
-                        "description": "Ticket obtido com sucesso"
+                        "description": "Ticket obtido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ticket obtained successfully"
+                                        },
+                                        "ticket": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "example": "123e4567-e89b-12d3-a456-426614174000"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1283,7 +2627,59 @@
                 "operationId": "6d56a555955089a73fdf3f7229e8ead8",
                 "responses": {
                     "200": {
-                        "description": "Notificações obtidas com sucesso"
+                        "description": "Notificações obtidas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notifications obtained successfully"
+                                        },
+                                        "notifications": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Notification"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1313,7 +2709,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Notificação marcada como lida"
+                        "description": "Notificação marcada como lida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notifications updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1332,7 +2745,24 @@
                 "operationId": "a938b29776d5df701355702f21a24149",
                 "responses": {
                     "200": {
-                        "description": "Notificações atualizadas com sucesso"
+                        "description": "Notificações atualizadas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notifications updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1362,7 +2792,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Notificação removida com sucesso"
+                        "description": "Notificação removida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notification dismissed successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1381,7 +2828,10 @@
                 "operationId": "a0dd9a008b949544c5284d565026bf7d",
                 "responses": {
                     "200": {
-                        "description": "Stream estabelecida"
+                        "description": "Stream estabelecida",
+                        "content": {
+                            "text/event-stream": {}
+                        }
                     }
                 },
                 "security": [

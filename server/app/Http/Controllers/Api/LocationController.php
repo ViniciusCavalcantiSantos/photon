@@ -21,7 +21,27 @@ class LocationController extends Controller
         summary: 'Obtém a lista de países',
         tags: ['Locations'],
         responses: [
-            new OA\Response(response: 200, description: 'Lista de países obtida')
+            new OA\Response(
+                response: 200,
+                description: 'Lista de países obtida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'All countries obtained'),
+                        new OA\Property(
+                            property: 'countries',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['value', 'label'],
+                                properties: [
+                                    new OA\Property(property: 'value', type: 'string', example: 'BR'),
+                                    new OA\Property(property: 'label', type: 'string', example: '🇧🇷 Brasil (Brasil)')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function getCountries()
@@ -68,8 +88,37 @@ class LocationController extends Controller
             new OA\PathParameter(name: 'country_cca2', required: true, description: 'Código CCA2 do país (ex: BR)', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Lista de estados obtida'),
-            new OA\Response(response: 404, description: 'País não encontrado')
+            new OA\Response(
+                response: 200,
+                description: 'Lista de estados obtida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'All states obtained'),
+                        new OA\Property(
+                            property: 'states',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['value', 'label'],
+                                properties: [
+                                    new OA\Property(property: 'value', type: 'string', example: 'SP'),
+                                    new OA\Property(property: 'label', type: 'string', example: 'São Paulo')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'País não encontrado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Not Found')
+                    ]
+                )
+            )
         ]
     )]
     public function getStates($country_cca2)
@@ -117,8 +166,37 @@ class LocationController extends Controller
             new OA\PathParameter(name: 'state_code', required: true, description: 'Código do estado (ex: SP)', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Lista de cidades obtida'),
-            new OA\Response(response: 404, description: 'País ou estado não encontrado')
+            new OA\Response(
+                response: 200,
+                description: 'Lista de cidades obtida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'All cities obtained'),
+                        new OA\Property(
+                            property: 'cities',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['value', 'label'],
+                                properties: [
+                                    new OA\Property(property: 'value', type: 'string', example: 'São Paulo'),
+                                    new OA\Property(property: 'label', type: 'string', example: 'São Paulo')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'País ou estado não encontrado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Not Found')
+                    ]
+                )
+            )
         ]
     )]
     public function getCities($country_cca2, $state_code)

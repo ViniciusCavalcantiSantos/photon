@@ -31,7 +31,33 @@ class ClientController extends Controller
             new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Clientes retornados')
+            new OA\Response(
+                response: 200,
+                description: 'Clientes retornados',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Clients retrieved successfully'),
+                        new OA\Property(
+                            property: 'clients',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Client')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total', type: 'integer', example: 100),
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 10),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 15),
+                                new OA\Property(property: 'from', type: 'integer', example: 1),
+                                new OA\Property(property: 'to', type: 'integer', example: 15),
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function index(Request $request)
@@ -74,8 +100,27 @@ class ClientController extends Controller
         security: [['sanctum' => []]],
         tags: ['Clients'],
         responses: [
-            new OA\Response(response: 200, description: 'Cliente criado'),
-            new OA\Response(response: 422, description: 'Erro de validação')
+            new OA\Response(
+                response: 200,
+                description: 'Cliente criado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client created'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: 'Erro',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Could not perform action')
+                    ]
+                )
+            )
         ]
     )]
     public function store(ClientRequest $request, ClientService $clientService)
@@ -108,7 +153,17 @@ class ClientController extends Controller
             new OA\PathParameter(name: 'linkId', required: true, description: 'ID codificado em base64 do link', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Cliente cadastrado com sucesso')
+            new OA\Response(
+                response: 200,
+                description: 'Cliente cadastrado com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client created'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            )
         ]
     )]
     public function storePublic(string $linkIdEncoded, ClientPublicRequest $request, ClientService $clientService)
@@ -156,7 +211,17 @@ class ClientController extends Controller
             new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Cliente recuperado')
+            new OA\Response(
+                response: 200,
+                description: 'Cliente recuperado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client retrieved'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            )
         ]
     )]
     public function show(Client $client)
@@ -183,7 +248,17 @@ class ClientController extends Controller
             new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Cliente atualizado')
+            new OA\Response(
+                response: 200,
+                description: 'Cliente atualizado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client updated'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            )
         ]
     )]
     public function update(ClientRequest $request, Client $client, ClientService $clientService)
@@ -220,7 +295,16 @@ class ClientController extends Controller
             new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Cliente removido')
+            new OA\Response(
+                response: 200,
+                description: 'Cliente removido',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client deleted')
+                    ]
+                )
+            )
         ]
     )]
     public function destroy(ClientService $clientService, Client $client)
@@ -248,7 +332,17 @@ class ClientController extends Controller
         security: [['sanctum' => []]],
         tags: ['Clients'],
         responses: [
-            new OA\Response(response: 201, description: 'Link criado')
+            new OA\Response(
+                response: 201,
+                description: 'Link criado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Link created'),
+                        new OA\Property(property: 'link_id', type: 'string', example: 'MT1=')
+                    ]
+                )
+            )
         ]
     )]
     public function generateLink(Request $request)
@@ -300,7 +394,28 @@ class ClientController extends Controller
             new OA\PathParameter(name: 'linkId', required: true, description: 'ID codificado em base64', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Informações do link')
+            new OA\Response(
+                response: 200,
+                description: 'Informações do link',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'link retrieved successfully'),
+                        new OA\Property(
+                            property: 'linkInfo',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'string', example: 'MT1='),
+                                new OA\Property(property: 'title', type: 'string', example: 'Cadastro Formatura'),
+                                new OA\Property(property: 'maxRegisters', type: 'integer', example: 100),
+                                new OA\Property(property: 'requireAddress', type: 'boolean', example: true),
+                                new OA\Property(property: 'requireGuardianIfMinor', type: 'boolean', example: true),
+                                new OA\Property(property: 'defaultLanguage', type: 'string', example: 'BR')
+                            ]
+                        )
+                    ]
+                )
+            )
         ]
     )]
     public function getLinkInfo($linkIdEncoded)
