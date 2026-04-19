@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Vinmo API",
-        "description": "Complete API documentation for Vinmo. For Swagger authentication, call `/api/auth/login` or `/api/auth/register` with `type=token`, then authorize with `Bearer <token>`.",
+        "title": "Photon API",
+        "description": "Complete API documentation for Photon. For Swagger authentication, call `/api/auth/login` or `/api/auth/register` with `type=token`, then authorize with `Bearer <token>`.",
         "version": "1.0.0"
     },
     "servers": [

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 /**
  * @OA\Info(
  *     version="1.0.0",
- *     title="Vinmo API",
- *     description="Complete API documentation for Vinmo. For Swagger authentication, call `/api/auth/login` or `/api/auth/register` with `type=token`, then authorize with `Bearer <token>`."
+ *     title="Photon API",
+ *     description="Complete API documentation for Photon. For Swagger authentication, call `/api/auth/login` or `/api/auth/register` with `type=token`, then authorize with `Bearer <token>`."
  * )
  *
  * @OA\Server(
