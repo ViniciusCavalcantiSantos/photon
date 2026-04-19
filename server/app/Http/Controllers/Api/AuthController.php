@@ -805,7 +805,7 @@ class AuthController extends Controller
 
     #[OA\Get(
         path: '/api/me',
-        summary: 'Current authenticated user',
+        summary: 'Usuário autenticado',
         description: 'Retorna o usuário autenticado.',
         security: [['sanctum' => []]],
         tags: ['Auth'],
