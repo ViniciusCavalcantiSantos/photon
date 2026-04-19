@@ -1,8 +1,8 @@
 import apiFetch from "@/lib/apiFetch";
-import {FaceCropMatch} from "@/types/FaceCrop";
+import type { FetchClientCropResponse } from "@/types/api-contracts";
 
 export async function fetchClientCrop(imageId: string, clientId: number) {
-  return await apiFetch<{ faceMatch: FaceCropMatch }>(`/images/${imageId}/clients/${clientId}/crop`, {
+  return await apiFetch<FetchClientCropResponse>(`/images/${imageId}/clients/${clientId}/crop`, {
     method: "GET",
   });
 }

@@ -1,5 +1,5 @@
 import apiFetch from "@/lib/apiFetch";
-import User from "@/types/User";
+import type { LoginResponse } from "@/types/api-contracts";
 
 export async function login(email: string, password: string, remember_me: boolean) {
   let baseURL = undefined;
@@ -9,7 +9,7 @@ export async function login(email: string, password: string, remember_me: boolea
     path = "/api/auth/login"
   }
 
-  return await apiFetch<{ user: User }>(path, {
+  return await apiFetch<LoginResponse>(path, {
     method: "POST",
     body: JSON.stringify({ email, password, remember_me }),
     baseURL: baseURL

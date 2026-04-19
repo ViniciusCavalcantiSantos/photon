@@ -1,11 +1,7 @@
 import {UploadFile} from "antd";
 import {objectToFormData} from "@/lib/objectToFormData";
 import apiFetch from "@/lib/apiFetch";
-import Client from "@/types/Client";
-
-export interface UpdateClientResponse {
-  client: Client
-}
+import type { UpdateClientResponse } from "@/types/api-contracts";
 
 export async function updateClient(id: number, values: any, profile: UploadFile) {
   const formData = objectToFormData(values)

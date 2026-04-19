@@ -753,7 +753,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Current authenticated user",
+                "summary": "Usuário autenticado",
                 "description": "Retorna o usuário autenticado.",
                 "operationId": "8367feff40ba10e43187792cad3132c1",
                 "responses": {
