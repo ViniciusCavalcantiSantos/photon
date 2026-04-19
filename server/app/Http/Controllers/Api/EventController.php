@@ -116,6 +116,10 @@ class EventController extends Controller
         summary: 'Cria um novo evento',
         security: [['sanctum' => []]],
         tags: ['Events'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/EventCreateRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -166,7 +170,8 @@ class EventController extends Controller
         security: [['sanctum' => []]],
         tags: ['Events'],
         parameters: [
-            new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
+            new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'with_contract', required: false, description: 'Carrega o contrato relacionado', schema: new OA\Schema(type: 'boolean'))
         ],
         responses: [
             new OA\Response(
@@ -218,6 +223,10 @@ class EventController extends Controller
         parameters: [
             new OA\PathParameter(name: 'event', required: true, description: 'ID do evento', schema: new OA\Schema(type: 'integer'))
         ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/EventUpdateRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,

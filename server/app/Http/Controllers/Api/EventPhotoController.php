@@ -17,6 +17,13 @@ class EventPhotoController extends Controller
         summary: 'Faz o upload de uma foto para o evento',
         security: [['sanctum' => []]],
         tags: ['EventPhotos'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/EventPhotoUploadRequest')
+            )
+        ),
         responses: [
             new OA\Response(
                 response: 200,

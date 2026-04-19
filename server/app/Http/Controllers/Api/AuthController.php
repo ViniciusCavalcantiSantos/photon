@@ -259,6 +259,10 @@ class AuthController extends Controller
         path: '/api/auth/send-code',
         summary: 'Envia o código de verificação para o email',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/AuthSendCodeRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -315,6 +319,10 @@ class AuthController extends Controller
         path: '/api/auth/send-recovery-link',
         summary: 'Envia o link de recuperação de senha',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/AuthSendRecoveryLinkRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -372,6 +380,10 @@ class AuthController extends Controller
         path: '/api/auth/validate-recovery-token',
         summary: 'Valida o token de recuperação de senha',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/AuthValidateRecoveryTokenRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -431,6 +443,10 @@ class AuthController extends Controller
         path: '/api/auth/change-password',
         summary: 'Altera a senha do usuário',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/AuthChangePasswordRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -493,6 +509,10 @@ class AuthController extends Controller
         path: '/api/auth/confirm-code',
         summary: 'Confirma o código enviado para o email',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/AuthConfirmCodeRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -582,6 +602,10 @@ class AuthController extends Controller
         path: '/api/auth/register',
         summary: 'Registra um novo usuário',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/AuthRegisterRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -695,6 +719,10 @@ class AuthController extends Controller
         path: '/api/auth/login',
         summary: 'Realiza login na aplicação',
         tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/AuthLoginRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,

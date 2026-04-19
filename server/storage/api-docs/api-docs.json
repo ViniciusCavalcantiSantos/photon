@@ -2,13 +2,13 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Vinmo API",
-        "description": "Documentação da API do Vinmo",
+        "description": "Complete API documentation for Vinmo. For Swagger authentication, call `/api/auth/login` or `/api/auth/register` with `type=token`, then authorize with `Bearer <token>`.",
         "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
-            "description": "Servidor local"
+            "url": "/",
+            "description": "Current application host"
         }
     ],
     "paths": {
@@ -452,6 +452,16 @@
                 ],
                 "summary": "Envia o código de verificação para o email",
                 "operationId": "0f2ff5da3d5883ef973571776bfcbc27",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthSendCodeRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Código enviado",
@@ -483,6 +493,16 @@
                 ],
                 "summary": "Envia o link de recuperação de senha",
                 "operationId": "f9cec95b81add2be08c454123bccd664",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthSendRecoveryLinkRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Link enviado com sucesso",
@@ -514,6 +534,16 @@
                 ],
                 "summary": "Valida o token de recuperação de senha",
                 "operationId": "ac946ba9f9c37e55ef77fd4bd0a2bdad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthValidateRecoveryTokenRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Token válido",
@@ -545,6 +575,16 @@
                 ],
                 "summary": "Altera a senha do usuário",
                 "operationId": "58e67cdbde52513b62902b05abf9abcb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthChangePasswordRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Senha alterada",
@@ -576,6 +616,16 @@
                 ],
                 "summary": "Confirma o código enviado para o email",
                 "operationId": "3445143da2aa0898b49d6847a0811e34",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthConfirmCodeRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Código confirmado",
@@ -607,6 +657,16 @@
                 ],
                 "summary": "Registra um novo usuário",
                 "operationId": "c7bb21a0d87049e161b8e4c9b0d909f2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegisterRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Usuário registrado",
@@ -646,6 +706,16 @@
                 ],
                 "summary": "Realiza login na aplicação",
                 "operationId": "dd51a484b7fa0f97c7680fdbde14cf5f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthLoginRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Login efetuado com sucesso",
@@ -852,6 +922,16 @@
                 "summary": "Cria um novo cliente",
                 "description": "Store a newly created resource in storage.",
                 "operationId": "f909473745c1a1d469e0c5a5b54682b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientFormRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Cliente criado",
@@ -922,6 +1002,16 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientPublicRegisterFormRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Cliente cadastrado com sucesso",
@@ -1017,6 +1107,16 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientUpdateFormRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Cliente atualizado",
@@ -1102,6 +1202,16 @@
                 ],
                 "summary": "Gera um link de cadastro público de clientes",
                 "operationId": "5c48f879c305b476dcef4d91d8971b4e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientGenerateLinkRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
                         "description": "Link criado",
@@ -1309,6 +1419,16 @@
                 "summary": "Cria um novo contrato",
                 "description": "Store a newly created resource in storage.",
                 "operationId": "73a91076ec6423051d986a4149fa8d87",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractCreateRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Contrato criado",
@@ -1429,6 +1549,16 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractUpdateRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Contrato atualizado",
@@ -1688,6 +1818,16 @@
                 ],
                 "summary": "Cria um novo evento",
                 "operationId": "e958e1c6c275d5f9b7ebcd837903d0ef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventCreateRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Evento criado",
@@ -1756,6 +1896,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "with_contract",
+                        "in": "query",
+                        "description": "Carrega o contrato relacionado",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -1806,6 +1955,16 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventUpdateRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Evento atualizado",
@@ -2010,6 +2169,16 @@
                 ],
                 "summary": "Faz o upload de uma foto para o evento",
                 "operationId": "9a3ee6c95e56dae0639e7b7053aa5877",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventPhotoUploadRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Foto salva com sucesso",
@@ -3747,53 +3916,1113 @@
                     }
                 },
                 "type": "object"
+            },
+            "PaginationMeta": {
+                "required": [
+                    "total",
+                    "current_page",
+                    "last_page",
+                    "per_page",
+                    "from",
+                    "to"
+                ],
+                "properties": {
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 15,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrorResponse": {
+                "required": [
+                    "status",
+                    "message",
+                    "errors"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "error"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "The email field is required."
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UnauthorizedResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "not_authenticated"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Usuário não autenticado."
+                    }
+                },
+                "type": "object"
+            },
+            "ForbiddenResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "forbidden"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Ação não autorizada."
+                    }
+                },
+                "type": "object"
+            },
+            "AuthSendCodeRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "type": {
+                        "description": "Use `token` when testing through Swagger and you want the follow-up auth flow to return a bearer token.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AuthSendRecoveryLinkRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthValidateRecoveryTokenRequest": {
+                "required": [
+                    "email",
+                    "token"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "token": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 64,
+                        "example": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthChangePasswordRequest": {
+                "required": [
+                    "email",
+                    "token",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "token": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 64,
+                        "example": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthConfirmCodeRequest": {
+                "required": [
+                    "email",
+                    "code"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 6,
+                        "minLength": 6,
+                        "example": "ABC123"
+                    },
+                    "type": {
+                        "description": "Use `token` when confirming the code for a token-based registration flow.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AuthRegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Vinicius"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "vinicius@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    },
+                    "type": {
+                        "description": "Use `token` to get a bearer token response that can be pasted into the Swagger Authorize dialog.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AuthLoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "vinicius@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret123"
+                    },
+                    "remember_me": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "device_name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "swagger-ui",
+                        "nullable": true
+                    },
+                    "type": {
+                        "description": "Use `token` in Swagger so login returns a Sanctum token. Then click Authorize and paste `Bearer <token>`.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientFormRequest": {
+                "required": [
+                    "name",
+                    "profile"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "CLI-0001",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "João dos Testes"
+                    },
+                    "profile": {
+                        "description": "Image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2010-03-25",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 98888-7777",
+                        "nullable": true
+                    },
+                    "inform_address": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "50000-000",
+                        "nullable": true
+                    },
+                    "street": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Rua das Flores",
+                        "nullable": true
+                    },
+                    "number": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "example": "123",
+                        "nullable": true
+                    },
+                    "neighborhood": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Centro",
+                        "nullable": true
+                    },
+                    "complement": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Apto 201",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR",
+                        "nullable": true
+                    },
+                    "inform_guardian": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "guardian_name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "Maria da Silva",
+                        "nullable": true
+                    },
+                    "guardian_type": {
+                        "type": "string",
+                        "enum": [
+                            "mother",
+                            "father",
+                            "grandmother",
+                            "grandfather",
+                            "uncle",
+                            "aunt",
+                            "sister",
+                            "brother",
+                            "godmother",
+                            "godfather",
+                            "other"
+                        ],
+                        "example": "mother",
+                        "nullable": true
+                    },
+                    "guardian_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 60,
+                        "example": "mae@example.com",
+                        "nullable": true
+                    },
+                    "guardian_phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 97777-6666",
+                        "nullable": true
+                    },
+                    "assignments": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientUpdateFormRequest": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "CLI-0001",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "João dos Testes"
+                    },
+                    "profile": {
+                        "description": "Optional image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2010-03-25",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 98888-7777",
+                        "nullable": true
+                    },
+                    "inform_address": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "50000-000",
+                        "nullable": true
+                    },
+                    "street": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Rua das Flores",
+                        "nullable": true
+                    },
+                    "number": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "example": "123",
+                        "nullable": true
+                    },
+                    "neighborhood": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Centro",
+                        "nullable": true
+                    },
+                    "complement": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Apto 201",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR",
+                        "nullable": true
+                    },
+                    "inform_guardian": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "guardian_name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "Maria da Silva",
+                        "nullable": true
+                    },
+                    "guardian_type": {
+                        "type": "string",
+                        "enum": [
+                            "mother",
+                            "father",
+                            "grandmother",
+                            "grandfather",
+                            "uncle",
+                            "aunt",
+                            "sister",
+                            "brother",
+                            "godmother",
+                            "godfather",
+                            "other"
+                        ],
+                        "example": "mother",
+                        "nullable": true
+                    },
+                    "guardian_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 60,
+                        "example": "mae@example.com",
+                        "nullable": true
+                    },
+                    "guardian_phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 97777-6666",
+                        "nullable": true
+                    },
+                    "assignments": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientPublicRegisterFormRequest": {
+                "required": [
+                    "name",
+                    "profile",
+                    "birthdate",
+                    "phone"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "CLI-0001",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "João dos Testes"
+                    },
+                    "profile": {
+                        "description": "Image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2010-03-25"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 98888-7777"
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "50000-000",
+                        "nullable": true
+                    },
+                    "street": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Rua das Flores",
+                        "nullable": true
+                    },
+                    "number": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "example": "123",
+                        "nullable": true
+                    },
+                    "neighborhood": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Centro",
+                        "nullable": true
+                    },
+                    "complement": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Apto 201",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR",
+                        "nullable": true
+                    },
+                    "guardian_name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "Maria da Silva",
+                        "nullable": true
+                    },
+                    "guardian_type": {
+                        "type": "string",
+                        "enum": [
+                            "mother",
+                            "father",
+                            "grandmother",
+                            "grandfather",
+                            "uncle",
+                            "aunt",
+                            "sister",
+                            "brother",
+                            "godmother",
+                            "godfather",
+                            "other"
+                        ],
+                        "example": "mother",
+                        "nullable": true
+                    },
+                    "guardian_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 60,
+                        "example": "mae@example.com",
+                        "nullable": true
+                    },
+                    "guardian_phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 97777-6666",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientGenerateLinkRequest": {
+                "required": [
+                    "title",
+                    "require_address",
+                    "require_guardian_if_minor",
+                    "max_registers"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 80,
+                        "minLength": 3,
+                        "example": "Cadastro Formatura 2026"
+                    },
+                    "require_address": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "require_guardian_if_minor": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "max_registers": {
+                        "type": "integer",
+                        "maximum": 999,
+                        "minimum": 1,
+                        "example": 100
+                    },
+                    "assignments": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ContractCreateRequest": {
+                "required": [
+                    "title",
+                    "country",
+                    "state",
+                    "city",
+                    "category",
+                    "code"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Formatura 3º Ano 2026"
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR"
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE"
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife"
+                    },
+                    "category": {
+                        "description": "Contract category slug",
+                        "type": "string",
+                        "example": "graduation"
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "CONT-2026-01"
+                    },
+                    "type": {
+                        "description": "Required when category is `graduation`.",
+                        "type": "string",
+                        "enum": [
+                            "university",
+                            "school"
+                        ],
+                        "example": "university",
+                        "nullable": true
+                    },
+                    "institution_name": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Universidade Federal do Recife",
+                        "nullable": true
+                    },
+                    "institution_acronym": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "UFR",
+                        "nullable": true
+                    },
+                    "class": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Turma A",
+                        "nullable": true
+                    },
+                    "shift": {
+                        "type": "string",
+                        "enum": [
+                            "morning",
+                            "afternoon",
+                            "night",
+                            "full_time"
+                        ],
+                        "example": "night",
+                        "nullable": true
+                    },
+                    "conclusion_year": {
+                        "type": "string",
+                        "pattern": "^[0-9]{4}$",
+                        "example": "2026",
+                        "nullable": true
+                    },
+                    "university_course": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Computer Science",
+                        "nullable": true
+                    },
+                    "school_grade_level": {
+                        "type": "string",
+                        "enum": [
+                            "elementary_school",
+                            "middle_school",
+                            "high_school"
+                        ],
+                        "example": "high_school",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ContractUpdateRequest": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Formatura 3º Ano 2026"
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR"
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE"
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife"
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "CONT-2026-01"
+                    },
+                    "type": {
+                        "description": "Required for graduation contracts.",
+                        "type": "string",
+                        "enum": [
+                            "university",
+                            "school"
+                        ],
+                        "example": "university",
+                        "nullable": true
+                    },
+                    "institution_name": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Universidade Federal do Recife",
+                        "nullable": true
+                    },
+                    "institution_acronym": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "UFR",
+                        "nullable": true
+                    },
+                    "class": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Turma A",
+                        "nullable": true
+                    },
+                    "shift": {
+                        "type": "string",
+                        "enum": [
+                            "morning",
+                            "afternoon",
+                            "night",
+                            "full_time"
+                        ],
+                        "example": "night",
+                        "nullable": true
+                    },
+                    "conclusion_year": {
+                        "type": "string",
+                        "pattern": "^[0-9]{4}$",
+                        "example": "2026",
+                        "nullable": true
+                    },
+                    "university_course": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Computer Science",
+                        "nullable": true
+                    },
+                    "school_grade_level": {
+                        "type": "string",
+                        "enum": [
+                            "elementary_school",
+                            "middle_school",
+                            "high_school"
+                        ],
+                        "example": "high_school",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "EventCreateRequest": {
+                "required": [
+                    "contract",
+                    "title",
+                    "event_type",
+                    "event_date"
+                ],
+                "properties": {
+                    "contract": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Baile de Formatura"
+                    },
+                    "event_type": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "event_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-12-13"
+                    },
+                    "event_start_time": {
+                        "type": "string",
+                        "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                        "example": "19:30",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 300,
+                        "example": "Cobertura completa do baile",
+                        "nullable": true
+                    },
+                    "auto_assign_clients": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "EventUpdateRequest": {
+                "properties": {
+                    "contract": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Baile de Formatura"
+                    },
+                    "event_type": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "event_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-12-13"
+                    },
+                    "event_start_time": {
+                        "type": "string",
+                        "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                        "example": "19:30",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 300,
+                        "example": "Cobertura completa do baile",
+                        "nullable": true
+                    },
+                    "auto_assign_clients": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "EventPhotoUploadRequest": {
+                "required": [
+                    "event_id",
+                    "photo"
+                ],
+                "properties": {
+                    "event_id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "photo": {
+                        "description": "Image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
             "sanctum": {
                 "type": "http",
-                "name": "Authorization",
-                "in": "header",
+                "description": "Sanctum bearer token. Generate it via `/api/auth/login` or `/api/auth/register` with `type=token`.",
+                "bearerFormat": "Bearer token",
                 "scheme": "bearer"
+            },
+            "sessionAuth": {
+                "type": "apiKey",
+                "description": "Laravel session cookie for browser-based authentication.",
+                "name": "laravel_session",
+                "in": "cookie"
             }
         }
     },
     "tags": [
         {
-            "name": "Assignments",
-            "description": "Assignments"
-        },
-        {
             "name": "Auth",
-            "description": "Auth"
-        },
-        {
-            "name": "Clients",
-            "description": "Clients"
-        },
-        {
-            "name": "Contracts",
-            "description": "Contracts"
-        },
-        {
-            "name": "Events",
-            "description": "Events"
-        },
-        {
-            "name": "EventPhotos",
-            "description": "EventPhotos"
-        },
-        {
-            "name": "Images",
-            "description": "Images"
+            "description": "Authentication and current-user endpoints"
         },
         {
             "name": "Locations",
-            "description": "Locations"
+            "description": "Countries, states, and cities lookup endpoints"
+        },
+        {
+            "name": "Contracts",
+            "description": "Contract management endpoints"
+        },
+        {
+            "name": "Events",
+            "description": "Event management endpoints"
+        },
+        {
+            "name": "EventPhotos",
+            "description": "Event photo upload endpoints"
+        },
+        {
+            "name": "Clients",
+            "description": "Client management endpoints"
+        },
+        {
+            "name": "Assignments",
+            "description": "Client-to-event assignment endpoints"
+        },
+        {
+            "name": "Images",
+            "description": "Image retrieval and metadata endpoints"
         },
         {
             "name": "Notifications",
-            "description": "Notifications"
+            "description": "User notification endpoints"
         }
     ]
 }

@@ -99,6 +99,13 @@ class ClientController extends Controller
         summary: 'Cria um novo cliente',
         security: [['sanctum' => []]],
         tags: ['Clients'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/ClientFormRequest')
+            )
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -152,6 +159,13 @@ class ClientController extends Controller
         parameters: [
             new OA\PathParameter(name: 'linkId', required: true, description: 'ID codificado em base64 do link', schema: new OA\Schema(type: 'string'))
         ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/ClientPublicRegisterFormRequest')
+            )
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -247,6 +261,13 @@ class ClientController extends Controller
         parameters: [
             new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
         ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/ClientUpdateFormRequest')
+            )
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -331,6 +352,10 @@ class ClientController extends Controller
         summary: 'Gera um link de cadastro público de clientes',
         security: [['sanctum' => []]],
         tags: ['Clients'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/ClientGenerateLinkRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 201,

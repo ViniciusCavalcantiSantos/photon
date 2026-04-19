@@ -95,6 +95,10 @@ class ContractController extends Controller
         summary: 'Cria um novo contrato',
         security: [['sanctum' => []]],
         tags: ['Contracts'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/ContractCreateRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -186,6 +190,10 @@ class ContractController extends Controller
         parameters: [
             new OA\PathParameter(name: 'contract', required: true, description: 'ID do contrato', schema: new OA\Schema(type: 'integer'))
         ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/ContractUpdateRequest')
+        ),
         responses: [
             new OA\Response(
                 response: 200,
