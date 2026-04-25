@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'collection_id' => env('REKOGNITION_COLLECTION_ID', 'vinmo-faces'),
+    'collection_id' => env('REKOGNITION_COLLECTION_ID', 'photon-faces'),
     'use_s3_object' => env('REKOGNITION_USE_S3_OBJECT', false),
     'disk' => env('REKOGNITION_DISK', config('filesystems.default')),
     'bucket' => env('REKOGNITION_BUCKET', config('filesystems.disks.s3.bucket')),

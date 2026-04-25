@@ -5,49 +5,45 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @OA\Schema(
- *    schema="URLs",
- *    type="object",
- *    @OA\Property(property="original", type="string", format="uri", example="https://s3.amazonaws.com/bucket/image.jpg"),
- *    @OA\Property(property="web", type="string", format="uri", example="https://s3.amazonaws.com/bucket/image_webp.webp"),
- *    @OA\Property(property="thumb", type="string", format="uri", example="https://s3.amazonaws.com/bucket/image_thum_webp"),
- * )
- *
- * @OA\Schema(
- *    schema="OriginalImageInfo",
- *    type="object",
- *    required={"name", "size", "width", "height", "mimeType"},
- *    @OA\Property(property="name", type="string", example="IMG_1234"),
- *    @OA\Property(property="size", type="integer", nullable=true, example=2456789, description="Tamanho em bytes da imagem original (se houver)"),
- *    @OA\Property(property="width", type="integer", example=1980, description="Largura da imagem original"),
- *    @OA\Property(property="height", type="integer", example=1080, description="Altura da imagem original"),
- *    @OA\Property(property="mimeType", type="string", example="image/jpeg"),
- * )
- *
- * @OA\Schema(
- *   schema="Image",
- *   type="object",
- *   required={"id", "url", "type", "size", "mimeType", "createdAt", "updatedAt"},
- *   @OA\Property(property="id", type="string", example="01J5Q8V6WZ3QC4FJ0V5E5VQ7R9"),
- *   @OA\Property(property="url", type="string", format="uri", example="https://s3.amazonaws.com/bucket/image.jpg"),
- *   @OA\Property(property="urls", ref="#/components/schemas/URLs"),
- *   @OA\Property(
- *     property="type",
- *     type="string",
- *     description="Versão da imagem (ex: original, web, thumb)",
- *     example="original"
- *   ),
- *   @OA\Property(property="size", type="integer", example=2456789, description="Tamanho em bytes"),
- *   @OA\Property(property="width", type="integer", example=1980, description="Largura da imagem"),
- *   @OA\Property(property="height", type="integer", example=1080, description="Altura da imagem"),
- *   @OA\Property(property="mimeType", type="string", example="image/jpeg"),
- *   @OA\Property(property="original", ref="#/components/schemas/OriginalImageInfo"),
- *   @OA\Property(property="createdAt", type="string", example="2025-11-06 10:15:00"),
- *   @OA\Property(property="updatedAt", type="string", example="2025-11-06 10:20:00"),
- *   @OA\Property(property="clientsOnImageCount", type="integer", example=3, description="Quantidade de clientes detectados na imagem", nullable=true)
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    schema: "URLs",
+    properties: [
+        new OA\Property(property: "original", type: "string", format: "uri", example: "https://s3.amazonaws.com/bucket/image.jpg"),
+        new OA\Property(property: "web", type: "string", format: "uri", example: "https://s3.amazonaws.com/bucket/image_webp.webp"),
+        new OA\Property(property: "thumb", type: "string", format: "uri", example: "https://s3.amazonaws.com/bucket/image_thum_webp")
+    ]
+)]
+#[OA\Schema(
+    schema: "OriginalImageInfo",
+    required: ["name", "size", "width", "height", "mimeType"],
+    properties: [
+        new OA\Property(property: "name", type: "string", example: "IMG_1234"),
+        new OA\Property(property: "size", description: "Tamanho em bytes da imagem original (se houver)", type: "integer", nullable: true, example: 2456789),
+        new OA\Property(property: "width", description: "Largura da imagem original", type: "integer", example: 1980),
+        new OA\Property(property: "height", description: "Altura da imagem original", type: "integer", example: 1080),
+        new OA\Property(property: "mimeType", type: "string", example: "image/jpeg")
+    ]
+)]
+#[OA\Schema(
+    schema: "Image",
+    required: ["id", "url", "type", "size", "mimeType", "createdAt", "updatedAt"],
+    properties: [
+        new OA\Property(property: "id", type: "string", example: "01J5Q8V6WZ3QC4FJ0V5E5VQ7R9"),
+        new OA\Property(property: "url", type: "string", format: "uri", example: "https://s3.amazonaws.com/bucket/image.jpg"),
+        new OA\Property(property: "urls", ref: "#/components/schemas/URLs"),
+        new OA\Property(property: "type", description: "Versão da imagem (ex: original, web, thumb)", type: "string", example: "original"),
+        new OA\Property(property: "size", description: "Tamanho em bytes", type: "integer", example: 2456789),
+        new OA\Property(property: "width", description: "Largura da imagem", type: "integer", example: 1980),
+        new OA\Property(property: "height", description: "Altura da imagem", type: "integer", example: 1080),
+        new OA\Property(property: "mimeType", type: "string", example: "image/jpeg"),
+        new OA\Property(property: "original", ref: "#/components/schemas/OriginalImageInfo"),
+        new OA\Property(property: "createdAt", type: "string", example: "2025-11-06 10:15:00"),
+        new OA\Property(property: "updatedAt", type: "string", example: "2025-11-06 10:20:00"),
+        new OA\Property(property: "clientsOnImageCount", description: "Quantidade de clientes detectados na imagem", type: "integer", nullable: true, example: 3)
+    ]
+)]
 class ImageResource extends JsonResource
 {
     /**

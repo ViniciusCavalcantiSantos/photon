@@ -1,9 +1,3 @@
-export type RegisterLinkType = {
-  id: string;
-  title: string;
-  maxRegisters: number;
-  requireAddress: boolean;
-  requireGuardianIfMinor: boolean;
-  defaultLanguage: string;
-}
+import type { FetchClientLinkResponse } from "@/types/api-contracts";
 
+export type RegisterLinkType = FetchClientLinkResponse["linkInfo"];

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use PragmaRX\Countries\Package\Countries;
+use OpenApi\Attributes as OA;
 
 class LocationController extends Controller
 {
@@ -15,6 +16,34 @@ class LocationController extends Controller
         $this->countries = new Countries();
     }
 
+    #[OA\Get(
+        path: '/api/locations/countries',
+        summary: 'Obtém a lista de países',
+        tags: ['Locations'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Lista de países obtida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'All countries obtained'),
+                        new OA\Property(
+                            property: 'countries',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['value', 'label'],
+                                properties: [
+                                    new OA\Property(property: 'value', type: 'string', example: 'BR'),
+                                    new OA\Property(property: 'label', type: 'string', example: '🇧🇷 Brasil (Brasil)')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function getCountries()
     {
         $lang = app()->getLocale();
@@ -51,6 +80,47 @@ class LocationController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/locations/countries/{country_cca2}/states',
+        summary: 'Obtém a lista de estados de um país',
+        tags: ['Locations'],
+        parameters: [
+            new OA\PathParameter(name: 'country_cca2', required: true, description: 'Código CCA2 do país (ex: BR)', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Lista de estados obtida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'All states obtained'),
+                        new OA\Property(
+                            property: 'states',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['value', 'label'],
+                                properties: [
+                                    new OA\Property(property: 'value', type: 'string', example: 'SP'),
+                                    new OA\Property(property: 'label', type: 'string', example: 'São Paulo')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'País não encontrado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Not Found')
+                    ]
+                )
+            )
+        ]
+    )]
     public function getStates($country_cca2)
     {
         $states = Cache::remember("states_list_{$country_cca2}", 86400 * 7,
@@ -87,6 +157,48 @@ class LocationController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/api/locations/countries/{country_cca2}/states/{state_code}/cities',
+        summary: 'Obtém a lista de cidades de um estado',
+        tags: ['Locations'],
+        parameters: [
+            new OA\PathParameter(name: 'country_cca2', required: true, description: 'Código CCA2 do país (ex: BR)', schema: new OA\Schema(type: 'string')),
+            new OA\PathParameter(name: 'state_code', required: true, description: 'Código do estado (ex: SP)', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Lista de cidades obtida',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'All cities obtained'),
+                        new OA\Property(
+                            property: 'cities',
+                            type: 'array',
+                            items: new OA\Items(
+                                required: ['value', 'label'],
+                                properties: [
+                                    new OA\Property(property: 'value', type: 'string', example: 'São Paulo'),
+                                    new OA\Property(property: 'label', type: 'string', example: 'São Paulo')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404,
+                description: 'País ou estado não encontrado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Not Found')
+                    ]
+                )
+            )
+        ]
+    )]
     public function getCities($country_cca2, $state_code)
     {
         $cities = Cache::remember("cities_list_{$country_cca2}_{$state_code}", 86400 * 7,

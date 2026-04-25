@@ -21,8 +21,8 @@ server {
     client_max_body_size 30M;
     client_body_timeout 120s;
 
-    access_log /var/log/nginx/vinmo_access.log;
-    error_log /var/log/nginx/vinmo_error.log;
+    access_log /var/log/nginx/photon_access.log;
+    error_log /var/log/nginx/photon_error.log;
 
     location / {
         proxy_pass http://127.0.0.1:8001;

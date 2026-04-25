@@ -70,6 +70,8 @@ Route::prefix('/api')->group(function () {
         Route::delete('clients/assignments/bulk', [AssignmentController::class, 'destroyBulk']);
 
         Route::prefix('/notifications')->group(function () {
+            Route::get('/sse-ticket', [NotificationController::class, 'getSseTicket']);
+
             Route::get('/', [NotificationController::class, 'index']);
             Route::delete('/{id}/dismiss', [NotificationController::class, 'dismiss']);
             Route::post('/{id}/read', [NotificationController::class, 'read']);

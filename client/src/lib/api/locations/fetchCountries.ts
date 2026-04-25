@@ -1,7 +1,8 @@
 import apiFetch from "@/lib/apiFetch";
+import type { FetchCountriesResponse } from "@/types/api-contracts";
 
 export async function fetchCountries() {
-  return await apiFetch<{ countries: { value: string, label: string }[] }>("/locations/countries", {
+  return await apiFetch<FetchCountriesResponse>("/locations/countries", {
     method: "GET",
   });
 }

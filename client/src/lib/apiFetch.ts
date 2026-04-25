@@ -1,7 +1,7 @@
-import ApiResponse, {ApiStatus} from "@/types/ApiResponse";
+import ApiResponse, { ApiStatus } from "@/types/ApiResponse";
 import i18next from "@/i18n/i18next";
 import axios from "axios";
-import {ApiError} from "@/lib/ApiError";
+import { ApiError } from "@/lib/ApiError";
 
 export type ApiDriver = "fetch" | "axios";
 
@@ -38,28 +38,45 @@ export default async function apiFetch<T = undefined>(
   const baseURL = typeof options.baseURL === 'string' ? options.baseURL : process.env.NEXT_PUBLIC_API_URL + '/api';
 
   const method = (options.method || "GET").toUpperCase();
+  const authType = process.env.NEXT_PUBLIC_AUTH_TYPE || "session";
 
   let cookieHeader = "";
   let xsrfHeader: Record<string, string> = {};
+  let tokenHeader = "";
 
   if (isOnServerSide) {
     const {cookies} = await import("next/headers");
     const cookieStore = await cookies();
 
     cookieHeader = cookieStore.toString();
+
+    if (authType === 'token') {
+      const token = cookieStore.get('auth_token')?.value;
+      if (token) {
+        tokenHeader = `Bearer ${token}`;
+      }
+    }
   } else {
     const isMutatingMethod = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
-    // pega XSRF só no browser e só para métodos mutáveis
-    if (isMutatingMethod) {
-      const xsrfCookie = getCookie("XSRF-TOKEN");
-      if (xsrfCookie) {
-        xsrfHeader["X-XSRF-TOKEN"] = decodeURIComponent(xsrfCookie);
+
+    if (authType === 'session') {
+      if (isMutatingMethod) {
+        const xsrfCookie = getCookie("XSRF-TOKEN");
+
+        if (xsrfCookie) {
+          xsrfHeader["X-XSRF-TOKEN"] = decodeURIComponent(xsrfCookie);
+        }
+      }
+    } else if (authType === 'token') {
+      const tokenCookie = getCookie("auth_token");
+      if (tokenCookie) {
+        tokenHeader = `Bearer ${tokenCookie}`;
       }
     }
   }
 
   const headers: Record<string, string> = {
-    ...(isFormData ? {} : {"Content-Type": "application/json"}),
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
     "Accept": "application/json",
     "Accept-Language": lang,
     ...(options.headers as Record<string, string> || {}),
@@ -70,8 +87,17 @@ export default async function apiFetch<T = undefined>(
     headers["Cookie"] = cookieHeader;
   }
 
+  if (tokenHeader) {
+    headers["Authorization"] = tokenHeader;
+  }
+
   const handleCsrfRetry = async () => {
     if (options._retry) {
+      return null;
+    }
+
+    // CSRF Retry makes no sense in Token auth
+    if (authType === 'token') {
       return null;
     }
 
@@ -80,7 +106,7 @@ export default async function apiFetch<T = undefined>(
       baseURL: process.env.NEXT_PUBLIC_API_URL
     });
 
-    return apiFetch<T>(path, {...options, _retry: true});
+    return apiFetch<T>(path, { ...options, _retry: true });
   }
 
   const handleNotAuthenticated = () => {
@@ -96,7 +122,7 @@ export default async function apiFetch<T = undefined>(
     const url = `${baseURL}${path}`;
     try {
       const res = await axios({
-        method: options.method || "POST",
+        method,
         url,
         headers,
         data: options.body,

@@ -1,9 +1,17 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-fpm-alpine3.19
 
-# libs e extensões PHP
+# ── Build args: sincroniza UID/GID do host com www-data ──
+ARG WWWUSER=1000
+ARG WWWGROUP=1000
+
+WORKDIR /var/www
+
+# Camada única para DEV
 RUN apk add --no-cache \
         git \
         unzip \
+        shadow \
+        su-exec \
         icu-dev \
         libzip-dev \
         oniguruma-dev \
@@ -11,57 +19,42 @@ RUN apk add --no-cache \
         libpng-dev \
         libjpeg-turbo-dev \
         freetype-dev \
-        libwebp \
         libwebp-dev \
-        imagemagick \
         imagemagick-dev \
+        linux-headers \
         $PHPIZE_DEPS \
-    && apk add --no-cache linux-headers \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && apk del linux-headers \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
+    && pecl install xdebug redis imagick \
+    && docker-php-ext-enable xdebug redis imagick \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" intl zip pdo_mysql exif gd pcntl \
-    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && rm composer-setup.php
+    # Configurações PHP \
+    && { \
+        echo "upload_max_filesize=30M"; \
+        echo "post_max_size=35M"; \
+        echo "memory_limit=512M"; \
+    } > /usr/local/etc/php/conf.d/app-size-limits.ini \
+    # Configurações Xdebug \
+    && { \
+        echo "xdebug.mode = debug,develop"; \
+        echo "xdebug.start_with_request = yes"; \
+        echo "xdebug.client_host = host.docker.internal"; \
+        echo "xdebug.client_port = 9003"; \
+        echo "xdebug.idekey = DOCKER_XDEBUG"; \
+        echo "xdebug.log = /tmp/xdebug-docker.log"; \
+    } > /usr/local/etc/php/conf.d/docker-xdebug.ini
 
-# Configura o PHP (tamanhos de upload / POST e memória)
-RUN { \
-    echo "upload_max_filesize=30M"; \
-    echo "post_max_size=35M"; \
-    echo "memory_limit=512M"; \
-} > /usr/local/etc/php/conf.d/app-size-limits.ini
+# ── Ajusta www-data para o UID/GID do host ──
+RUN if [ ${WWWUSER} -ne 82 ]; then \
+        groupmod -o -g ${WWWGROUP} www-data \
+        && usermod -o -u ${WWWUSER} -g ${WWWGROUP} www-data; \
+    fi
 
-# Configura o XDebug
-RUN { \
-    echo "xdebug.mode = debug,develop"; \
-    echo "xdebug.start_with_request = yes"; \
-    echo "xdebug.client_host = host.docker.internal"; \
-    echo "xdebug.client_port = 9003"; \
-    echo "xdebug.idekey = DOCKER_XDEBUG"; \
-    echo "xdebug.log = /tmp/xdebug-docker.log"; \
-    echo "xdebug.log_level = 7"; \
-} > /usr/local/etc/php/conf.d/docker-xdebug.ini
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
-# Desabilita cache para desenvolvimento
-RUN { \
-    echo "opcache.enable=1"; \
-    echo "opcache.revalidate_freq=0"; \
-    echo "opcache.validate_timestamps=1"; \
-    echo "opcache.max_accelerated_files=10000"; \
-    echo "opcache.memory_consumption=192"; \
-    echo "opcache.max_wasted_percentage=10"; \
-    echo "opcache.interned_strings_buffer=16"; \
-} > /usr/local/etc/php/conf.d/docker-opcache.ini
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-WORKDIR /var/www
-
-ENV TZ=UTC
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 9000
 CMD ["php-fpm"]

@@ -1,0 +1,36 @@
+services:
+  webserver:
+    ports:
+      - "8010:80"
+    volumes:
+      - ./server/docker/nginx/conf.d/prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - assets_volume:/var/www/public
+    restart: always
+
+  app:
+    volumes:
+      - ./server/storage:/var/www/storage
+      - assets_volume:/var/www/public
+    command: sh -c "php artisan config:cache && php artisan route:cache && php artisan view:cache && php-fpm"
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  queue:
+    command: php artisan queue:work --tries=3 --timeout=90
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  scheduler:
+    command: php artisan schedule:work
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  sse:
+    ports:
+      - "8080:8080"
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

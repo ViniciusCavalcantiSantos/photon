@@ -1,9 +1,5 @@
 import apiFetch from "@/lib/apiFetch";
-import Event from "@/types/Event";
-
-export interface CreateEventResponse {
-  event: Event
-}
+import type { CreateEventResponse } from "@/types/api-contracts";
 
 export async function createEvent(data: any) {
   return apiFetch<CreateEventResponse>("/events", {

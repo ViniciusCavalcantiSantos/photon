@@ -1,15 +1,5 @@
 import apiFetch from "@/lib/apiFetch";
-import Client from "@/types/Client";
-
-export interface FetchClientsResponse {
-  clients: Client[];
-  meta: {
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-  };
-}
+import type { FetchClientsResponse } from "@/types/api-contracts";
 
 export async function fetchClients(page: number = 1, pageSize: number = 15, searchTerm?: string) {
   const query = new URLSearchParams({
