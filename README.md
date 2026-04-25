@@ -22,6 +22,7 @@ It is composed of three services — a **Next.js** front-end, a **Laravel** API,
   - [5 — Access the application](#5--access-the-application)
 - [Service Ports](#service-ports)
 - [Useful Commands](#useful-commands)
+  - [Updating Frontend Types from Swagger](#updating-frontend-types-from-swagger)
 - [API Documentation](#api-documentation)
 
 ---
@@ -44,7 +45,7 @@ It is composed of three services — a **Next.js** front-end, a **Laravel** API,
 ## Directory Structure
 
 ```
-photon-2/
+photon/
 ├── .env.example              # Root-level Docker overrides (optional)
 ├── docker-compose.yml        # Development orchestration
 ├── docker-compose.prod.yml   # Production overrides
@@ -109,8 +110,8 @@ That's it — PHP, Node.js and Go are **not** required on your host machine.
 ### 1 — Clone & enter the project
 
 ```bash
-git clone <repository-url> photon-2
-cd photon-2
+git clone <repository-url> photon
+cd photon
 ```
 
 ---
@@ -243,9 +244,52 @@ cd client && pnpm install
 # Start development server
 pnpm dev
 
-# Regenerate TypeScript types from the OpenAPI spec
+# Regenerate TypeScript types from the OpenAPI spec (see section below)
 pnpm update:types
 ```
+
+### Updating Frontend Types from Swagger
+
+The TypeScript types used by the client are auto-generated from the backend's OpenAPI spec.  
+Run this whenever you change a controller, resource, or request class on the Laravel side.
+
+**One-command shortcut** (runs both steps automatically):
+
+```bash
+cd client && pnpm update:types
+```
+
+This script does the following two steps in sequence:
+
+**Step 1 — Regenerate the OpenAPI JSON from PHP annotations**
+
+> Requires PHP available locally **or** run it inside Docker (preferred):
+
+```bash
+# Inside Docker (recommended)
+docker compose exec app php artisan l5-swagger:generate
+
+# Or locally (if PHP is installed on your host)
+cd server && php artisan l5-swagger:generate
+```
+
+This produces/updates `server/storage/api-docs/api-docs.json`.
+
+**Step 2 — Generate TypeScript types from the JSON spec**
+
+```bash
+cd client && npx openapi-typescript ../server/storage/api-docs/api-docs.json -o src/types/api.d.ts
+```
+
+Or, using the shortcut already defined in `package.json` (skips Step 1 if the JSON is already up to date):
+
+```bash
+cd client && pnpm update:types
+```
+
+This overwrites `client/src/types/api.d.ts` with fresh types that mirror the current API surface.
+
+> **Tip:** If you only changed the frontend and not the Laravel annotations, you can skip Step 1 and just re-run Step 2 with the existing JSON file.
 
 ### Back-end (Laravel inside Docker)
 

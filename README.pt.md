@@ -22,6 +22,7 @@ Uma plataforma completa de gerenciamento de fotos com reconhecimento facial por 
   - [5 — Acessar a aplicação](#5--acessar-a-aplicação)
 - [Portas dos Serviços](#portas-dos-serviços)
 - [Comandos Úteis](#comandos-úteis)
+  - [Atualizando os Tipos do Frontend a partir do Swagger](#atualizando-os-tipos-do-frontend-a-partir-do-swagger)
 - [Documentação da API](#documentação-da-api)
 
 ---
@@ -44,7 +45,7 @@ Uma plataforma completa de gerenciamento de fotos com reconhecimento facial por 
 ## Estrutura de Diretórios
 
 ```
-photon-2/
+photon/
 ├── .env.example              # Variáveis raiz do Docker (opcionais)
 ├── docker-compose.yml        # Orquestração do ambiente de desenvolvimento
 ├── docker-compose.prod.yml   # Sobrescritas de produção
@@ -109,8 +110,8 @@ Só isso — PHP, Node.js e Go **não são necessários** na sua máquina host.
 ### 1 — Clonar e entrar no projeto
 
 ```bash
-git clone <url-do-repositório> photon-2
-cd photon-2
+git clone <url-do-repositório> photon
+cd photon
 ```
 
 ---
@@ -243,9 +244,52 @@ cd client && pnpm install
 # Iniciar servidor de desenvolvimento
 pnpm dev
 
-# Regenerar tipos TypeScript a partir da especificação OpenAPI
+# Regenerar tipos TypeScript a partir da especificação OpenAPI (veja seção abaixo)
 pnpm update:types
 ```
+
+### Atualizando os Tipos do Frontend a partir do Swagger
+
+Os tipos TypeScript usados pelo cliente são gerados automaticamente a partir da especificação OpenAPI do backend.  
+Execute esse processo sempre que alterar um controller, resource ou request class no Laravel.
+
+**Atalho em um único comando** (executa as duas etapas automaticamente):
+
+```bash
+cd client && pnpm update:types
+```
+
+Esse script executa as seguintes duas etapas em sequência:
+
+**Etapa 1 — Regenerar o JSON OpenAPI a partir das anotações PHP**
+
+> Requer PHP disponível localmente **ou** execute dentro do Docker (recomendado):
+
+```bash
+# Dentro do Docker (recomendado)
+docker compose exec app php artisan l5-swagger:generate
+
+# Ou localmente (se PHP estiver instalado na sua máquina)
+cd server && php artisan l5-swagger:generate
+```
+
+Isso cria/atualiza o arquivo `server/storage/api-docs/api-docs.json`.
+
+**Etapa 2 — Gerar os tipos TypeScript a partir do JSON spec**
+
+```bash
+cd client && npx openapi-typescript ../server/storage/api-docs/api-docs.json -o src/types/api.d.ts
+```
+
+Ou, usando o atalho já definido no `package.json` (pula a Etapa 1 se o JSON já estiver atualizado):
+
+```bash
+cd client && pnpm update:types
+```
+
+Isso sobrescreve `client/src/types/api.d.ts` com tipos atualizados que refletem a superfície atual da API.
+
+> **Dica:** Se você só alterou o frontend e não as anotações do Laravel, pode pular a Etapa 1 e executar apenas a Etapa 2 com o arquivo JSON já existente.
 
 ### Back-end (Laravel dentro do Docker)
 
