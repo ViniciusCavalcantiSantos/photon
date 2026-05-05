@@ -202,12 +202,15 @@ services:
     entrypoint: >
       sh -c "
         mc alias set local http://minio:9000 $${MINIO_ROOT_USER:-minio} $${MINIO_ROOT_PASSWORD:-minio12345} &&
-        mc mb -p local/${MINIO_BUCKET:-photon-dev} || true &&
-        mc anonymous set download local/${MINIO_BUCKET:-photon-dev}
+        mc mb -p local/$${MINIO_BUCKET_PRIVATE:-photon-private} || true &&
+        mc mb -p local/$${MINIO_BUCKET_PUBLIC:-photon-public} || true &&
+        mc anonymous set download local/$${MINIO_BUCKET_PUBLIC:-photon-public}
       "
     environment:
       MINIO_ROOT_USER: "${MINIO_ROOT_USER:-minio}"
       MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-minio12345}"
+      MINIO_BUCKET_PRIVATE: "${MINIO_BUCKET_PRIVATE:-photon-private}"
+      MINIO_BUCKET_PUBLIC: "${MINIO_BUCKET_PUBLIC:-photon-public}"
     networks:
       - photon-network
 
