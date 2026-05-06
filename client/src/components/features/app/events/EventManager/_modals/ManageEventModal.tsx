@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -23,14 +23,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import dayjs from 'dayjs';
 
-import {useT} from '@/i18n/client';
-import {useNotification} from '@/contexts/NotificationContext';
+import { useT } from '@/i18n/client';
+import { useNotification } from '@/contexts/NotificationContext';
 import Event from '@/types/Event';
-import {useUser} from '@/contexts/UserContext';
-import {useCreateEvent} from '@/lib/queries/events/useCreateEvent';
-import {useUpdateEvent} from '@/lib/queries/events/useUpdateEvent';
-import {fetchEventTypes} from '@/lib/api/events/fetchEventTypes';
-import {useContracts} from '@/lib/queries/contracts/useContracts';
+import { useUser } from '@/contexts/UserContext';
+import { useCreateEvent } from '@/lib/queries/events/useCreateEvent';
+import { useUpdateEvent } from '@/lib/queries/events/useUpdateEvent';
+import { fetchEventTypes } from '@/lib/api/events/fetchEventTypes';
+import { useContracts } from '@/lib/queries/contracts/useContracts';
 
 /* ── Shared sx tokens for the Stitch dark-friendly inputs ── */
 const inputSx = {
@@ -38,26 +38,26 @@ const inputSx = {
     borderRadius: '12px',
     backgroundColor: 'var(--st-bg-elevated)',
     color: 'var(--st-text)',
-    '& fieldset': {borderColor: 'var(--st-border)'},
-    '&:hover fieldset': {borderColor: 'var(--st-primary)'},
-    '&.Mui-focused fieldset': {borderColor: 'var(--st-primary)'},
+    '& fieldset': { borderColor: 'var(--st-border)' },
+    '&:hover fieldset': { borderColor: 'var(--st-primary)' },
+    '&.Mui-focused fieldset': { borderColor: 'var(--st-primary)' },
   },
-  '& .MuiInputLabel-root': {color: 'var(--st-text-sec)'},
-  '& .MuiInputLabel-root.Mui-focused': {color: 'var(--st-primary)'},
-  '& .MuiInputBase-input': {color: 'var(--st-text)'},
-  '& .MuiInputBase-input::placeholder': {color: 'var(--st-text-disabled)', opacity: 1},
-  '& .MuiSvgIcon-root': {color: 'var(--st-text)'},
-  '& .MuiInputAdornment-root .MuiSvgIcon-root': {color: 'var(--st-text-sec)'},
+  '& .MuiInputLabel-root': { color: 'var(--st-text-sec)' },
+  '& .MuiInputLabel-root.Mui-focused': { color: 'var(--st-primary)' },
+  '& .MuiInputBase-input': { color: 'var(--st-text)' },
+  '& .MuiInputBase-input::placeholder': { color: 'var(--st-text-disabled)', opacity: 1 },
+  '& .MuiSvgIcon-root': { color: 'var(--st-text)' },
+  '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: 'var(--st-text-sec)' },
 } as const;
 
 const selectSx = {
   borderRadius: '12px',
   backgroundColor: 'var(--st-bg-elevated)',
   color: 'var(--st-text)',
-  '& fieldset': {borderColor: 'var(--st-border)'},
-  '&:hover fieldset': {borderColor: 'var(--st-primary)'},
-  '&.Mui-focused fieldset': {borderColor: 'var(--st-primary)'},
-  '& .MuiSvgIcon-root': {color: 'var(--st-text)'},
+  '& fieldset': { borderColor: 'var(--st-border)' },
+  '&:hover fieldset': { borderColor: 'var(--st-primary)' },
+  '&.Mui-focused fieldset': { borderColor: 'var(--st-primary)' },
+  '& .MuiSvgIcon-root': { color: 'var(--st-text)' },
 } as const;
 
 const labelSx = {
@@ -108,12 +108,12 @@ const emptyForm: FormState = {
   auto_assign_clients: false,
 };
 
-const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreate, onEdit, onCancel}) => {
-  const {t} = useT();
+const ManageEventModal: React.FC<ManageEventModalProps> = ({ open, event, onCreate, onEdit, onCancel }) => {
+  const { t } = useT();
   const notification = useNotification();
   const createEvent = useCreateEvent();
   const updateEvent = useUpdateEvent();
-  const {defaultDateFormat} = useUser();
+  const { defaultDateFormat } = useUser();
 
   const isEditMode = !!event;
 
@@ -123,7 +123,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
   const [eventTypes, setEventTypes] = useState<{ id: number; name: string }[]>([]);
 
   // TODO: implementar pesquisa de contratos
-  const {data: contractsData} = useContracts(undefined, 1, 300);
+  const { data: contractsData } = useContracts(undefined, 1, 300);
 
   /* ── Populate on open ── */
   useEffect(() => {
@@ -158,7 +158,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
   };
 
   const handleContractChange = async (contractId: number) => {
-    setForm(prev => ({...prev, contract: contractId, event_type: ''}));
+    setForm(prev => ({ ...prev, contract: contractId, event_type: '' }));
     await loadEventTypes(contractId);
   };
 
@@ -197,16 +197,16 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
     };
 
     if (isEditMode) {
-      updateEvent.mutate({id: event.id, values}, {
+      updateEvent.mutate({ id: event.id, values }, {
         onSuccess: (res) => {
-          notification.success({title: res.message});
+          notification.success({ title: res.message });
           onEdit(res.event);
         },
       });
     } else {
       (createEvent as any).mutate(values, {
         onSuccess: (res: any) => {
-          notification.success({title: res.message});
+          notification.success({ title: res.message });
           onCreate(res.event);
         },
       });
@@ -216,9 +216,9 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
   };
 
   const setField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
-    setForm(prev => ({...prev, [key]: value}));
+    setForm(prev => ({ ...prev, [key]: value }));
     if (errors[key as keyof FormErrors]) {
-      setErrors(prev => ({...prev, [key]: undefined}));
+      setErrors(prev => ({ ...prev, [key]: undefined }));
     }
   };
 
@@ -240,7 +240,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
           },
         },
         backdrop: {
-          sx: {backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)'},
+          sx: { backgroundColor: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(4px)' },
         },
       }}
     >
@@ -255,7 +255,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
           px: 3,
         }}
       >
-        <Typography variant="h6" sx={{fontWeight: 700, color: 'var(--st-text)', fontSize: '1.15rem'}}>
+        <Typography variant="h6" sx={{ fontWeight: 700, color: 'var(--st-text)', fontSize: '1.15rem' }}>
           {isEditMode ? t('edit_event') : t('create_new_event')}
         </Typography>
         <IconButton
@@ -263,19 +263,19 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
           size="small"
           sx={{
             color: 'var(--st-text-sec)',
-            '&:hover': {backgroundColor: 'var(--st-primary-light)'},
+            '&:hover': { backgroundColor: 'var(--st-primary-light)' },
           }}
         >
-          <CloseIcon fontSize="small"/>
+          <CloseIcon fontSize="small" />
         </IconButton>
       </DialogTitle>
 
       {/* ── Body ── */}
-      <DialogContent sx={{px: 3, pt: '12px !important', pb: 1}}>
+      <DialogContent sx={{ px: 3, pt: '12px !important', pb: 1 }}>
         <Grid container spacing={2}>
 
           {/* Contract */}
-          <Grid size={{xs: 12, sm: 6}}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography sx={labelSx}>{t('contract')} <span className="required-star">*</span></Typography>
             <FormControl fullWidth size="small" error={!!errors.contract}>
               <Select
@@ -293,8 +293,8 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
                         '& .MuiMenuItem-root': {
                           color: 'var(--st-text)',
                           fontSize: '0.85rem',
-                          '&:hover': {backgroundColor: 'var(--st-primary-light)'},
-                          '&.Mui-selected': {backgroundColor: 'var(--st-primary-light)'},
+                          '&:hover': { backgroundColor: 'var(--st-primary-light)' },
+                          '&.Mui-selected': { backgroundColor: 'var(--st-primary-light)' },
                         },
                       },
                     },
@@ -302,7 +302,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
                 }}
               >
                 <MenuItem value="" disabled>
-                  <Typography sx={{color: 'var(--st-text-disabled)', fontSize: '0.85rem'}}>
+                  <Typography sx={{ color: 'var(--st-text-disabled)', fontSize: '0.85rem' }}>
                     {t('select_contract')}
                   </Typography>
                 </MenuItem>
@@ -317,7 +317,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
           </Grid>
 
           {/* Event Type */}
-          <Grid size={{xs: 12, sm: 6}}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography sx={labelSx}>{t('event')} <span className="required-star">*</span></Typography>
             <FormControl fullWidth size="small" error={!!errors.event_type}>
               <Select
@@ -336,8 +336,8 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
                         '& .MuiMenuItem-root': {
                           color: 'var(--st-text)',
                           fontSize: '0.85rem',
-                          '&:hover': {backgroundColor: 'var(--st-primary-light)'},
-                          '&.Mui-selected': {backgroundColor: 'var(--st-primary-light)'},
+                          '&:hover': { backgroundColor: 'var(--st-primary-light)' },
+                          '&.Mui-selected': { backgroundColor: 'var(--st-primary-light)' },
                         },
                       },
                     },
@@ -345,7 +345,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
                 }}
               >
                 <MenuItem value="" disabled>
-                  <Typography sx={{color: 'var(--st-text-disabled)', fontSize: '0.85rem'}}>
+                  <Typography sx={{ color: 'var(--st-text-disabled)', fontSize: '0.85rem' }}>
                     {t('select_event')}
                   </Typography>
                 </MenuItem>
@@ -373,7 +373,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
           </Grid>
 
           {/* Date */}
-          <Grid size={{xs: 12, sm: 6}}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography sx={labelSx}>{t('event_date')} <span className="required-star">*</span></Typography>
             <TextField
               fullWidth
@@ -388,7 +388,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
           </Grid>
 
           {/* Time */}
-          <Grid size={{xs: 12, sm: 6}}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Typography sx={labelSx}>{t('event_hour_optional')}</Typography>
             <TextField
               fullWidth
@@ -424,28 +424,28 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({open, event, onCreat
                   onChange={(e) => setField('auto_assign_clients', e.target.checked)}
                   sx={{
                     color: 'var(--st-text-sec)',
-                    '&.Mui-checked': {color: 'var(--st-primary)'},
+                    '&.Mui-checked': { color: 'var(--st-primary)' },
                   }}
                 />
               }
               label={
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 0.5}}>
-                  <Typography sx={{color: 'var(--st-text)', fontSize: '0.85rem'}}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Typography sx={{ color: 'var(--st-text)', fontSize: '0.85rem' }}>
                     {t('auto_assign_clients_to_event')}
                   </Typography>
                   <Tooltip title={t('auto_assign_clients_to_event_explanation')} arrow>
-                    <InfoOutlinedIcon sx={{fontSize: 16, color: 'var(--st-primary)', cursor: 'pointer'}}/>
+                    <InfoOutlinedIcon sx={{ fontSize: 16, color: 'var(--st-primary)', cursor: 'pointer' }} />
                   </Tooltip>
                 </Box>
               }
-              sx={{ml: 0, mt: -0.5}}
+              sx={{ ml: 0, mt: -0.5 }}
             />
           </Grid>
         </Grid>
       </DialogContent>
 
       {/* ── Footer ── */}
-      <DialogActions sx={{px: 3, pb: 2.5, pt: 1.5, gap: 1.5}}>
+      <DialogActions sx={{ px: 3, pb: 2.5, pt: 1.5, gap: 1.5 }}>
         <Button
           onClick={handleCancel}
           variant="outlined"
