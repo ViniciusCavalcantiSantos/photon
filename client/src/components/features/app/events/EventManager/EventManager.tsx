@@ -1,8 +1,23 @@
 "use client"
 
-import {Button, Card, Table} from "antd";
-import React, {useMemo, useState} from "react";
-import Search from "antd/es/input/Search";
+import React, {useState} from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Fab,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlineOutlined";
+
 import {useT} from "@/i18n/client";
 import Event from "@/types/Event";
 import ManageEventModal from "@/components/features/app/events/EventManager/_modals/ManageEventModal";
@@ -10,15 +25,15 @@ import {useUser} from "@/contexts/UserContext";
 import {useEvents} from "@/lib/queries/events/useEvents";
 import {useRemoveEvent} from "@/lib/queries/events/useRemoveEvent";
 import PageHeader from "@/components/common/layout/PageHeader";
-import {getEventTableColumns} from "@/components/features/app/events/EventManager/_config/getEventTableColumns";
 import {useServerTable} from "@/hooks/useServerTable";
+import EventCard from "@/components/features/app/events/EventManager/_components/EventCard";
 
 export default function EventManager() {
   const {t} = useT();
   const [open, setOpen] = useState(false);
 
   const {defaultDateFormat} = useUser();
-  const {queryParams, searchProps, getTableProps} = useServerTable<Event>()
+  const {queryParams, searchProps} = useServerTable<Event>()
 
   const {
     data: data,
@@ -39,57 +54,202 @@ export default function EventManager() {
     removeEvent.mutate(event.id)
   }
 
-  const columns = useMemo(() => getEventTableColumns({
-    t,
-    defaultDateFormat,
-    onEdit: handleEditEvent,
-    onDelete: handleDeleteEvent
-  }), [t, defaultDateFormat]);
-
   const handleClose = () => {
     setEditingEvent(undefined)
     setOpen(false)
   }
 
+  const events = data?.events ?? [];
+
   return (
     <>
       <PageHeader title={t('events')}/>
 
-      <Card variant="outlined" className="shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
-        <div className="flex flex-col sm:flex-row sm:justify-end gap-4 mb-4">
-          <Search {...searchProps} placeholder={t('search_event')} className="w-full sm:max-w-60" loading={isLoading}/>
-          <Button type="primary" onClick={() => setOpen(true)} className="w-full sm:w-auto">
-            {t('add_new_event')}
-          </Button>
-        </div>
-
-        <Table<Event>
-          {...getTableProps({
-            data: data?.events,
-            total: data?.meta.total,
-            isLoading: isLoading,
-            isError: isError,
-            error: error,
-            refetch: refetch,
-            onAdd: () => setOpen(true),
-            addText: t('add_new_event'),
-            emptyText: t('no_event_found')
-          })}
-          rowKey="id"
-          columns={columns}
-          bordered={true}
-          loading={isLoading}
-          scroll={{y: 560, x: 'max-content'}}
+      {/* Search + Create Button */}
+      <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, gap: 2, mb: 3, alignItems: {sm: 'center'}}}>
+        <TextField
+          {...searchProps}
+          placeholder={t('search_event')}
+          size="small"
+          variant="outlined"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{color: 'var(--st-text-sec)', fontSize: 20}}/>
+                </InputAdornment>
+              ),
+            }
+          }}
+          sx={{
+            flex: 1,
+            maxWidth: {sm: 360},
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '12px',
+              backgroundColor: 'var(--st-bg-paper)',
+              color: 'var(--st-text)',
+              '& fieldset': {
+                borderColor: 'var(--st-border)',
+              },
+              '&:hover fieldset': {
+                borderColor: 'var(--st-primary)',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: 'var(--st-primary)',
+              },
+            },
+            '& .MuiInputBase-input::placeholder': {
+              color: 'var(--st-text-sec)',
+              opacity: 1,
+            },
+          }}
         />
+        <Button
+          variant="contained"
+          startIcon={<AddIcon/>}
+          onClick={() => setOpen(true)}
+          sx={{
+            borderRadius: '12px',
+            textTransform: 'none',
+            fontWeight: 600,
+            px: 3,
+            py: 1,
+            backgroundColor: 'var(--st-primary)',
+            '&:hover': {
+              backgroundColor: 'var(--st-primary-hover)',
+            },
+          }}
+        >
+          {t('add_new_event')}
+        </Button>
+      </Box>
 
-        <ManageEventModal
-          open={open}
-          event={editingEvent}
-          onCreate={handleClose}
-          onEdit={handleClose}
-          onCancel={handleClose}
-        />
-      </Card>
+      {/* Event Cards Grid */}
+      {isLoading ? (
+        <Stack spacing={2}>
+          {[...Array(3)].map((_, i) => (
+            <Skeleton
+              key={i}
+              variant="rounded"
+              height={140}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: 'var(--st-bg-elevated)',
+              }}
+            />
+          ))}
+        </Stack>
+      ) : isError ? (
+        <Card
+          variant="outlined"
+          sx={{
+            borderRadius: '16px',
+            backgroundColor: 'var(--st-bg-paper)',
+            borderColor: 'var(--st-border)',
+            textAlign: 'center',
+            py: 6,
+          }}
+        >
+          <CardContent>
+            <ErrorOutlineIcon sx={{fontSize: 48, color: 'var(--st-error)', mb: 2}}/>
+            <Typography sx={{color: 'var(--st-text)', fontWeight: 600, mb: 1}}>
+              {t('something_went_wrong')}
+            </Typography>
+            <Typography variant="body2" sx={{color: 'var(--st-text-sec)', mb: 2}}>
+              {error instanceof Error ? error.message : undefined}
+            </Typography>
+            <Button
+              variant="outlined"
+              onClick={() => refetch()}
+              sx={{
+                borderRadius: '10px',
+                textTransform: 'none',
+                borderColor: 'var(--st-border)',
+                color: 'var(--st-text)',
+                '&:hover': {
+                  borderColor: 'var(--st-primary)',
+                  backgroundColor: 'var(--st-primary-light)',
+                },
+              }}
+            >
+              {t('try_again')}
+            </Button>
+          </CardContent>
+        </Card>
+      ) : events.length === 0 ? (
+        <Card
+          variant="outlined"
+          sx={{
+            borderRadius: '16px',
+            backgroundColor: 'var(--st-bg-paper)',
+            borderColor: 'var(--st-border)',
+            textAlign: 'center',
+            py: 6,
+          }}
+        >
+          <CardContent>
+            <SentimentDissatisfiedIcon sx={{fontSize: 48, color: 'var(--st-text-sec)', mb: 2}}/>
+            <Typography sx={{color: 'var(--st-text)', fontWeight: 600, mb: 1}}>
+              {t('no_event_found')}
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon/>}
+              onClick={() => setOpen(true)}
+              sx={{
+                mt: 2,
+                borderRadius: '10px',
+                textTransform: 'none',
+                fontWeight: 600,
+                backgroundColor: 'var(--st-primary)',
+                '&:hover': {
+                  backgroundColor: 'var(--st-primary-hover)',
+                },
+              }}
+            >
+              {t('add_new_event')}
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <Stack spacing={2}>
+          {events.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              defaultDateFormat={defaultDateFormat}
+              onEdit={handleEditEvent}
+              onDelete={handleDeleteEvent}
+            />
+          ))}
+        </Stack>
+      )}
+
+      {/* Floating Action Button (mobile) */}
+      <Fab
+        color="primary"
+        onClick={() => setOpen(true)}
+        sx={{
+          display: {xs: 'flex', sm: 'none'},
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          backgroundColor: 'var(--st-primary)',
+          '&:hover': {
+            backgroundColor: 'var(--st-primary-hover)',
+          },
+        }}
+      >
+        <AddIcon/>
+      </Fab>
+
+      <ManageEventModal
+        open={open}
+        event={editingEvent}
+        onCreate={handleClose}
+        onEdit={handleClose}
+        onCancel={handleClose}
+      />
     </>
   );
 }
