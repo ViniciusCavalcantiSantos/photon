@@ -35,7 +35,7 @@
     --color-ant-border-sec: var(--ant-color-border-secondary);
     --color-ant-split: var(--ant-color-split, var(--ant-color-border-secondary));
 
-    /* ----- Preenchimentos “muted” (chips, hovers suaves) ----- */
+    /* ----- Preenchimentos "muted" (chips, hovers suaves) ----- */
     --color-ant-fill: var(--ant-color-fill);
     --color-ant-fill-sec: var(--ant-color-fill-secondary);
     --color-ant-fill-ter: var(--ant-color-fill-tertiary);
@@ -103,6 +103,40 @@
 
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
+
+    /* ═══════════════════════════════════════════════════════════════
+       STITCH / MUI DESIGN TOKENS
+       Custom tokens derived from the Stitch "Photon Cloud Dashboard"
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Backgrounds */
+    --color-st-bg:          var(--st-bg);
+    --color-st-bg-paper:    var(--st-bg-paper);
+    --color-st-bg-elevated: var(--st-bg-elevated);
+
+    /* Text */
+    --color-st-text:        var(--st-text);
+    --color-st-text-sec:    var(--st-text-sec);
+    --color-st-text-disabled: var(--st-text-disabled);
+
+    /* Primary accent */
+    --color-st-primary:       var(--st-primary);
+    --color-st-primary-hover: var(--st-primary-hover);
+    --color-st-primary-light: var(--st-primary-light);
+
+    /* Borders & Dividers */
+    --color-st-border:  var(--st-border);
+    --color-st-divider: var(--st-divider);
+
+    /* Status */
+    --color-st-success: var(--st-success);
+    --color-st-warning: var(--st-warning);
+    --color-st-error:   var(--st-error);
+    --color-st-info:    var(--st-info);
+
+    /* Shadows */
+    --shadow-st-card:     var(--st-shadow-card);
+    --shadow-st-elevated: var(--st-shadow-elevated);
 }
 
 @layer utilities {
@@ -125,10 +159,58 @@
 
 :root {
     --color-app-bg: #f5f5f5;
+
+    /* ─── Stitch light tokens ─── */
+    --st-bg:          #f0f2f5;
+    --st-bg-paper:    #ffffff;
+    --st-bg-elevated: #ffffff;
+
+    --st-text:        #1a1a2e;
+    --st-text-sec:    #5a6474;
+    --st-text-disabled: #a0aab4;
+
+    --st-primary:       #0C66E4;
+    --st-primary-hover: #0a55c0;
+    --st-primary-light: rgba(12, 102, 228, 0.12);
+
+    --st-border:  #dde1e7;
+    --st-divider: #eaecef;
+
+    --st-success: #1a8a4a;
+    --st-warning: #c47f00;
+    --st-error:   #d32f2f;
+    --st-info:    #0288d1;
+
+    --st-shadow-card:     0 1px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
+    --st-shadow-elevated: 0 8px 32px rgba(0,0,0,0.12);
 }
 
 :root[data-theme="dark"] {
     --color-app-bg: #0f0f0f;
+
+    /* ─── Stitch dark tokens (from Stitch Photon Cloud design) ─── */
+    --st-bg:          #0B0C10;
+    --st-bg-paper:    #171821;
+    --st-bg-elevated: #1f2130;
+
+    --st-text:        #e8eaf0;
+    --st-text-sec:    #9CA3AF;
+    --st-text-disabled: #4a5568;
+
+    --st-primary:       #0C66E4;
+    --st-primary-hover: #3b82f6;
+    --st-primary-light: rgba(12, 102, 228, 0.18);
+
+    --st-border:  #2a2f45;
+    --st-divider: #252a3d;
+
+    --st-success: #22c55e;
+    --st-warning: #f59e0b;
+    --st-error:   #ef4444;
+    --st-info:    #38bdf8;
+
+    --st-shadow-card:     0 1px 4px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+    --st-shadow-elevated: 0 8px 32px rgba(0,0,0,0.5);
 }
 
 :root .ant.ant-btn {

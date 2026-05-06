@@ -27,5 +27,29 @@ const themeAntdDark = {
   ...themeAntd
 } as Partial<AliasToken>
 
+/** Stitch / MUI-aligned design tokens for new components */
+const stitchTokens = {
+  primary: "#0C66E4",
+  primaryHover: "#3b82f6",
+  primaryLight: "rgba(12, 102, 228, 0.18)",
+
+  dark: {
+    bg: "#0B0C10",
+    bgPaper: "#171821",
+    bgElevated: "#1f2130",
+    text: "#e8eaf0",
+    textSec: "#9CA3AF",
+    border: "#2a2f45",
+  },
+  light: {
+    bg: "#f0f2f5",
+    bgPaper: "#ffffff",
+    bgElevated: "#ffffff",
+    text: "#1a1a2e",
+    textSec: "#5a6474",
+    border: "#dde1e7",
+  },
+} as const;
+
 export default theme
-export {themeBody, themeAntd, themeAntdLight, themeAntdDark}
+export {themeBody, themeAntd, themeAntdLight, themeAntdDark, stitchTokens}
