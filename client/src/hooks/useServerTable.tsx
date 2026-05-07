@@ -13,17 +13,21 @@ export function useServerTable<T>({initialPageSize = 15}: UseServerTableProps = 
 
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    current: 1,
-    pageSize: initialPageSize,
-    total: 0,
-  });
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(initialPageSize);
+
+  // Filter state
+  const [contractId, setContractId] = useState<number | ''>('');
+  const [eventTypeId, setEventTypeId] = useState<number | ''>('');
+  const [sortBy, setSortBy] = useState<string>('event_date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   useDebounce(
     () => {
       setDebouncedTerm(searchTerm);
+      // Reset to first page whenever search changes
       if (searchTerm !== debouncedTerm) {
-        setPagination((prev) => ({...prev, current: 1}));
+        setPage(1);
       }
     },
     300,
@@ -31,11 +35,38 @@ export function useServerTable<T>({initialPageSize = 15}: UseServerTableProps = 
   );
 
   const handleTableChange = useCallback((newPagination: TablePaginationConfig) => {
-    setPagination((prev) => ({
-      ...prev,
-      current: newPagination.current,
-      pageSize: newPagination.pageSize,
-    }));
+    setPage(newPagination.current || 1);
+    setPageSize(newPagination.pageSize || initialPageSize);
+  }, [initialPageSize]);
+
+  const handlePageChange = useCallback((_: React.ChangeEvent<unknown>, newPage: number) => {
+    setPage(newPage);
+  }, []);
+
+  const handlePageSizeChange = useCallback((newPageSize: number) => {
+    setPageSize(newPageSize);
+    setPage(1);
+  }, []);
+
+  const handleContractChange = useCallback((value: number | '') => {
+    setContractId(value);
+    setEventTypeId('');
+    setPage(1);
+  }, []);
+
+  const handleEventTypeChange = useCallback((value: number | '') => {
+    setEventTypeId(value);
+    setPage(1);
+  }, []);
+
+  const handleSortByChange = useCallback((value: string) => {
+    setSortBy(value);
+    setPage(1);
+  }, []);
+
+  const handleSortOrderChange = useCallback((value: 'asc' | 'desc') => {
+    setSortOrder(value);
+    setPage(1);
   }, []);
 
   const searchProps = {
@@ -71,7 +102,8 @@ export function useServerTable<T>({initialPageSize = 15}: UseServerTableProps = 
     loading: isLoading,
     onChange: handleTableChange,
     pagination: {
-      ...pagination,
+      current: page,
+      pageSize: pageSize,
       total: total || 0,
       showSizeChanger: true,
       pageSizeOptions: ["15", "30", "50", "100"],
@@ -99,8 +131,29 @@ export function useServerTable<T>({initialPageSize = 15}: UseServerTableProps = 
   return {
     queryParams: {
       searchTerm: debouncedTerm,
-      page: pagination.current || 1,
-      pageSize: pagination.pageSize || initialPageSize,
+      page,
+      pageSize,
+      withContract: true,
+      contractId,
+      eventTypeId,
+      sortBy,
+      sortOrder,
+    },
+    pagination: {
+      page,
+      pageSize,
+      onPageChange: handlePageChange,
+      onPageSizeChange: handlePageSizeChange,
+    },
+    filters: {
+      contractId,
+      eventTypeId,
+      sortBy,
+      sortOrder,
+      onContractChange: handleContractChange,
+      onEventTypeChange: handleEventTypeChange,
+      onSortByChange: handleSortByChange,
+      onSortOrderChange: handleSortOrderChange,
     },
     searchProps,
     getTableProps,

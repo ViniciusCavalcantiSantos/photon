@@ -23,8 +23,13 @@ class EventController extends Controller
         tags: ['Events'],
         parameters: [
             new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'page', required: false, description: 'Página atual', schema: new OA\Schema(type: 'integer')),
             new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string')),
-            new OA\QueryParameter(name: 'with_contract', required: false, description: 'Carrega o contrato relacionado', schema: new OA\Schema(type: 'boolean'))
+            new OA\QueryParameter(name: 'with_contract', required: false, description: 'Carrega o contrato relacionado', schema: new OA\Schema(type: 'boolean')),
+            new OA\QueryParameter(name: 'contract_id', required: false, description: 'Filtra por contrato', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'event_type_id', required: false, description: 'Filtra por tipo de evento', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'sort_by', required: false, description: 'Campo de ordenação (event_date, title, created_at)', schema: new OA\Schema(type: 'string', enum: ['event_date', 'title', 'created_at'])),
+            new OA\QueryParameter(name: 'sort_order', required: false, description: 'Direção da ordenação (asc, desc)', schema: new OA\Schema(type: 'string', enum: ['asc', 'desc']))
         ],
         responses: [
             new OA\Response(
@@ -61,8 +66,18 @@ class EventController extends Controller
         $organizationId = auth()->user()->organization_id;
         $perPage = $request->integer('per_page', 15);
         $searchTerm = $request->string('search');
+        $contractId = $request->integer('contract_id') ?: null;
+        $eventTypeId = $request->integer('event_type_id') ?: null;
+        $allowedSortColumns = ['event_date', 'title', 'created_at'];
+        $sortBy = in_array($request->string('sort_by')->value(), $allowedSortColumns)
+            ? $request->string('sort_by')->value()
+            : 'event_date';
+        $sortOrder = in_array(strtolower($request->string('sort_order')->value()), ['asc', 'desc'])
+            ? strtolower($request->string('sort_order')->value())
+            : 'desc';
+
         $load = ['type'];
-        $withContract = $request->boolean('with_contract');
+        $withContract = $request->boolean('with_contract') || $contractId !== null;
         if ($withContract) {
             $load[] = 'contract';
         }
@@ -80,7 +95,7 @@ class EventController extends Controller
                     $q->where('type', 'original');
                 }
             ], 'size')
-            ->latest();
+            ->orderBy($sortBy, $sortOrder);
 
         $eventsQuery->when($searchTerm->isNotEmpty(), function ($query) use ($searchTerm, $withContract) {
             $query->where(function ($q) use ($searchTerm, $withContract) {
@@ -93,6 +108,14 @@ class EventController extends Controller
                     });
                 }
             });
+        });
+
+        $eventsQuery->when($contractId !== null, function ($query) use ($contractId) {
+            $query->where('contract_id', $contractId);
+        });
+
+        $eventsQuery->when($eventTypeId !== null, function ($query) use ($eventTypeId) {
+            $query->where('event_type_id', $eventTypeId);
         });
 
         $events = $eventsQuery->paginate($perPage);

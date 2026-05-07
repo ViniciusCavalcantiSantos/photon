@@ -23,7 +23,7 @@ function EventSelector({value, onChange}: EventSelectorProps) {
       try {
         const [contractsRes, eventsRes] = await Promise.all([
           fetchContracts(1, 100),
-          fetchEvents(1, 100)
+          fetchEvents({page: 1, pageSize: 100})
         ]);
 
         setContracts(contractsRes.contracts);
