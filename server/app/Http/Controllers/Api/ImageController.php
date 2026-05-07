@@ -81,14 +81,21 @@ class ImageController extends Controller
     )]
     public function download(Request $request, Image $image)
     {
-        $disk = Storage::disk($image->disk);
         if ($image->parent_id) {
             $image = $image->original()->first();
         }
 
-        return $disk->download($image->path, basename($image->original_name));
+        $disk = Storage::disk($image->disk);
+        return redirect(
+            $disk->temporaryUrl(
+                $image->path,
+                now()->addMinutes(5),
+                [
+                    'ResponseContentDisposition' => 'attachment; filename="' . basename($image->original_name) . '"',
+                ]
+            )
+        );
     }
-
 
     #[OA\Get(
         path: '/api/images/{image}/metadata',
