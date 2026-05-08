@@ -58,6 +58,17 @@ const selectSx = {
   '&:hover fieldset': { borderColor: 'var(--st-primary)' },
   '&.Mui-focused fieldset': { borderColor: 'var(--st-primary)' },
   '& .MuiSvgIcon-root': { color: 'var(--st-text)' },
+  '&.Mui-disabled': {
+    backgroundColor: 'rgba(156, 163, 175, 0.08)',
+    color: 'var(--st-text-sec)',
+    cursor: 'not-allowed',
+    '& fieldset': { borderColor: 'var(--st-border)', borderStyle: 'dashed' },
+    '& .MuiSvgIcon-root': { color: 'var(--st-text-sec)' },
+  },
+  '& .MuiSelect-select.Mui-disabled': {
+    WebkitTextFillColor: 'var(--st-text-sec)',
+    color: 'var(--st-text-sec)',
+  },
 } as const;
 
 const labelSx = {
@@ -121,6 +132,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({ open, event, onCrea
   const [form, setForm] = useState<FormState>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
   const [eventTypes, setEventTypes] = useState<{ id: number; name: string }[]>([]);
+  const [isLoadingEventTypes, setIsLoadingEventTypes] = useState(false);
 
   // TODO: implementar pesquisa de contratos
   const { data: contractsData } = useContracts(undefined, 1, 300);
@@ -152,9 +164,14 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({ open, event, onCrea
   /* ── Helpers ── */
   const loadEventTypes = async (contractId: number) => {
     setEventTypes([]);
-    // TODO: Implementar o useEventTypes
-    const res = await fetchEventTypes(contractId);
-    setEventTypes(res.eventTypes);
+    setIsLoadingEventTypes(true);
+    try {
+      // TODO: Implementar o useEventTypes
+      const res = await fetchEventTypes(contractId);
+      setEventTypes(res.eventTypes);
+    } finally {
+      setIsLoadingEventTypes(false);
+    }
   };
 
   const handleContractChange = async (contractId: number) => {
@@ -166,6 +183,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({ open, event, onCrea
     setForm(emptyForm);
     setErrors({});
     setEventTypes([]);
+    setIsLoadingEventTypes(false);
   };
 
   const handleCancel = () => {
@@ -323,7 +341,7 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({ open, event, onCrea
               <Select
                 value={form.event_type}
                 displayEmpty
-                disabled={eventTypes.length === 0}
+                disabled={isLoadingEventTypes || eventTypes.length === 0}
                 onChange={(e) => setField('event_type', e.target.value as number)}
                 sx={selectSx}
                 MenuProps={{
@@ -353,7 +371,17 @@ const ManageEventModal: React.FC<ManageEventModalProps> = ({ open, event, onCrea
                   <MenuItem key={et.id} value={et.id}>{et.name}</MenuItem>
                 ))}
               </Select>
-              {errors.event_type && <FormHelperText>{errors.event_type}</FormHelperText>}
+              {errors.event_type ? (
+                <FormHelperText>{errors.event_type}</FormHelperText>
+              ) : isLoadingEventTypes ? (
+                <FormHelperText sx={{ color: 'var(--st-text-sec)' }}>
+                  {t('loading_event_types')}
+                </FormHelperText>
+              ) : eventTypes.length === 0 ? (
+                <FormHelperText sx={{ color: 'var(--st-text-sec)' }}>
+                  {form.contract ? t('no_event_types_available') : t('select_contract_first')}
+                </FormHelperText>
+              ) : null}
             </FormControl>
           </Grid>
 

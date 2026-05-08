@@ -52,6 +52,17 @@ const filterSelectSx = {
   '&:hover fieldset': {borderColor: 'var(--st-primary)'},
   '&.Mui-focused fieldset': {borderColor: 'var(--st-primary)'},
   '& .MuiSvgIcon-root': {color: 'var(--st-text-sec)'},
+  '&.Mui-disabled': {
+    backgroundColor: 'rgba(156, 163, 175, 0.08)',
+    color: 'var(--st-text-sec)',
+    cursor: 'not-allowed',
+    '& fieldset': {borderColor: 'var(--st-border)', borderStyle: 'dashed'},
+    '& .MuiSvgIcon-root': {color: 'var(--st-text-sec)'},
+  },
+  '& .MuiSelect-select.Mui-disabled': {
+    WebkitTextFillColor: 'var(--st-text-sec)',
+    color: 'var(--st-text-sec)',
+  },
 } as const;
 
 const filterMenuProps = {
@@ -324,6 +335,11 @@ export default function EventManager() {
                   ))}
                 </Select>
               </FormControl>
+              {eventTypes.length === 0 && (
+                <Typography variant="caption" sx={{display: 'block', color: 'var(--st-text-sec)', mt: 0.75}}>
+                  {filters.contractId ? t('no_event_types_available') : t('select_contract_first')}
+                </Typography>
+              )}
             </Box>
           </Stack>
 
