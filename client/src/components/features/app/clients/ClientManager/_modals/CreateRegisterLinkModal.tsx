@@ -35,6 +35,7 @@ const dialogPaperSx = {
   borderRadius: "16px",
   color: "var(--st-text)",
   minWidth: { xs: "calc(100vw - 32px)", sm: 520 },
+  overflow: "visible",   /* allow absolute-positioned tree dropdown to float above */
 } as const;
 
 const inputSx = {
@@ -144,8 +145,8 @@ export default function CreateRegisterLinkModal({ open, handleClose }: CreateReg
         </DialogTitle>
         <Divider sx={{ borderColor: "var(--st-divider)" }} />
 
-        <DialogContent sx={{ pt: 2.5 }}>
-          <Stack spacing={2}>
+        <DialogContent sx={{ pt: 2.5, overflow: "visible" }}>
+          <Stack spacing={2} sx={{ overflow: "visible" }}>
             {/* Title */}
             <Box>
               <Typography sx={labelSx}>
