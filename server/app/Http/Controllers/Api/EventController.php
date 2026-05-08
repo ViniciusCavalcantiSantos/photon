@@ -115,7 +115,7 @@ class EventController extends Controller
         });
 
         $eventsQuery->when($eventTypeId !== null, function ($query) use ($eventTypeId) {
-            $query->where('event_type_id', $eventTypeId);
+            $query->where('type_id', $eventTypeId);
         });
 
         $events = $eventsQuery->paginate($perPage);
