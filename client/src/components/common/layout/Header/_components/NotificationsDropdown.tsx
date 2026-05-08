@@ -1,168 +1,250 @@
-'use client'
+"use client";
 
-import {Badge, Button, Divider, Dropdown, Empty, Tooltip} from "antd";
-import React, {useEffect, useMemo, useState} from "react";
-import {useT} from "@/i18n/client";
-import {fetchNotifications} from "@/lib/api/notifications/fetchNotifications";
-import {useUserNotifications} from "@/hooks/useUserNotifications";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Badge,
+  Box,
+  Divider,
+  IconButton,
+  Popover,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import CloseIcon from "@mui/icons-material/Close";
+import InboxIcon from "@mui/icons-material/Inbox";
+import { useT } from "@/i18n/client";
+import { fetchNotifications } from "@/lib/api/notifications/fetchNotifications";
+import { useUserNotifications } from "@/hooks/useUserNotifications";
 import Notification from "@/types/Notification";
-import {CloseOutlined} from "@ant-design/icons";
-import {formatTimeFromNow} from "@/lib/utils/date";
-import {readNotification} from "@/lib/api/notifications/readNotification";
-import {dismissNotification} from "@/lib/api/notifications/dismissNotification";
+import { formatTimeFromNow } from "@/lib/utils/date";
+import { readNotification } from "@/lib/api/notifications/readNotification";
+import { dismissNotification } from "@/lib/api/notifications/dismissNotification";
 import dayjs from "dayjs";
 
+/* ── shared sx tokens ── */
+const popoverPaperSx = {
+  backgroundColor: "var(--st-bg-elevated)",
+  border: "1px solid var(--st-border)",
+  borderRadius: "16px",
+  boxShadow: "var(--st-shadow-elevated)",
+  color: "var(--st-text)",
+  minWidth: 280,
+  maxWidth: 400,
+  overflow: "hidden",
+} as const;
+
 export default function NotificationsDropdown() {
-  const {t} = useT();
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [unreadCount, setUnreadCount] = useState<number>(0)
+  const { t } = useT();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const bellRef = useRef<HTMLButtonElement>(null);
+  const open = Boolean(anchorEl);
 
   // TODO: Implementar useNotifications
   useEffect(() => {
-    fetchNotifications()
-      .then(res => {
-        setNotifications(res.notifications)
-        setUnreadCount(res.notifications.filter(notification => !notification.readAt).length)
-      })
+    fetchNotifications().then((res) => {
+      setNotifications(res.notifications);
+      setUnreadCount(res.notifications.filter((n) => !n.readAt).length);
+    });
   }, []);
 
   useUserNotifications((data) => {
-    setNotifications(prev => [data, ...prev])
-    setUnreadCount(prev => prev + 1)
+    setNotifications((prev) => [data, ...prev]);
+    setUnreadCount((prev) => prev + 1);
   });
 
   const handleNotificationClick = async (notification: Notification) => {
-    readNotification(notification.id)
-      .then(res => {
-        setNotifications(prev => prev.map(n => {
-          if (n.id === notification.id) {
-            return {...n, readAt: dayjs().toISOString()}
-          } else {
-            return n
-          }
-        }))
-        if (!notification.readAt && unreadCount > 0) setUnreadCount(unreadCount - 1)
-      })
-  }
+    readNotification(notification.id).then(() => {
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === notification.id ? { ...n, readAt: dayjs().toISOString() } : n,
+        ),
+      );
+      if (!notification.readAt && unreadCount > 0) setUnreadCount((c) => c - 1);
+    });
+  };
 
   const handleDismiss = async (notification: Notification) => {
-    dismissNotification(notification.id)
-      .then(() => {
-        setNotifications(prev => prev.filter(n => n.id !== notification.id))
-        if (!notification.readAt && unreadCount > 0) setUnreadCount(unreadCount - 1)
-      })
-  }
+    dismissNotification(notification.id).then(() => {
+      setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+      if (!notification.readAt && unreadCount > 0) setUnreadCount((c) => c - 1);
+    });
+  };
 
+  const listContent = useMemo(() => {
+    if (notifications.length === 0) {
+      return (
+        <Box
+          sx={{
+            py: 6,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <InboxIcon sx={{ fontSize: 36, color: "var(--st-text-disabled)" }} />
+          <Typography variant="body2" sx={{ color: "var(--st-text-sec)" }}>
+            {t("no_notifications")}
+          </Typography>
+        </Box>
+      );
+    }
 
-  const dropdownContent = useMemo(() => {
     return (
-      <div
-        className="min-w-[260px] max-w-[520px] flex flex-col gap-1 rounded-2xl
-                   bg-ant-bg-elevated border border-ant-border-sec
-                   text-ant-text shadow-ant-2"
+      <ul
+        style={{ margin: 0, padding: 0, listStyle: "none", maxHeight: 420, overflowY: "auto" }}
       >
-        <div className="flex items-center gap-x-2 p-4 pb-0">
-          <div>
-            <div className="font-semibold text-ant-text text-xl">{t('notifications')}</div>
-          </div>
-        </div>
-
-        <div className=" flex flex-col">
-          <div className="mt-2">
-            <Divider className="!m-0 !border-ant-border-sec"/>
-          </div>
-
-          <ul className="flex flex-col gap-2 max-h-[622px] overflow-y-auto">
-            {notifications.length === 0 ? (
-              <div className="py-8 flex justify-center">
-                <Empty description={t('no_notifications')} image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-              </div>
-            ) : (
-              notifications.map(notification => {
-                return (
-                  <li
-                    key={notification.id}
-                    className='hover:bg-ant-fill-ter flex items-center pl-5 pr-2 py-3 gap-2'
-                  >
-
-                    <button
-                      onClick={() => handleNotificationClick(notification)}
-                      className=" text-start w-full cursor-pointer"
-                    >
-                      <div>
-                        <div className="font-semibold text-ant-text relative">
-                          {!notification.readAt && (
-                            <div className="absolute -left-3.5 top-2 w-1.5 h-1.5 rounded-full bg-ant-primary"
-                                 role="status">
-                              <span className="sr-only">{t('unread_notification')}</span>
-                            </div>
-                          )}
-
-                          {notification.data.message}
-                        </div>
-                        <div className="text-sm text-ant-text-sec">{notification.data.description}</div>
-
-                        <span className="text-ant-text-ter text-sm">
-                        {formatTimeFromNow(notification.createdAt, t)}
-                      </span>
-                      </div>
-                    </button>
-
-                    <div className='ml-auto'>
-                      <Tooltip title={t('dismiss')}>
-                        <Button
-                          type="text"
-                          size="middle"
-                          icon={<CloseOutlined/>}
-                          className="!p-2"
-                          onClick={() => handleDismiss(notification)}
-                        />
-                      </Tooltip>
-                    </div>
-                  </li>
-                )
-              })
-            )
-            }
-
-          </ul>
-          {/*<Divider className="!m-0 !border-ant-border-sec"/>*/}
-          {/*<div className="p-2">*/}
-          {/*  <Button type="link" className="w-full text-center">*/}
-          {/*    {t('view_all_notifications')}*/}
-          {/*  </Button>*/}
-          {/*</div>*/}
-        </div>
-      </div>
-    );
-  }, [t, notifications]);
-
-  return (
-    <Dropdown
-      trigger={["click"]}
-      popupRender={() => dropdownContent}
-
-    >
-      <div className="mr-4">
-        <Tooltip title={t('you_have_unread_notifications', {count: unreadCount})} placement='bottomLeft'>
-          <Badge
-            count={unreadCount}
-            size="small" style={{fontSize: 10, background: "var(--ant-color-primary)"}}
-            offset={[-4, 4]}
+        {notifications.map((notification) => (
+          <li
+            key={notification.id}
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 8,
+              paddingLeft: 20,
+              paddingRight: 8,
+              paddingTop: 12,
+              paddingBottom: 12,
+              transition: "background 150ms",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLLIElement).style.backgroundColor = "var(--st-bg-paper)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLLIElement).style.backgroundColor = "transparent";
+            }}
           >
             <button
-              className="rounded-md cursor-pointer border border-ant-border bg-ant-bg hover:bg-ant-fill-sec p-1"
+              onClick={() => handleNotificationClick(notification)}
+              style={{
+                flex: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                color: "inherit",
+              }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" className='fill-ant-text-sec  w-5 h-5'>
-                <path
-                  d="M155.8 96C123.9 96 96.9 119.4 92.4 150.9L64.6 345.2C64.2 348.2 64 351.2 64 354.3L64 480C64 515.3 92.7 544 128 544L512 544C547.3 544 576 515.3 576 480L576 354.3C576 351.3 575.8 348.2 575.4 345.2L547.6 150.9C543.1 119.4 516.1 96 484.2 96L155.8 96zM155.8 160L484.3 160L511.7 352L451.8 352C439.7 352 428.6 358.8 423.2 369.7L408.9 398.3C403.5 409.1 392.4 416 380.3 416L259.9 416C247.8 416 236.7 409.2 231.3 398.3L217 369.7C211.6 358.9 200.5 352 188.4 352L128.3 352L155.8 160z"/>
-              </svg>
-
-              <span className="sr-only">{t('open_main_menu')}</span>
+              {/* unread dot */}
+              <div style={{ position: "relative" }}>
+                {!notification.readAt && (
+                  <span
+                    role="status"
+                    style={{
+                      position: "absolute",
+                      left: -12,
+                      top: 6,
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "var(--st-primary)",
+                      display: "inline-block",
+                    }}
+                  >
+                    <span className="sr-only">{t("unread_notification")}</span>
+                  </span>
+                )}
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: notification.readAt ? 400 : 600, color: "var(--st-text)" }}
+                >
+                  {notification.data.message}
+                </Typography>
+              </div>
+              <Typography variant="caption" sx={{ color: "var(--st-text-sec)", display: "block" }}>
+                {notification.data.description}
+              </Typography>
+              <Typography variant="caption" sx={{ color: "var(--st-text-disabled)" }}>
+                {formatTimeFromNow(notification.createdAt, t)}
+              </Typography>
             </button>
+
+            <Tooltip title={t("dismiss")} arrow>
+              <IconButton
+                size="small"
+                onClick={() => handleDismiss(notification)}
+                sx={{
+                  color: "var(--st-text-sec)",
+                  flexShrink: 0,
+                  "&:hover": {
+                    backgroundColor: "var(--st-primary-light)",
+                    color: "var(--st-text)",
+                  },
+                }}
+              >
+                <CloseIcon sx={{ fontSize: 15 }} />
+              </IconButton>
+            </Tooltip>
+          </li>
+        ))}
+      </ul>
+    );
+  }, [notifications, t]);
+
+  return (
+    <>
+      <Tooltip
+        title={t("you_have_unread_notifications", { count: unreadCount })}
+        placement="bottom"
+        arrow
+      >
+        <IconButton
+          ref={bellRef}
+          aria-label={t("open_main_menu")}
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          size="small"
+          sx={{
+            borderRadius: "10px",
+            color: "var(--st-text-sec)",
+            mr: 0.5,
+            "&:hover": { backgroundColor: "var(--st-bg-elevated)", color: "var(--st-text)" },
+          }}
+        >
+          <Badge
+            badgeContent={unreadCount}
+            color="primary"
+            invisible={unreadCount === 0}
+            sx={{
+              "& .MuiBadge-badge": {
+                minWidth: 16,
+                height: 16,
+                fontSize: "0.6rem",
+                fontWeight: 700,
+                backgroundColor: "var(--st-primary)",
+              },
+            }}
+          >
+            <NotificationsIcon sx={{ fontSize: 22 }} />
           </Badge>
-        </Tooltip>
-      </div>
-    </Dropdown>
-  )
+        </IconButton>
+      </Tooltip>
+
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{ paper: { sx: { ...popoverPaperSx, mt: 1 } } }}
+      >
+        {/* Header */}
+        <Box sx={{ px: 2.5, pt: 2, pb: 0 }}>
+          <Typography
+            sx={{ fontWeight: 700, fontSize: "1rem", color: "var(--st-text)" }}
+          >
+            {t("notifications")}
+          </Typography>
+        </Box>
+
+        <Box sx={{ mt: 1.5 }}>
+          <Divider sx={{ borderColor: "var(--st-divider)" }} />
+          {listContent}
+        </Box>
+      </Popover>
+    </>
+  );
 }

@@ -13,10 +13,10 @@ export default async function Layout({children}: { children: React.ReactNode }) 
 
   return (
     <Providers>
-      <div>
+      <div className="min-h-screen flex flex-col bg-app-bg">
         <Header/>
 
-        <main className="p-6 lg:px-8 mx-auto max-w-7xl flex flex-col">
+        <main className="flex-1 p-4 sm:p-6 lg:px-8 mx-auto w-full max-w-7xl flex flex-col">
           {children}
         </main>
       </div>

@@ -1,20 +1,68 @@
-'use client'
+"use client";
 
 import User from "@/types/User";
-import React, {useEffect, useMemo, useState} from "react";
-import {Button, Divider, Dropdown} from "antd";
-import {LogoutOutlined, MoonOutlined, SunOutlined, UserOutlined} from "@ant-design/icons";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Box,
+  ButtonBase,
+  Divider,
+  Popover,
+  Typography,
+} from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import UserAvatar from "@/components/ui/UserAvatar";
 import Link from "next/link";
-import {useT} from "@/i18n/client";
-import {useUser} from "@/contexts/UserContext";
-import {useTheme} from "@/contexts/AppThemeContext";
+import { useT } from "@/i18n/client";
+import { useUser } from "@/contexts/UserContext";
+import { useTheme } from "@/contexts/AppThemeContext";
 
-function UserAvatarDropdown({user}: { user: User | null }) {
-  const {logout} = useUser();
+/* ── helper: reusable menu button ── */
+function MenuButton({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+}) {
+  return (
+    <ButtonBase
+      onClick={onClick}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1.25,
+        width: "100%",
+        px: 1.5,
+        py: 1,
+        borderRadius: "10px",
+        fontSize: "0.875rem",
+        fontWeight: 500,
+        color: "var(--st-text)",
+        justifyContent: "flex-start",
+        "&:hover": { backgroundColor: "var(--st-bg-paper)" },
+      }}
+    >
+      <Box sx={{ color: "var(--st-text-sec)", display: "flex", alignItems: "center", flexShrink: 0 }}>
+        {icon}
+      </Box>
+      {label}
+    </ButtonBase>
+  );
+}
+
+function UserAvatarDropdown({ user }: { user: User | null }) {
+  const { logout } = useUser();
   const [mounted, setMounted] = useState(false);
-  const {t} = useT();
-  const {theme, setTheme} = useTheme();
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const { t } = useT();
+  const { theme, setTheme } = useTheme();
+  const open = Boolean(anchorEl);
 
   useEffect(() => {
     setMounted(true);
@@ -23,64 +71,92 @@ function UserAvatarDropdown({user}: { user: User | null }) {
   const handleLogout = () => logout();
 
   const dropdownContent = useMemo(() => {
-    if (!user) return <></>;
+    if (!user) return null;
 
     return (
-      <div
-        className="flex flex-col gap-1 min-w-[260px] rounded-2xl
-                   bg-ant-bg-elevated border border-ant-border-sec
-                   text-ant-text shadow-ant-2"
-      >
-        <div className="flex items-center gap-x-2 p-4 pb-0">
-          <UserAvatar user={user} size={32}/>
-          <div>
-            <div className="font-semibold text-ant-text">{user.name}</div>
-            <div className="text-sm text-ant-text-secondary">{user.email}</div>
-          </div>
-        </div>
+      <Box>
+        {/* User info */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, p: 2, pb: 1 }}>
+          <UserAvatar user={user} size={32} />
+          <Box>
+            <Typography
+              sx={{ fontWeight: 600, fontSize: "0.875rem", color: "var(--st-text)", lineHeight: 1.3 }}
+            >
+              {user.name}
+            </Typography>
+            <Typography variant="caption" sx={{ color: "var(--st-text-sec)" }}>
+              {user.email}
+            </Typography>
+          </Box>
+        </Box>
 
-        <div className="p-2 flex flex-col">
-          <div className="p-2">
-            <Divider className="!m-0 !border-ant-border-sec"/>
-          </div>
+        <Box sx={{ px: 1, py: 0.5 }}>
+          <Divider sx={{ borderColor: "var(--st-divider)" }} />
+        </Box>
 
-          <Link href="/app/profile">
-            <Button className="!p-2 w-full !justify-start" type="text" icon={<UserOutlined/>}>
-              {t('profile')}
-            </Button>
+        {/* Menu items */}
+        <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 0.25 }}>
+          <Link href="/app/profile" onClick={() => setAnchorEl(null)}>
+            <MenuButton icon={<AccountCircleIcon sx={{ fontSize: 18 }} />} label={t("profile")} />
           </Link>
 
-          <Button
-            className="!p-2 w-full !justify-start" type="text"
-            icon={theme === 'dark' ? <SunOutlined/> : <MoonOutlined/>}
-            onClick={() => theme === 'dark' ? setTheme('light') : setTheme('dark')}
-          >
-            {t('toggle_theme')}
-          </Button>
+          <MenuButton
+            icon={
+              theme === "dark" ? (
+                <LightModeIcon sx={{ fontSize: 18 }} />
+              ) : (
+                <DarkModeIcon sx={{ fontSize: 18 }} />
+              )
+            }
+            label={t("toggle_theme")}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          />
 
           <Link href="/signin" onClick={handleLogout}>
-            <Button className="!p-2 w-full !justify-start" type="text" icon={<LogoutOutlined/>}>
-              {t('logout')}
-            </Button>
+            <MenuButton icon={<LogoutIcon sx={{ fontSize: 18 }} />} label={t("logout")} />
           </Link>
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   }, [user, theme, t]);
 
   if (!mounted || !user) return null;
 
   return (
-    <Dropdown
-      trigger={["click"]}
-      placement="bottomRight"
-      popupRender={() => dropdownContent}
-    >
-      <div className="inline-block cursor-pointer">
-        <UserAvatar user={user}/>
+    <>
+      <div
+        ref={triggerRef}
+        className="inline-block cursor-pointer"
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+      >
+        <UserAvatar user={user} />
       </div>
-    </Dropdown>
+
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              minWidth: 220,
+              borderRadius: "14px",
+              backgroundColor: "var(--st-bg-elevated)",
+              border: "1px solid var(--st-border)",
+              boxShadow: "var(--st-shadow-elevated)",
+              color: "var(--st-text)",
+              overflow: "hidden",
+            },
+          },
+        }}
+      >
+        {dropdownContent}
+      </Popover>
+    </>
   );
 }
 
-export default React.memo(UserAvatarDropdown)
+export default React.memo(UserAvatarDropdown);
