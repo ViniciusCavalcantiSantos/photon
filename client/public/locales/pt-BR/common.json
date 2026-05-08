@@ -378,5 +378,12 @@
   "privacy_policy": "Política de privacidade",
   "terms_of_service": "Termos de Serviço",
   "sidebar_nav": "Navegação lateral",
-  "table_of_contents": "Índice do conteúdo"
+  "table_of_contents": "Índice do conteúdo",
+  "zoom_in": "Ampliar",
+  "zoom_out": "Reduzir",
+  "rotate_left": "Girar para a esquerda",
+  "rotate_right": "Girar para a direita",
+  "flip_horizontal": "Inverter na horizontal",
+  "flip_vertical": "Inverter na vertical",
+  "reset": "Redefinir"
 }

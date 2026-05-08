@@ -37,6 +37,7 @@
     "react-dropzone": "^14.4.0",
     "react-i18next": "^15.7.4",
     "react-use": "^17.6.0",
+    "react-zoom-pan-pinch": "^4.0.3",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

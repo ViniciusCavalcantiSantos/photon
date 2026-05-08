@@ -1,11 +1,34 @@
-import {useT} from "@/i18n/client";
-import {filesize} from "filesize";
+'use client'
+
+import React, {useState} from "react";
+import {
+  Badge,
+  Box,
+  Card,
+  CardContent,
+  Divider,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 import dayjs from "dayjs";
-import {Badge, Button, Dropdown, Image, Tooltip} from "antd";
-import {DeleteOutlined, DownloadOutlined, InfoCircleOutlined, MoreOutlined, TeamOutlined} from "@ant-design/icons";
+import {filesize} from "filesize";
+
+import {useT} from "@/i18n/client";
 import {default as ImageType} from "@/types/Image";
 import {useUser} from "@/contexts/UserContext";
-import React from "react";
+import ImagePreview from "@/components/ui/ImagePreview";
 
 interface PhotoCardProps {
   image: ImageType
@@ -18,106 +41,202 @@ interface PhotoCardProps {
 export default function PhotoCard({image, onDownload, onMetadata, onClients, onDelete}: PhotoCardProps) {
   const {t} = useT()
   const {defaultDateFormat} = useUser();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(anchorEl);
 
-  const menuFor = (img: ImageType) => ({
-    onClick: async (info: { key: string }) => {
-      switch (info.key) {
-        case 'download':
-          onDownload(img)
-          break
-        case 'metadata':
-          onMetadata(img)
-          break
-        case 'clients':
-          onClients(img)
-          break
-        case 'delete':
-          onDelete(img)
-          break
-      }
-    },
-    items: [
-      {key: 'download', icon: <DownloadOutlined/>, label: t('download')},
-      {key: 'metadata', icon: <InfoCircleOutlined/>, label: t('view_metadata')},
-      {type: 'divider' as const},
-      {key: 'delete', icon: <DeleteOutlined/>, label: t('delete'), danger: true}
-    ]
-  })
+  const imageSrc = image.urls?.web ?? image.urls?.original ?? image.url;
+  const imageName = image.original?.name ?? image.id;
+  const imageSize = image.original?.size ?? image.size ?? 0;
+  const clientsCount = image.clientsOnImageCount ?? 0;
+
+  const closeMenu = () => setAnchorEl(null);
 
   return (
-    <div>
-      <div
-        className="
-                max-w-sm mx-auto
-                bg-ant-bg-elevated
-                border border-ant-border-sec
-                rounded-lg
-                shadow-ant-1
-                flex flex-col
-                h-full
-              "
+    <Card
+      variant="outlined"
+      sx={{
+        height: '100%',
+        borderRadius: '16px',
+        backgroundColor: 'var(--st-bg-paper)',
+        borderColor: 'var(--st-border)',
+        overflow: 'hidden',
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          borderColor: 'var(--st-primary)',
+          boxShadow: 'var(--st-shadow-card)',
+          transform: 'translateY(-1px)',
+        },
+      }}
+    >
+      <Box
+        sx={{
+          position: 'relative',
+          aspectRatio: '4 / 3',
+          backgroundColor: 'var(--st-bg-elevated)',
+          borderBottom: '1px solid var(--st-divider)',
+          overflow: 'hidden',
+        }}
       >
-        {/* wrapper da imagem */}
-        <div className="w-full pt-[67%] relative">
-          <div className="absolute top-0 left-0 w-full h-full [&>.ant-image]:w-full [&>.ant-image]:h-full">
-            <Image src={image.urls?.web} className="rounded-t-lg object-contain !h-full"/>
-          </div>
-        </div>
+        {imageSrc ? (
+          <ImagePreview src={imageSrc} alt={imageName} title={imageName}/>
+        ) : (
+          <Box sx={{height: '100%', display: 'grid', placeItems: 'center', color: 'var(--st-text-sec)'}}>
+            <InsertPhotoOutlinedIcon sx={{fontSize: 48}}/>
+          </Box>
+        )}
+      </Box>
 
-        {/* infos da imagem */}
-        <div className="p-4 flex flex-wrap gap-2 text-ant-text flex-grow">
-          <p className="w-full">
-            <strong>{t('name')}:</strong> {image.original?.name}
-          </p>
-          <p>
-            <strong>{t('size')}:</strong> {filesize(image.original?.size ?? 0)}
-          </p>
-          <p>
-            <strong>{t('upload_date')}:</strong> {dayjs(image.createdAt).format(defaultDateFormat)}
-          </p>
-        </div>
+      <CardContent sx={{p: 2, '&:last-child': {pb: 2}}}>
+        <Typography
+          title={imageName}
+          sx={{
+            color: 'var(--st-text)',
+            fontWeight: 700,
+            lineHeight: 1.3,
+            mb: 1.5,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {imageName}
+        </Typography>
 
-        {/* linha separadora */}
-        <div className="w-full h-px bg-ant-border-sec"></div>
+        <Stack direction="row" sx={{flexWrap: 'wrap', gap: 1.5, rowGap: 0.75}}>
+          <MetaText label={t('size')} value={filesize(imageSize) as string}/>
+          <MetaText label={t('upload_date')} value={dayjs(image.createdAt).format(defaultDateFormat)}/>
+        </Stack>
 
-        {/* ações */}
-        <div className="flex justify-end gap-4 p-4">
-          <Tooltip title={t('clients_in_image')}>
-            <Badge
-              count={image.clientsOnImageCount}
-              size="small" style={{fontSize: 10, background: "var(--ant-color-primary)"}}
-              offset={[-4, 4]}
+        <Divider sx={{borderColor: 'var(--st-divider)', my: 1.5}}/>
+
+        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <Tooltip title={t('clients_in_image')} arrow>
+            <IconButton
+              onClick={() => onClients(image)}
+              aria-label={t('clients_in_image')}
+              size="small"
+              sx={{
+                color: 'var(--st-text-sec)',
+                '&:hover': {color: 'var(--st-primary)', backgroundColor: 'var(--st-primary-light)'},
+              }}
             >
-              <Button
-                onClick={() => menuFor(image).onClick({key: 'clients'})}
-                type="text"
-                shape="circle"
-                aria-label={t('options')}
-                className="
-                          !text-2xl
-                          !text-ant-text-sec
-                        "
+              <Badge
+                badgeContent={clientsCount}
+                color="primary"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    minWidth: 16,
+                    height: 16,
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    backgroundColor: 'var(--st-primary)',
+                  },
+                }}
               >
-                <TeamOutlined/>
-              </Button>
-            </Badge>
+                <PeopleAltOutlinedIcon fontSize="small"/>
+              </Badge>
+            </IconButton>
           </Tooltip>
 
-          <Dropdown menu={menuFor(image)} trigger={['click']}>
-            <Button
-              type="text"
-              shape="circle"
+          <Stack direction="row" spacing={0.5}>
+            <Tooltip title={t('download')} arrow>
+              <IconButton
+                onClick={() => onDownload(image)}
+                aria-label={t('download')}
+                size="small"
+                sx={{
+                  color: 'var(--st-text-sec)',
+                  '&:hover': {color: 'var(--st-primary)', backgroundColor: 'var(--st-primary-light)'},
+                }}
+              >
+                <DownloadOutlinedIcon fontSize="small"/>
+              </IconButton>
+            </Tooltip>
+
+            <IconButton
+              onClick={(event) => setAnchorEl(event.currentTarget)}
               aria-label={t('options')}
-              className="
-                      !text-2xl
-                      !text-ant-text-sec
-                    "
+              size="small"
+              sx={{
+                color: 'var(--st-text-sec)',
+                '&:hover': {color: 'var(--st-text)', backgroundColor: 'var(--st-primary-light)'},
+              }}
             >
-              <MoreOutlined/>
-            </Button>
-          </Dropdown>
-        </div>
-      </div>
-    </div>
+              <MoreVertIcon fontSize="small"/>
+            </IconButton>
+          </Stack>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={closeMenu}
+            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+            transformOrigin={{vertical: 'top', horizontal: 'right'}}
+            slotProps={{
+              paper: {
+                sx: {
+                  backgroundColor: 'var(--st-bg-elevated)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--st-border)',
+                  boxShadow: 'var(--st-shadow-elevated)',
+                  minWidth: 180,
+                },
+              },
+            }}
+          >
+            <MenuItem
+              onClick={() => {
+                closeMenu();
+                onMetadata(image);
+              }}
+              sx={{
+                color: 'var(--st-text)',
+                fontSize: '0.85rem',
+                py: 1,
+                '&:hover': {backgroundColor: 'var(--st-primary-light)'},
+              }}
+            >
+              <ListItemIcon>
+                <InfoOutlinedIcon fontSize="small" sx={{color: 'var(--st-text-sec)'}}/>
+              </ListItemIcon>
+              <ListItemText>{t('view_metadata')}</ListItemText>
+            </MenuItem>
+
+            <Divider sx={{borderColor: 'var(--st-divider)', my: '4px !important'}}/>
+
+            <MenuItem
+              onClick={() => {
+                closeMenu();
+                onDelete(image);
+              }}
+              sx={{
+                color: 'var(--st-error)',
+                fontSize: '0.85rem',
+                py: 1,
+                '&:hover': {backgroundColor: 'rgba(239, 68, 68, 0.08)'},
+              }}
+            >
+              <ListItemIcon>
+                <DeleteOutlineOutlinedIcon fontSize="small" sx={{color: 'var(--st-error)'}}/>
+              </ListItemIcon>
+              <ListItemText>{t('delete')}</ListItemText>
+            </MenuItem>
+          </Menu>
+        </Box>
+      </CardContent>
+    </Card>
   )
+}
+
+function MetaText({label, value}: { label: string; value: string }) {
+  return (
+    <Box sx={{minWidth: 0}}>
+      <Typography variant="caption" sx={{display: 'block', color: 'var(--st-text-sec)', lineHeight: 1.1}}>
+        {label}
+      </Typography>
+      <Typography noWrap sx={{color: 'var(--st-text)', fontSize: '0.82rem', fontWeight: 600}}>
+        {value}
+      </Typography>
+    </Box>
+  );
 }

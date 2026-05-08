@@ -378,5 +378,12 @@
   "privacy_policy": "Privacy Policy",
   "terms_of_service": "Terms of Service",
   "sidebar_nav": "Sidebar navigation",
-  "table_of_contents": "Table of contents"
+  "table_of_contents": "Table of contents",
+  "zoom_in": "Zoom in",
+  "zoom_out": "Zoom out",
+  "rotate_left": "Rotate left",
+  "rotate_right": "Rotate right",
+  "flip_horizontal": "Flip horizontal",
+  "flip_vertical": "Flip vertical",
+  "reset": "Reset"
 }
