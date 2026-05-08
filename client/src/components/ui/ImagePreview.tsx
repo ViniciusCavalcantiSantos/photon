@@ -125,12 +125,16 @@ export default function ImagePreview({src, alt, title, thumbnailSx, imageSx}: Im
       <Dialog
         open={open}
         onClose={close}
-        fullWidth
-        maxWidth="lg"
+        fullScreen
         slotProps={{
           paper: {
             sx: {
-              borderRadius: '16px',
+              m: 0,
+              width: '100vw',
+              height: '100vh',
+              maxWidth: 'none',
+              maxHeight: 'none',
+              borderRadius: 0,
               backgroundColor: 'transparent',
               border: 0,
               boxShadow: 'none',
@@ -146,7 +150,8 @@ export default function ImagePreview({src, alt, title, thumbnailSx, imageSx}: Im
         <DialogContent
           sx={{
             p: 0,
-            minHeight: {xs: '70vh', sm: '82vh'},
+            width: '100vw',
+            height: '100vh',
             position: 'relative',
             backgroundColor: 'transparent',
             overflow: 'hidden',
@@ -155,9 +160,9 @@ export default function ImagePreview({src, alt, title, thumbnailSx, imageSx}: Im
           <Box
             sx={{
               position: 'absolute',
-              top: {xs: 8, sm: 12},
-              left: {xs: 8, sm: 12},
-              right: {xs: 8, sm: 12},
+              top: {xs: 10, sm: 14},
+              left: {xs: 10, sm: 14},
+              right: {xs: 10, sm: 14},
               zIndex: 2,
               display: 'flex',
               alignItems: 'flex-start',
@@ -169,14 +174,14 @@ export default function ImagePreview({src, alt, title, thumbnailSx, imageSx}: Im
               title={title ?? alt}
               sx={{
                 maxWidth: {xs: 'calc(100% - 52px)', sm: 520},
-                px: 1.5,
-                py: 0.85,
+                px: 1.35,
+                py: 0.7,
                 borderRadius: '12px',
                 color: '#fff',
                 backgroundColor: 'rgba(0, 0, 0, 0.42)',
                 backdropFilter: 'blur(10px)',
                 fontWeight: 700,
-                fontSize: '0.9rem',
+                fontSize: '0.86rem',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -218,7 +223,7 @@ export default function ImagePreview({src, alt, title, thumbnailSx, imageSx}: Im
             {({zoomIn, zoomOut, resetTransform, centerView}) => (
               <Box
                 sx={{
-                  minHeight: {xs: '70vh', sm: '82vh'},
+                  height: '100vh',
                   display: 'grid',
                   gridTemplateRows: '1fr auto',
                 }}
@@ -244,7 +249,7 @@ export default function ImagePreview({src, alt, title, thumbnailSx, imageSx}: Im
                     draggable={false}
                     sx={{
                       maxWidth: 'calc(100vw - 48px)',
-                      maxHeight: 'calc(90vh - 132px)',
+                      maxHeight: 'calc(100vh - 104px)',
                       width: 'auto',
                       height: 'auto',
                       objectFit: 'contain',
@@ -265,9 +270,9 @@ export default function ImagePreview({src, alt, title, thumbnailSx, imageSx}: Im
                       maxWidth: '100%',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: 0.75,
-                      px: 1.5,
-                      py: 1,
+                      gap: 1,
+                      px: 1.25,
+                      py: 0.9,
                       borderRadius: '14px',
                       backgroundColor: 'rgba(11, 12, 16, 0.88)',
                       backdropFilter: 'blur(10px)',
