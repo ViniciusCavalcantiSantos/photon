@@ -91,9 +91,12 @@ export { stitchTokens }                       // new palette reference object
 
 ---
 
-## Shared MUI Input Styling Pattern
+## Shared MUI Component Library
 
-New MUI components use these shared `sx` snippets (defined at the top of each file):
+> **This pattern has been superseded.** Raw `sx` objects are no longer copy-pasted between files.
+> See **[mui-components.md](./mui-components.md)** for the full reference of reusable styled wrapper components (`StyledTextField`, `StyledSelect`, `StyledCheckbox`, `FieldLabel`, `StyledDialog`, `DialogCancelButton`, `DialogPrimaryButton`).
+
+New MUI components use these wrapper components instead of inline `sx` snippets:
 
 ```tsx
 const inputSx = {
