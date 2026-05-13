@@ -6,9 +6,15 @@ import ErrorEmpty from "@/components/common/ErrorEmpty";
 
 interface UseServerTableProps {
   initialPageSize?: number;
+  defaultSortBy?: string;
+  defaultSortOrder?: 'asc' | 'desc';
 }
 
-export function useServerTable<T>({initialPageSize = 15}: UseServerTableProps = {}) {
+export function useServerTable<T>({
+  initialPageSize = 15,
+  defaultSortBy = 'event_date',
+  defaultSortOrder = 'desc',
+}: UseServerTableProps = {}) {
   const {t} = useT();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,8 +25,8 @@ export function useServerTable<T>({initialPageSize = 15}: UseServerTableProps = 
   // Filter state
   const [contractId, setContractId] = useState<number | ''>('');
   const [eventTypeId, setEventTypeId] = useState<number | ''>('');
-  const [sortBy, setSortBy] = useState<string>('event_date');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [sortBy, setSortBy] = useState<string>(defaultSortBy);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(defaultSortOrder);
 
   useDebounce(
     () => {

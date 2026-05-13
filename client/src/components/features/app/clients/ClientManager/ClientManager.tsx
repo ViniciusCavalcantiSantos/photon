@@ -2,16 +2,24 @@
 
 import React, { useState } from "react";
 import {
+  Badge,
   Box,
   Button,
   Card,
   CardContent,
+  Divider,
   Fab,
+  FormControl,
+  IconButton,
   InputAdornment,
+  MenuItem,
   Pagination,
+  Popover,
+  Select,
   Skeleton,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -20,6 +28,9 @@ import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import GroupIcon from "@mui/icons-material/Group";
 import CheckBoxOutlinedIcon from "@mui/icons-material/CheckBoxOutlined";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { useT } from "@/i18n/client";
 import Client from "@/types/Client";
@@ -36,19 +47,34 @@ import { useAssignController } from "@/components/features/app/clients/ClientMan
 import ClientCard from "@/components/features/app/clients/ClientManager/_components/ClientCard";
 
 /* ── shared sx tokens ── */
-const searchSx = {
-  flex: 1,
-  maxWidth: { sm: 360 },
-  "& .MuiOutlinedInput-root": {
-    borderRadius: "12px",
-    backgroundColor: "var(--st-bg-paper)",
-    color: "var(--st-text)",
-    "& fieldset": { borderColor: "var(--st-border)" },
-    "&:hover fieldset": { borderColor: "var(--st-primary)" },
-    "&.Mui-focused fieldset": { borderColor: "var(--st-primary)" },
-  },
-  "& .MuiInputBase-input::placeholder": { color: "var(--st-text-sec)", opacity: 1 },
+const filterSelectSx = {
+  borderRadius: '12px',
+  backgroundColor: 'var(--st-bg-paper)',
+  color: 'var(--st-text)',
+  fontSize: '0.85rem',
+  '& fieldset': { borderColor: 'var(--st-border)' },
+  '&:hover fieldset': { borderColor: 'var(--st-primary)' },
+  '&.Mui-focused fieldset': { borderColor: 'var(--st-primary)' },
+  '& .MuiSvgIcon-root': { color: 'var(--st-text-sec)' },
 } as const;
+
+const filterMenuProps = {
+  slotProps: {
+    paper: {
+      sx: {
+        backgroundColor: 'var(--st-bg-elevated)',
+        border: '1px solid var(--st-border)',
+        borderRadius: '12px',
+        '& .MuiMenuItem-root': {
+          color: 'var(--st-text)',
+          fontSize: '0.85rem',
+          '&:hover': { backgroundColor: 'var(--st-primary-light)' },
+          '&.Mui-selected': { backgroundColor: 'var(--st-primary-light)' },
+        },
+      },
+    },
+  },
+};
 
 /* ── Main component ── */
 export default function ClientManager() {
@@ -57,15 +83,21 @@ export default function ClientManager() {
   const [openModalGenerateLink, setOpenModalGenerateLink] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectMode, setSelectMode] = useState(false);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(null);
 
   const { defaultDateFormat } = useUser();
-  const { queryParams, searchProps, pagination } = useServerTable<Client>();
+  const { queryParams, searchProps, pagination, filters } = useServerTable<Client>({
+    defaultSortBy: 'created_at',
+    defaultSortOrder: 'desc',
+  });
 
-  const { data, isLoading, isError, error, refetch } = useClients(
-    queryParams.searchTerm,
-    queryParams.page,
-    queryParams.pageSize,
-  );
+  const { data, isLoading, isError, error, refetch } = useClients({
+    searchTerm: queryParams.searchTerm,
+    page: queryParams.page,
+    pageSize: queryParams.pageSize,
+    sortBy: queryParams.sortBy,
+    sortOrder: queryParams.sortOrder,
+  });
   const removeClient = useRemoveClient();
 
   const assignCtrl = useAssignController();
@@ -78,6 +110,8 @@ export default function ClientManager() {
   const meta = data?.meta;
   const lastPage = meta?.last_page ?? 0;
   const hasSelected = selectedIds.length > 0;
+  const isFilterMenuOpen = Boolean(filterAnchorEl);
+  const hasCustomSort = filters.sortBy !== 'created_at' || filters.sortOrder !== 'desc';
 
   const handleToggleSelect = (id: number) => {
     if (!selectMode) return;
@@ -97,6 +131,11 @@ export default function ClientManager() {
 
   const handleUnassign = (client: Client) =>
     assignCtrl.actions.openUnassign([client.id]);
+
+  const handleResetFilters = () => {
+    filters.onSortByChange('created_at');
+    filters.onSortOrderChange('desc');
+  };
 
   return (
     <>
@@ -118,8 +157,59 @@ export default function ClientManager() {
               ),
             },
           }}
-          sx={searchSx}
+          sx={{
+            flex: 1,
+            maxWidth: { sm: 360 },
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              backgroundColor: "var(--st-bg-paper)",
+              color: "var(--st-text)",
+              "& fieldset": { borderColor: "var(--st-border)" },
+              "&:hover fieldset": { borderColor: "var(--st-primary)" },
+              "&.Mui-focused fieldset": { borderColor: "var(--st-primary)" },
+            },
+            "& .MuiInputBase-input::placeholder": { color: "var(--st-text-sec)", opacity: 1 },
+          }}
         />
+
+        {/* Filter button */}
+        <Tooltip title={t('filters')} arrow>
+          <IconButton
+            onClick={(e) => setFilterAnchorEl(e.currentTarget)}
+            aria-label={t('filters')}
+            aria-haspopup="true"
+            aria-expanded={isFilterMenuOpen ? 'true' : undefined}
+            sx={{
+              width: 42,
+              height: 42,
+              borderRadius: '12px',
+              border: '1px solid var(--st-border)',
+              backgroundColor: isFilterMenuOpen ? 'var(--st-primary-light)' : 'var(--st-bg-paper)',
+              color: isFilterMenuOpen || hasCustomSort ? 'var(--st-primary)' : 'var(--st-text-sec)',
+              '&:hover': {
+                borderColor: 'var(--st-primary)',
+                backgroundColor: 'var(--st-primary-light)',
+              },
+            }}
+          >
+            <Badge
+              badgeContent={Number(hasCustomSort)}
+              color="primary"
+              invisible={!hasCustomSort}
+              sx={{
+                '& .MuiBadge-badge': {
+                  minWidth: 16,
+                  height: 16,
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  backgroundColor: 'var(--st-primary)',
+                },
+              }}
+            >
+              <FilterListIcon fontSize="small" />
+            </Badge>
+          </IconButton>
+        </Tooltip>
 
         {/* Select mode toggle */}
         <Button
@@ -161,6 +251,119 @@ export default function ClientManager() {
           {t("add_new_client")}
         </Button>
       </Box>
+
+      {/* ── Filter Popover ── */}
+      <Popover
+        open={isFilterMenuOpen}
+        anchorEl={filterAnchorEl}
+        onClose={() => setFilterAnchorEl(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              width: { xs: 'calc(100vw - 32px)', sm: 340 },
+              borderRadius: '16px',
+              backgroundColor: 'var(--st-bg-elevated)',
+              border: '1px solid var(--st-border)',
+              boxShadow: 'var(--st-shadow-elevated)',
+              color: 'var(--st-text)',
+              overflow: 'hidden',
+            },
+          },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          {/* Header */}
+          <Stack direction="row" sx={{ alignItems: 'center', gap: 1.25, mb: 2 }}>
+            <Box
+              sx={{
+                width: 34,
+                height: 34,
+                borderRadius: '10px',
+                display: 'grid',
+                placeItems: 'center',
+                backgroundColor: 'var(--st-primary-light)',
+                color: 'var(--st-primary)',
+              }}
+            >
+              <FilterListIcon fontSize="small" />
+            </Box>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography sx={{ fontWeight: 700, color: 'var(--st-text)', lineHeight: 1.2 }}>
+                {t('filters')}
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'var(--st-text-sec)' }}>
+                {hasCustomSort ? t('filters_active') : t('default_view')}
+              </Typography>
+            </Box>
+            <Tooltip title={t('close')} arrow>
+              <IconButton
+                size="small"
+                onClick={() => setFilterAnchorEl(null)}
+                sx={{ color: 'var(--st-text-sec)', '&:hover': { backgroundColor: 'var(--st-primary-light)', color: 'var(--st-text)' } }}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+
+          <Divider sx={{ mb: 2, borderColor: 'var(--st-divider)' }} />
+
+          {/* Sort section */}
+          <Stack direction="row" sx={{ alignItems: 'center', gap: 1, mb: 1.5 }}>
+            <SwapVertIcon sx={{ color: 'var(--st-text-sec)', fontSize: 20 }} />
+            <Typography sx={{ color: 'var(--st-text)', fontWeight: 700, fontSize: '0.9rem' }}>
+              {t('sort_by')}
+            </Typography>
+          </Stack>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+            <FormControl size="small" fullWidth>
+              <Select
+                value={filters.sortBy}
+                onChange={(e) => filters.onSortByChange(e.target.value)}
+                sx={filterSelectSx}
+                MenuProps={filterMenuProps}
+              >
+                <MenuItem value="created_at">{t('created_at')}</MenuItem>
+                <MenuItem value="name">{t('name')}</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl size="small" fullWidth>
+              <Select
+                value={filters.sortOrder}
+                onChange={(e) => filters.onSortOrderChange(e.target.value as 'asc' | 'desc')}
+                sx={filterSelectSx}
+                MenuProps={filterMenuProps}
+              >
+                <MenuItem value="desc">{t('newest_first')}</MenuItem>
+                <MenuItem value="asc">{t('oldest_first')}</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+
+          {hasCustomSort && (
+            <Button
+              fullWidth
+              variant="text"
+              onClick={handleResetFilters}
+              sx={{
+                mt: 2,
+                borderRadius: '10px',
+                textTransform: 'none',
+                color: 'var(--st-text-sec)',
+                fontWeight: 600,
+                '&:hover': { backgroundColor: 'var(--st-primary-light)', color: 'var(--st-primary)' },
+              }}
+            >
+              {t('reset_filters')}
+            </Button>
+          )}
+        </Box>
+      </Popover>
 
       {/* ── Bulk-selection action bar ── */}
       {hasSelected && (

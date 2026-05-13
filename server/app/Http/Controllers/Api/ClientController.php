@@ -28,7 +28,9 @@ class ClientController extends Controller
         tags: ['Clients'],
         parameters: [
             new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
-            new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string'))
+            new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string')),
+            new OA\QueryParameter(name: 'sort_by', required: false, description: 'Campo de ordenação (name, created_at)', schema: new OA\Schema(type: 'string')),
+            new OA\QueryParameter(name: 'sort_order', required: false, description: 'Direção da ordenação (asc, desc)', schema: new OA\Schema(type: 'string'))
         ],
         responses: [
             new OA\Response(
@@ -65,11 +67,13 @@ class ClientController extends Controller
         $organizationId = auth()->user()->organization_id;
         $perPage = $request->input('per_page', 15);
         $searchTerm = $request->input('search');
+        $sortBy = in_array($request->input('sort_by'), ['name', 'created_at']) ? $request->input('sort_by') : 'created_at';
+        $sortOrder = in_array($request->input('sort_order'), ['asc', 'desc']) ? $request->input('sort_order') : 'desc';
 
         $clientsQuery = Client
             ::where('organization_id', $organizationId)
             ->with(['address'])
-            ->latest();
+            ->orderBy($sortBy, $sortOrder);
 
         $clientsQuery->when($searchTerm, function ($query, $term) {
             $query->where('searchable', "LIKE", "%{$term}%");
