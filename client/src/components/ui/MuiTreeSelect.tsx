@@ -54,11 +54,19 @@ function buildInputSx(bg: string) {
       backgroundColor: bg,
       color: "var(--st-text)",
       fontSize: "0.875rem",
-      "& fieldset": { borderColor: "var(--st-border)" },
+      /* Remove the legend notch line that MUI renders even without a label */
+      "& fieldset": { borderColor: "var(--st-border)", top: 0 },
+      "& fieldset legend": { display: "none" },
       "&:hover fieldset": { borderColor: "var(--st-primary)" },
       "&.Mui-focused fieldset": { borderColor: "var(--st-primary)" },
+      /* Ensure vertical centering of content */
+      alignItems: "center",
     },
-    "& .MuiInputBase-input": { color: "var(--st-text)" },
+    "& .MuiInputBase-input": {
+      color: "var(--st-text)",
+      padding: "8.5px 14px",
+      lineHeight: "normal",
+    },
     "& .MuiInputBase-input::placeholder": { color: "var(--st-text-sec)", opacity: 1 },
   } as const;
 }
@@ -143,6 +151,7 @@ export default function MuiTreeSelect({
 }: MuiTreeSelectProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [dropdownAbove, setDropdownAbove] = useState(false);
   const [search, setSearch] = useState("");
   const [collapsed, setCollapsed] = useState<Set<string | number>>(new Set());
 
@@ -157,6 +166,15 @@ export default function MuiTreeSelect({
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  /* Flip dropdown above when near the bottom of the viewport */
+  useEffect(() => {
+    if (!open || !wrapperRef.current) return;
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const dropdownHeight = typeof maxHeight === "number" ? maxHeight + 60 : 360;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    setDropdownAbove(spaceBelow < dropdownHeight && rect.top > dropdownHeight);
+  }, [open, maxHeight]);
 
   const leafCount = value.filter((v) => typeof v === "number").length;
 
@@ -238,17 +256,19 @@ export default function MuiTreeSelect({
             ),
           },
         }}
+        label={undefined}
         sx={buildInputSx(inputBackground)}
       />
 
-      {/* ── Dropdown panel — absolutely positioned below the input ── */}
+      {/* ── Dropdown panel — positioned above or below based on available space ── */}
       {open && (
         <Box sx={{
           position: "absolute",
-          top: "100%",
+          ...(dropdownAbove
+            ? { bottom: "100%", top: "auto", mb: 0.5 }
+            : { top: "100%", bottom: "auto", mt: 0.5 }),
           left: 0,
           right: 0,
-          mt: 0.5,
           zIndex: 1400,          /* above MUI Dialog (z-index 1300) */
           borderRadius: "12px",
           backgroundColor: "var(--st-bg-elevated)",
