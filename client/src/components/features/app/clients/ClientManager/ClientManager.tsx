@@ -45,6 +45,7 @@ import RegisterTypeModal from "@/components/features/app/clients/ClientManager/_
 import { useClientAssignments } from "@/lib/queries/assignments/useClientAssignments";
 import { useAssignController } from "@/components/features/app/clients/ClientManager/_hooks/useAssignController";
 import ClientCard from "@/components/features/app/clients/ClientManager/_components/ClientCard";
+import EventSelector from "@/components/common/EventSelector";
 
 /* ── shared sx tokens ── */
 const filterSelectSx = {
@@ -97,6 +98,7 @@ export default function ClientManager() {
     pageSize: queryParams.pageSize,
     sortBy: queryParams.sortBy,
     sortOrder: queryParams.sortOrder,
+    eventIds: queryParams.eventIds,
   });
   const removeClient = useRemoveClient();
 
@@ -111,7 +113,9 @@ export default function ClientManager() {
   const lastPage = meta?.last_page ?? 0;
   const hasSelected = selectedIds.length > 0;
   const isFilterMenuOpen = Boolean(filterAnchorEl);
+  const activeFilterCount = filters.eventIds.length;
   const hasCustomSort = filters.sortBy !== 'created_at' || filters.sortOrder !== 'desc';
+  const hasAnyFilter = activeFilterCount > 0 || hasCustomSort;
 
   const handleToggleSelect = (id: number) => {
     if (!selectMode) return;
@@ -133,6 +137,7 @@ export default function ClientManager() {
     assignCtrl.actions.openUnassign([client.id]);
 
   const handleResetFilters = () => {
+    filters.onEventIdChange([]);
     filters.onSortByChange('created_at');
     filters.onSortOrderChange('desc');
   };
@@ -185,7 +190,7 @@ export default function ClientManager() {
               borderRadius: '12px',
               border: '1px solid var(--st-border)',
               backgroundColor: isFilterMenuOpen ? 'var(--st-primary-light)' : 'var(--st-bg-paper)',
-              color: isFilterMenuOpen || hasCustomSort ? 'var(--st-primary)' : 'var(--st-text-sec)',
+              color: isFilterMenuOpen || hasAnyFilter ? 'var(--st-primary)' : 'var(--st-text-sec)',
               '&:hover': {
                 borderColor: 'var(--st-primary)',
                 backgroundColor: 'var(--st-primary-light)',
@@ -193,9 +198,9 @@ export default function ClientManager() {
             }}
           >
             <Badge
-              badgeContent={Number(hasCustomSort)}
+              badgeContent={activeFilterCount + Number(hasCustomSort)}
               color="primary"
-              invisible={!hasCustomSort}
+              invisible={!hasAnyFilter}
               sx={{
                 '& .MuiBadge-badge': {
                   minWidth: 16,
@@ -269,7 +274,7 @@ export default function ClientManager() {
               border: '1px solid var(--st-border)',
               boxShadow: 'var(--st-shadow-elevated)',
               color: 'var(--st-text)',
-              overflow: 'hidden',
+              overflow: 'visible',
             },
           },
         }}
@@ -295,7 +300,7 @@ export default function ClientManager() {
                 {t('filters')}
               </Typography>
               <Typography variant="caption" sx={{ color: 'var(--st-text-sec)' }}>
-                {hasCustomSort ? t('filters_active') : t('default_view')}
+                {hasAnyFilter ? t('filters_active') : t('default_view')}
               </Typography>
             </Box>
             <Tooltip title={t('close')} arrow>
@@ -310,6 +315,17 @@ export default function ClientManager() {
           </Stack>
 
           <Divider sx={{ mb: 2, borderColor: 'var(--st-divider)' }} />
+
+          {/* Event filter */}
+          <Box sx={{ mb: 2 }}>
+            <Typography sx={{ color: 'var(--st-text-sec)', fontWeight: 600, fontSize: '0.78rem', mb: 0.75 }}>
+              {t('event')}
+            </Typography>
+            <EventSelector
+              value={filters.eventIds}
+              onChange={(ids) => filters.onEventIdChange(ids)}
+            />
+          </Box>
 
           {/* Sort section */}
           <Stack direction="row" sx={{ alignItems: 'center', gap: 1, mb: 1.5 }}>
@@ -345,7 +361,7 @@ export default function ClientManager() {
             </FormControl>
           </Stack>
 
-          {hasCustomSort && (
+          {hasAnyFilter && (
             <Button
               fullWidth
               variant="text"

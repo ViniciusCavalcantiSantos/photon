@@ -8,6 +8,7 @@ export interface FetchClientsParams {
   searchTerm?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  eventIds?: number[];
 }
 
 export async function fetchClients({
@@ -16,16 +17,23 @@ export async function fetchClients({
   searchTerm,
   sortBy = 'created_at',
   sortOrder = 'desc',
+  eventIds = [],
 }: FetchClientsParams = {}) {
-  const url = buildUrl('/clients', {
+  // Build base params
+  const params: Record<string, any> = {
     page: String(page),
     per_page: String(pageSize),
-    search: searchTerm || undefined,
     sort_by: sortBy,
     sort_order: sortOrder,
-  });
+  };
 
-  return await apiFetch<FetchClientsResponse>(url, {
+  if (searchTerm) params.search = searchTerm;
+
+  // Append event_ids[] as repeated query params
+  const query = new URLSearchParams(params);
+  eventIds.forEach((id) => query.append('event_ids[]', String(id)));
+
+  return await apiFetch<FetchClientsResponse>(`/clients?${query.toString()}`, {
     method: "GET",
   });
 }

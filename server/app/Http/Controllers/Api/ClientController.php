@@ -30,7 +30,8 @@ class ClientController extends Controller
             new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
             new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string')),
             new OA\QueryParameter(name: 'sort_by', required: false, description: 'Campo de ordenação (name, created_at)', schema: new OA\Schema(type: 'string')),
-            new OA\QueryParameter(name: 'sort_order', required: false, description: 'Direção da ordenação (asc, desc)', schema: new OA\Schema(type: 'string'))
+            new OA\QueryParameter(name: 'sort_order', required: false, description: 'Direção da ordenação (asc, desc)', schema: new OA\Schema(type: 'string')),
+            new OA\QueryParameter(name: 'event_ids[]', required: false, description: 'Filtrar por eventos (array de IDs)', schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'integer')))
         ],
         responses: [
             new OA\Response(
@@ -69,6 +70,7 @@ class ClientController extends Controller
         $searchTerm = $request->input('search');
         $sortBy = in_array($request->input('sort_by'), ['name', 'created_at']) ? $request->input('sort_by') : 'created_at';
         $sortOrder = in_array($request->input('sort_order'), ['asc', 'desc']) ? $request->input('sort_order') : 'desc';
+        $eventIds = array_filter((array) $request->input('event_ids', []), 'is_numeric');
 
         $clientsQuery = Client
             ::where('organization_id', $organizationId)
@@ -77,6 +79,12 @@ class ClientController extends Controller
 
         $clientsQuery->when($searchTerm, function ($query, $term) {
             $query->where('searchable', "LIKE", "%{$term}%");
+        });
+
+        $clientsQuery->when(!empty($eventIds), function ($query) use ($eventIds) {
+            $query->whereHas('events', function ($q) use ($eventIds) {
+                $q->whereIn('events.id', $eventIds);
+            });
         });
 
         $clients = $clientsQuery->paginate($perPage);

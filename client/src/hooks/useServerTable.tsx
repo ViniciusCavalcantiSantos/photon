@@ -25,6 +25,7 @@ export function useServerTable<T>({
   // Filter state
   const [contractId, setContractId] = useState<number | ''>('');
   const [eventTypeId, setEventTypeId] = useState<number | ''>('');
+  const [eventIds, setEventIds] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<string>(defaultSortBy);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(defaultSortOrder);
 
@@ -62,6 +63,11 @@ export function useServerTable<T>({
 
   const handleEventTypeChange = useCallback((value: number | '') => {
     setEventTypeId(value);
+    setPage(1);
+  }, []);
+
+  const handleEventIdChange = useCallback((value: number[]) => {
+    setEventIds(value);
     setPage(1);
   }, []);
 
@@ -142,6 +148,7 @@ export function useServerTable<T>({
       withContract: true,
       contractId,
       eventTypeId,
+      eventIds,
       sortBy,
       sortOrder,
     },
@@ -154,10 +161,12 @@ export function useServerTable<T>({
     filters: {
       contractId,
       eventTypeId,
+      eventIds,
       sortBy,
       sortOrder,
       onContractChange: handleContractChange,
       onEventTypeChange: handleEventTypeChange,
+      onEventIdChange: handleEventIdChange,
       onSortByChange: handleSortByChange,
       onSortOrderChange: handleSortOrderChange,
     },
