@@ -4,16 +4,11 @@ import { useEffect, useState } from "react";
 import { assignClient } from "@/lib/api/assignments/assignClient";
 import { assignClientBulk } from "@/lib/api/assignments/assignClientBulk";
 import { unassignClientBulk } from "@/lib/api/assignments/unassignClientBulk";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-} from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import EventSelector from "@/components/common/EventSelector";
+import StyledDialog from "@/components/ui/StyledDialog";
+import DialogCancelButton from "@/components/ui/DialogCancelButton";
+import DialogPrimaryButton from "@/components/ui/DialogPrimaryButton";
 
 interface AssignModalsProps {
   openModalAssign: boolean;
@@ -22,16 +17,6 @@ interface AssignModalsProps {
   initialAssignments: number[];
   type: "single" | "bulk" | "unassign";
 }
-
-/* ── shared dialog paper sx ── */
-const dialogPaperSx = {
-  backgroundColor: "var(--st-bg-paper)",
-  backgroundImage: "none",
-  border: "1px solid var(--st-border)",
-  borderRadius: "16px",
-  color: "var(--st-text)",
-  minWidth: { xs: "calc(100vw - 32px)", sm: 480 },
-} as const;
 
 export default function AssignModals({
   openModalAssign,
@@ -82,56 +67,29 @@ export default function AssignModals({
   const isUnassign = type === "unassign";
 
   return (
-    <Dialog
-      open={openModalAssign}
-      onClose={handleClose}
-      slotProps={{
-        paper: { sx: dialogPaperSx },
-        backdrop: { sx: { backgroundColor: "var(--st-bg-mask)" } },
-      }}
-    >
-      <DialogTitle sx={{ color: "var(--st-text)", fontWeight: 700, pb: 1 }}>
+    <StyledDialog open={openModalAssign} onClose={handleClose} minWidth={480}>
+      <Typography sx={{ color: "var(--st-text)", fontWeight: 700, px: 3, pt: 2.5, pb: 1 }}>
         {title}
-      </DialogTitle>
+      </Typography>
       <Divider sx={{ borderColor: "var(--st-divider)" }} />
 
-      <DialogContent sx={{ pt: 2 }}>
-        <Box sx={{ minHeight: 80 }}>
-          <EventSelector value={assignments} onChange={setAssignments} />
-        </Box>
-      </DialogContent>
+      <Box sx={{ px: 3, pt: 2, pb: 1, minHeight: 80 }}>
+        <EventSelector value={assignments} onChange={setAssignments} />
+      </Box>
 
       <Divider sx={{ borderColor: "var(--st-divider)" }} />
-      <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
-        <Button
-          onClick={handleClose}
-          disabled={loading}
-          sx={{
-            borderRadius: "10px",
-            textTransform: "none",
-            color: "var(--st-text-sec)",
-            "&:hover": { backgroundColor: "var(--st-bg-elevated)" },
-          }}
-        >
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, px: 3, py: 2 }}>
+        <DialogCancelButton onClick={handleClose} disabled={loading}>
           {t("cancel")}
-        </Button>
-        <Button
-          variant="contained"
+        </DialogCancelButton>
+        <DialogPrimaryButton
+          color={isUnassign ? "warning" : "primary"}
           onClick={handleAssign}
           disabled={loading}
-          sx={{
-            borderRadius: "10px",
-            textTransform: "none",
-            fontWeight: 600,
-            backgroundColor: isUnassign ? "var(--st-warning)" : "var(--st-primary)",
-            "&:hover": {
-              backgroundColor: isUnassign ? "#d97706" : "var(--st-primary-hover)",
-            },
-          }}
         >
           {okText}
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </DialogPrimaryButton>
+      </Box>
+    </StyledDialog>
   );
 }

@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useT } from "@/i18n/client";
 import {
   Box,
-  Checkbox,
   CircularProgress,
   Collapse,
   IconButton,
@@ -18,6 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import StyledCheckbox from "@/components/ui/StyledCheckbox";
 
 /* ─── types ─── */
 export interface TreeNode {
@@ -49,12 +49,6 @@ export interface MuiTreeSelectProps {
 }
 
 /* ─── sx tokens ─── */
-const checkboxSx = {
-  p: 0.5,
-  color: "var(--st-border)",
-  "&.Mui-checked": { color: "var(--st-primary)" },
-  "&.MuiCheckbox-indeterminate": { color: "var(--st-primary)" },
-} as const;
 
 function buildInputSx(bg: string) {
   return {
@@ -116,8 +110,8 @@ function GroupRow({
         sx={{ color: "var(--st-text-sec)", p: 0.25, flexShrink: 0 }}>
         {expanded ? <ExpandMoreIcon sx={{ fontSize: 18 }} /> : <ChevronRightIcon sx={{ fontSize: 18 }} />}
       </IconButton>
-      <Checkbox size="small" checked={isChecked} indeterminate={isIndeterminate}
-        onChange={() => onToggleGroup(node)} sx={checkboxSx} />
+      <StyledCheckbox size="small" checked={isChecked} indeterminate={isIndeterminate}
+        onChange={() => onToggleGroup(node)} />
       <Typography onClick={onToggleExpand} sx={{
         fontSize: "0.875rem", fontWeight: 600, color: "var(--st-text)",
         lineHeight: 1.4, py: 0.75, flex: 1, cursor: "pointer", userSelect: "none",
@@ -140,9 +134,9 @@ function LeafRow({ node, checked, onToggle }: {
       borderRadius: "8px", cursor: "pointer",
       "&:hover": { backgroundColor: "rgba(255,255,255,0.04)" },
     }}>
-      <Checkbox size="small" checked={checked}
+      <StyledCheckbox size="small" checked={checked}
         onChange={() => onToggle(node.value)}
-        onClick={(e) => e.stopPropagation()} sx={checkboxSx} />
+        onClick={(e) => e.stopPropagation()} />
       <Typography sx={{
         fontSize: "0.875rem", color: "var(--st-text)",
         lineHeight: 1.4, py: 0.75, flex: 1, userSelect: "none",
