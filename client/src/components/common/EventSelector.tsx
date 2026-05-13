@@ -69,6 +69,10 @@ function EventSelector({ value = [], onChange }: EventSelectorProps) {
       onChange={handleChange}
       placeholder={t("select_events")}
       loading={loading}
+      labelSelected={(n) => t(n === 1 ? "events_selected_one" : "events_selected_other", { count: n })}
+      labelNoResults={t("tree_select_no_results")}
+      labelNoItems={t("tree_select_no_events")}
+      labelClear={t("clear")}
     />
   );
 }

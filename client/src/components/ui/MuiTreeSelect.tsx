@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useT } from "@/i18n/client";
 import {
   Box,
   Checkbox,
@@ -37,6 +38,14 @@ export interface MuiTreeSelectProps {
   maxHeight?: number | string;
   /** Background of the trigger input. Pass 'transparent' when inside a custom-bg container. */
   inputBackground?: string;
+  /** Label shown in the trigger when items are selected. Use {{count}} as a placeholder. */
+  labelSelected?: (count: number) => string;
+  /** Label shown when a search yields no matches */
+  labelNoResults?: string;
+  /** Label shown when the tree has no items at all */
+  labelNoItems?: string;
+  /** Tooltip on the clear button */
+  labelClear?: string;
 }
 
 /* ─── sx tokens ─── */
@@ -148,7 +157,20 @@ function LeafRow({ node, checked, onToggle }: {
 export default function MuiTreeSelect({
   treeData, value, onChange, placeholder = "Select…", loading = false, maxHeight = 300,
   inputBackground = "var(--st-bg-elevated)",
+  labelSelected,
+  labelNoResults,
+  labelNoItems,
+  labelClear,
 }: MuiTreeSelectProps) {
+  const { t } = useT();
+
+  /* Resolved labels — caller overrides take priority, then translations, never raw keys */
+  const resolvedLabelSelected = labelSelected ?? ((n: number) =>
+    t(n === 1 ? "item_selected_one" : "item_selected_other", { count: n })
+  );
+  const resolvedLabelNoResults = labelNoResults ?? t("no_results_found");
+  const resolvedLabelNoItems   = labelNoItems   ?? t("no_items_available");
+  const resolvedLabelClear     = labelClear     ?? t("clear");
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [dropdownAbove, setDropdownAbove] = useState(false);
@@ -181,7 +203,7 @@ export default function MuiTreeSelect({
   const inputValue = open
     ? search
     : leafCount > 0
-      ? leafCount === 1 ? "1 event selected" : `${leafCount} events selected`
+      ? resolvedLabelSelected(leafCount)
       : "";
 
   const handleClear = (e: React.MouseEvent) => {
@@ -243,7 +265,7 @@ export default function MuiTreeSelect({
                 {loading ? (
                   <CircularProgress size={14} sx={{ color: "var(--st-text-sec)" }} />
                 ) : leafCount > 0 && !open ? (
-                  <Tooltip title="Clear" arrow>
+                  <Tooltip title={resolvedLabelClear} arrow>
                     <IconButton size="small" onClick={handleClear} edge="end"
                       sx={{ color: "var(--st-text-sec)", "&:hover": { color: "var(--st-text)" } }}>
                       <CloseIcon sx={{ fontSize: 16 }} />
@@ -291,7 +313,7 @@ export default function MuiTreeSelect({
             ) : filtered.length === 0 ? (
               <Box sx={{ py: 3, textAlign: "center" }}>
                 <Typography variant="body2" sx={{ color: "var(--st-text-sec)" }}>
-                  {search ? "No results found" : "No events available"}
+                  {search ? resolvedLabelNoResults : resolvedLabelNoItems}
                 </Typography>
               </Box>
             ) : (
