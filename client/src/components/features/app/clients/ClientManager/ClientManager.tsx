@@ -355,8 +355,8 @@ export default function ClientManager() {
                 sx={filterSelectSx}
                 MenuProps={filterMenuProps}
               >
-                <MenuItem value="desc">{t('newest_first')}</MenuItem>
-                <MenuItem value="asc">{t('oldest_first')}</MenuItem>
+                <MenuItem value="desc">{t('descending')}</MenuItem>
+                <MenuItem value="asc">{t('ascending')}</MenuItem>
               </Select>
             </FormControl>
           </Stack>

@@ -79,6 +79,8 @@
   "sort_by": "Ordenar por",
   "newest_first": "Mais recentes primeiro",
   "oldest_first": "Mais antigos primeiro",
+  "descending": "Decrescente",
+  "ascending": "Crescente",
   "created_at": "Criado em",
   "reset_filters": "Limpar filtros",
   "close": "Fechar",
