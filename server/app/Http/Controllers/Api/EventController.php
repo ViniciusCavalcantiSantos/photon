@@ -425,4 +425,6 @@ class EventController extends Controller
             'images' => ImageResource::collection($images)
         ]);
     }
+
 }
+

@@ -23,8 +23,9 @@ class ContractController extends Controller
         security: [['sanctum' => []]],
         tags: ['Contracts'],
         parameters: [
-            new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
-            new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string'))
+            new OA\QueryParameter(name: 'per_page',     required: false, description: 'Itens por página',                           schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'search',       required: false, description: 'Termo de busca',                              schema: new OA\Schema(type: 'string')),
+            new OA\QueryParameter(name: 'with_events',  required: false, description: 'Embeds events[] into each contract',          schema: new OA\Schema(type: 'boolean')),
         ],
         responses: [
             new OA\Response(
@@ -59,12 +60,18 @@ class ContractController extends Controller
     public function index(Request $request)
     {
         $organizationId = auth()->user()->organization_id;
-        $perPage = $request->integer('per_page', 15);
-        $searchTerm = $request->string('search');
+        $perPage        = $request->integer('per_page', 15);
+        $searchTerm     = $request->string('search');
+        $withEvents     = $request->boolean('with_events');
+
+        $relations = ['category', 'address', 'graduationDetail'];
+        if ($withEvents) {
+            $relations[] = 'events.type';
+        }
 
         $contractsQuery = Contract
             ::where('organization_id', $organizationId)
-            ->with(['category', 'address', 'graduationDetail'])
+            ->with($relations)
             ->latest();
 
         $contractsQuery->when($searchTerm->isNotEmpty(), function ($query, $term) {
@@ -73,16 +80,16 @@ class ContractController extends Controller
 
         $contracts = $contractsQuery->paginate($perPage);
         return response()->json([
-            'status' => 'success',
-            'message' => __('Contracts retrieved successfully'),
+            'status'    => 'success',
+            'message'   => __('Contracts retrieved successfully'),
             'contracts' => ContractResource::collection($contracts),
-            'meta' => [
-                'total' => $contracts->total(),
+            'meta'      => [
+                'total'        => $contracts->total(),
                 'current_page' => $contracts->currentPage(),
-                'last_page' => $contracts->lastPage(),
-                'per_page' => $contracts->perPage(),
-                'from' => $contracts->firstItem(),
-                'to' => $contracts->lastItem(),
+                'last_page'    => $contracts->lastPage(),
+                'per_page'     => $contracts->perPage(),
+                'from'         => $contracts->firstItem(),
+                'to'           => $contracts->lastItem(),
             ],
         ]);
     }

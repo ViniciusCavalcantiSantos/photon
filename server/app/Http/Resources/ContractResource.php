@@ -16,7 +16,20 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: "createdAt", type: "string", format: "date-time", example: "2025-11-06T12:00:00Z"),
         new OA\Property(property: "category", ref: "#/components/schemas/ContractCategory"),
         new OA\Property(property: "address", ref: "#/components/schemas/CityAreaAddress"),
-        new OA\Property(property: "graduationDetails", ref: "#/components/schemas/GraduationDetails", nullable: true)
+        new OA\Property(property: "graduationDetails", ref: "#/components/schemas/GraduationDetails", nullable: true),
+        new OA\Property(
+            property: "events",
+            type: "array",
+            nullable: true,
+            items: new OA\Items(
+                required: ["id", "title", "typeName"],
+                properties: [
+                    new OA\Property(property: "id",       type: "integer", example: 12),
+                    new OA\Property(property: "title",    type: "string",  example: "Salão Nobre – 13/12"),
+                    new OA\Property(property: "typeName", type: "string",  example: "Ensaio"),
+                ]
+            )
+        ),
     ]
 )]
 class ContractResource extends JsonResource
@@ -29,13 +42,20 @@ class ContractResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'code' => $this->code,
-            'title' => $this->title,
-            'createdAt' => $this->created_at->toIso8601String(),
-            'category' => new CategoryResource($this->whenLoaded('category')),
-            'address' => new AddressResource($this->whenLoaded('address')),
-            'graduationDetails' => new GraduationDetailResource($this->whenLoaded('graduationDetail')),
+            'id'               => $this->id,
+            'code'             => $this->code,
+            'title'            => $this->title,
+            'createdAt'        => $this->created_at->toIso8601String(),
+            'category'         => new CategoryResource($this->whenLoaded('category')),
+            'address'          => new AddressResource($this->whenLoaded('address')),
+            'graduationDetails'=> new GraduationDetailResource($this->whenLoaded('graduationDetail')),
+            'events'           => $this->whenLoaded('events', fn() =>
+                $this->events->map(fn($e) => [
+                    'id'       => $e->id,
+                    'title'    => $e->title,
+                    'typeName' => __($e->type->name),
+                ])->values()
+            ),
         ];
     }
 }
