@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useT } from "@/i18n/client";
 import {
   Box,
@@ -34,22 +41,15 @@ export interface MuiTreeSelectProps {
   onChange: (value: (string | number)[]) => void;
   placeholder?: string;
   loading?: boolean;
-  /** Max height of the scrollable tree list */
   maxHeight?: number | string;
-  /** Background of the trigger input. Pass 'transparent' when inside a custom-bg container. */
   inputBackground?: string;
-  /** Label shown in the trigger when items are selected. Use {{count}} as a placeholder. */
   labelSelected?: (count: number) => string;
-  /** Label shown when a search yields no matches */
   labelNoResults?: string;
-  /** Label shown when the tree has no items at all */
   labelNoItems?: string;
-  /** Tooltip on the clear button */
   labelClear?: string;
 }
 
 /* ─── sx tokens ─── */
-
 function buildInputSx(bg: string) {
   return {
     "& .MuiOutlinedInput-root": {
@@ -57,12 +57,10 @@ function buildInputSx(bg: string) {
       backgroundColor: bg,
       color: "var(--st-text)",
       fontSize: "0.875rem",
-      /* Remove the legend notch line that MUI renders even without a label */
       "& fieldset": { borderColor: "var(--st-border)", top: 0 },
       "& fieldset legend": { display: "none" },
       "&:hover fieldset": { borderColor: "var(--st-primary)" },
       "&.Mui-focused fieldset": { borderColor: "var(--st-primary)" },
-      /* Ensure vertical centering of content */
       alignItems: "center",
     },
     "& .MuiInputBase-input": {
@@ -86,33 +84,34 @@ function nodeMatchesSearch(node: TreeNode, term: string): boolean {
   return node.children?.some((c) => nodeMatchesSearch(c, term)) ?? false;
 }
 
-/* ─── Group row ─── */
-function GroupRow({
-  node, selected, onToggleGroup, expanded, onToggleExpand,
+/* ─── Group row — memoized, receives pre-computed booleans ─── */
+const GroupRow = React.memo(function GroupRow({
+  node,
+  isChecked,
+  isIndeterminate,
+  onToggleGroup,
+  expanded,
+  onToggleExpand,
 }: {
   node: TreeNode;
-  selected: (string | number)[];
+  isChecked: boolean;
+  isIndeterminate: boolean;
   onToggleGroup: (node: TreeNode) => void;
   expanded: boolean;
-  onToggleExpand: () => void;
+  onToggleExpand: (key: string | number) => void;
 }) {
-  const leafValues = useMemo(() => getAllLeafValues(node), [node]);
-  const selectedCount = leafValues.filter((v) => selected.includes(v)).length;
-  const isChecked = leafValues.length > 0 && selectedCount === leafValues.length;
-  const isIndeterminate = selectedCount > 0 && selectedCount < leafValues.length;
-
   return (
     <Box sx={{
       display: "flex", alignItems: "center", gap: 0.25, pr: 1,
       borderRadius: "8px", "&:hover": { backgroundColor: "rgba(255,255,255,0.04)" },
     }}>
-      <IconButton size="small" onClick={onToggleExpand}
+      <IconButton size="small" onClick={() => onToggleExpand(node.key)}
         sx={{ color: "var(--st-text-sec)", p: 0.25, flexShrink: 0 }}>
         {expanded ? <ExpandMoreIcon sx={{ fontSize: 18 }} /> : <ChevronRightIcon sx={{ fontSize: 18 }} />}
       </IconButton>
       <StyledCheckbox size="small" checked={isChecked} indeterminate={isIndeterminate}
         onChange={() => onToggleGroup(node)} />
-      <Typography onClick={onToggleExpand} sx={{
+      <Typography onClick={() => onToggleExpand(node.key)} sx={{
         fontSize: "0.875rem", fontWeight: 600, color: "var(--st-text)",
         lineHeight: 1.4, py: 0.75, flex: 1, cursor: "pointer", userSelect: "none",
       }}>
@@ -120,10 +119,10 @@ function GroupRow({
       </Typography>
     </Box>
   );
-}
+});
 
-/* ─── Leaf row ─── */
-function LeafRow({ node, checked, onToggle }: {
+/* ─── Leaf row — memoized, only re-renders when its own checked state changes ─── */
+const LeafRow = React.memo(function LeafRow({ node, checked, onToggle }: {
   node: TreeNode;
   checked: boolean;
   onToggle: (value: string | number) => void;
@@ -145,7 +144,7 @@ function LeafRow({ node, checked, onToggle }: {
       </Typography>
     </Box>
   );
-}
+});
 
 /* ─── Main component ─── */
 export default function MuiTreeSelect({
@@ -158,13 +157,21 @@ export default function MuiTreeSelect({
 }: MuiTreeSelectProps) {
   const { t } = useT();
 
-  /* Resolved labels — caller overrides take priority, then translations, never raw keys */
+  /* Keep a ref to latest value+onChange so callbacks can be truly stable */
+  const valueRef = useRef(value);
+  const onChangeRef = useRef(onChange);
+  useLayoutEffect(() => {
+    valueRef.current = value;
+    onChangeRef.current = onChange;
+  });
+
   const resolvedLabelSelected = labelSelected ?? ((n: number) =>
     t(n === 1 ? "item_selected_one" : "item_selected_other", { count: n })
   );
   const resolvedLabelNoResults = labelNoResults ?? t("no_results_found");
   const resolvedLabelNoItems   = labelNoItems   ?? t("no_items_available");
   const resolvedLabelClear     = labelClear     ?? t("clear");
+
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [dropdownAbove, setDropdownAbove] = useState(false);
@@ -206,27 +213,32 @@ export default function MuiTreeSelect({
     setSearch("");
   };
 
+  /* Stable callbacks — never recreated, read latest value via ref */
   const handleLeafToggle = useCallback((leafValue: string | number) => {
-    onChange(value.includes(leafValue)
-      ? value.filter((v) => v !== leafValue)
-      : [...value, leafValue]);
-  }, [value, onChange]);
+    const v = valueRef.current;
+    onChangeRef.current(
+      v.includes(leafValue) ? v.filter((x) => x !== leafValue) : [...v, leafValue]
+    );
+  }, []); // truly stable — deps are refs
 
   const handleGroupToggle = useCallback((node: TreeNode) => {
+    const v = valueRef.current;
     const leafValues = getAllLeafValues(node);
-    const allSelected = leafValues.every((v) => value.includes(v));
-    onChange(allSelected
-      ? value.filter((v) => !leafValues.includes(v))
-      : [...value, ...leafValues.filter((v) => !value.includes(v))]);
-  }, [value, onChange]);
+    const allSelected = leafValues.every((lv) => v.includes(lv));
+    onChangeRef.current(
+      allSelected
+        ? v.filter((x) => !leafValues.includes(x))
+        : [...v, ...leafValues.filter((x) => !v.includes(x))]
+    );
+  }, []); // truly stable
 
-  const toggleCollapse = (key: string | number) => {
+  const toggleCollapse = useCallback((key: string | number) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
       next.has(key) ? next.delete(key) : next.add(key);
       return next;
     });
-  };
+  }, []);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return treeData;
@@ -239,8 +251,21 @@ export default function MuiTreeSelect({
       }));
   }, [treeData, search]);
 
+  /* Pre-compute group check state as stable booleans so GroupRow memo works */
+  const groupCheckState = useMemo(() => {
+    const map = new Map<string | number, { isChecked: boolean; isIndeterminate: boolean }>();
+    for (const group of filtered) {
+      const leafValues = getAllLeafValues(group);
+      const selectedCount = leafValues.filter((v) => value.includes(v)).length;
+      map.set(group.key, {
+        isChecked: leafValues.length > 0 && selectedCount === leafValues.length,
+        isIndeterminate: selectedCount > 0 && selectedCount < leafValues.length,
+      });
+    }
+    return map;
+  }, [filtered, value]);
+
   return (
-    /* Single wrapper — input + dropdown both live here */
     <Box ref={wrapperRef} sx={{ position: "relative" }}>
 
       {/* ── Input trigger ── */}
@@ -276,7 +301,7 @@ export default function MuiTreeSelect({
         sx={buildInputSx(inputBackground)}
       />
 
-      {/* ── Dropdown panel — positioned above or below based on available space ── */}
+      {/* ── Dropdown panel ── */}
       {open && (
         <Box sx={{
           position: "absolute",
@@ -285,7 +310,7 @@ export default function MuiTreeSelect({
             : { top: "100%", bottom: "auto", mt: 0.5 }),
           left: 0,
           right: 0,
-          zIndex: 1400,          /* above MUI Dialog (z-index 1300) */
+          zIndex: 1400,
           borderRadius: "12px",
           backgroundColor: "var(--st-bg-elevated)",
           border: "1px solid var(--st-border)",
@@ -313,16 +338,18 @@ export default function MuiTreeSelect({
             ) : (
               filtered.map((group) => {
                 const isExpanded = !collapsed.has(group.key);
+                const { isChecked, isIndeterminate } = groupCheckState.get(group.key)!;
                 return (
                   <Box key={group.key}>
                     <GroupRow
                       node={group}
-                      selected={value}
+                      isChecked={isChecked}
+                      isIndeterminate={isIndeterminate}
                       onToggleGroup={handleGroupToggle}
                       expanded={isExpanded}
-                      onToggleExpand={() => toggleCollapse(group.key)}
+                      onToggleExpand={toggleCollapse}
                     />
-                    <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                    <Collapse in={isExpanded} timeout={0}>
                       <Box>
                         {group.children?.map((child) => (
                           <LeafRow
