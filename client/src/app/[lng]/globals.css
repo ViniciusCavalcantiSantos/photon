@@ -125,6 +125,9 @@
     --color-st-primary-hover: var(--st-primary-hover);
     --color-st-primary-light: var(--st-primary-light);
 
+    /* Actions */
+    --color-st-hover:       var(--st-hover);
+
     /* Borders & Dividers */
     --color-st-border:  var(--st-border);
     --color-st-divider: var(--st-divider);
@@ -175,6 +178,8 @@
     --st-primary-hover: #0a55c0;
     --st-primary-light: rgba(12, 102, 228, 0.12);
 
+    --st-hover:         rgba(0, 0, 0, 0.04);
+
     --st-border:  #dde1e7;
     --st-divider: #eaecef;
 
@@ -203,6 +208,8 @@
     --st-primary:       #0C66E4;
     --st-primary-hover: #3b82f6;
     --st-primary-light: rgba(12, 102, 228, 0.18);
+
+    --st-hover:         rgba(255, 255, 255, 0.08);
 
     --st-border:  #2a2f45;
     --st-divider: #252a3d;

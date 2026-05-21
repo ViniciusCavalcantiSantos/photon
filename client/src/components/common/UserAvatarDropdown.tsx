@@ -44,7 +44,7 @@ function MenuButton({
         fontWeight: 500,
         color: "var(--st-text)",
         justifyContent: "flex-start",
-        "&:hover": { backgroundColor: "var(--st-bg-paper)" },
+        "&:hover": { backgroundColor: "var(--st-hover)" },
       }}
     >
       <Box sx={{ color: "var(--st-text-sec)", display: "flex", alignItems: "center", flexShrink: 0 }}>

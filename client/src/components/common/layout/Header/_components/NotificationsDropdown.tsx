@@ -111,7 +111,7 @@ export default function NotificationsDropdown() {
               transition: "background 150ms",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLLIElement).style.backgroundColor = "var(--st-bg-paper)";
+              (e.currentTarget as HTMLLIElement).style.backgroundColor = "var(--st-hover)";
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLLIElement).style.backgroundColor = "transparent";
@@ -201,7 +201,7 @@ export default function NotificationsDropdown() {
             borderRadius: "10px",
             color: "var(--st-text-sec)",
             mr: 0.5,
-            "&:hover": { backgroundColor: "var(--st-bg-elevated)", color: "var(--st-text)" },
+            "&:hover": { backgroundColor: "var(--st-hover)", color: "var(--st-text)" },
           }}
         >
           <Badge
