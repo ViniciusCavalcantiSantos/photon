@@ -884,6 +884,14 @@ export interface components {
             category: components["schemas"]["ContractCategory"];
             address: components["schemas"]["CityAreaAddress"];
             graduationDetails?: components["schemas"]["GraduationDetails"] | null;
+            events?: {
+                /** @example 12 */
+                id: number;
+                /** @example Salão Nobre – 13/12 */
+                title: string;
+                /** @example Ensaio */
+                typeName: string;
+            }[] | null;
         };
         EventType: {
             /** @example 3 */
@@ -2213,6 +2221,12 @@ export interface operations {
                 per_page?: number;
                 /** @description Termo de busca */
                 search?: string;
+                /** @description Campo de ordenação (name, created_at) */
+                sort_by?: string;
+                /** @description Direção da ordenação (asc, desc) */
+                sort_order?: string;
+                /** @description Filtrar por eventos (array de IDs) */
+                "event_ids[]"?: number[];
             };
             header?: never;
             path?: never;
@@ -2498,6 +2512,8 @@ export interface operations {
                 per_page?: number;
                 /** @description Termo de busca */
                 search?: string;
+                /** @description Embeds events[] into each contract */
+                with_events?: boolean;
             };
             header?: never;
             path?: never;
@@ -2720,10 +2736,20 @@ export interface operations {
             query?: {
                 /** @description Itens por página */
                 per_page?: number;
+                /** @description Página atual */
+                page?: number;
                 /** @description Termo de busca */
                 search?: string;
                 /** @description Carrega o contrato relacionado */
                 with_contract?: boolean;
+                /** @description Filtra por contrato */
+                contract_id?: number;
+                /** @description Filtra por tipo de evento */
+                event_type_id?: number;
+                /** @description Campo de ordenação (event_date, title, created_at) */
+                sort_by?: "event_date" | "title" | "created_at";
+                /** @description Direção da ordenação (asc, desc) */
+                sort_order?: "asc" | "desc";
             };
             header?: never;
             path?: never;

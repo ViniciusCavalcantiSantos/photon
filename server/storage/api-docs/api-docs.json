@@ -850,6 +850,36 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Campo de ordenação (name, created_at)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Direção da ordenação (asc, desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "event_ids[]",
+                        "in": "query",
+                        "description": "Filtrar por eventos (array de IDs)",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -1347,6 +1377,15 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "with_events",
+                        "in": "query",
+                        "description": "Embeds events[] into each contract",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -1731,6 +1770,15 @@
                         }
                     },
                     {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Página atual",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "search",
                         "in": "query",
                         "description": "Termo de busca",
@@ -1746,6 +1794,51 @@
                         "required": false,
                         "schema": {
                             "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "contract_id",
+                        "in": "query",
+                        "description": "Filtra por contrato",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "event_type_id",
+                        "in": "query",
+                        "description": "Filtra por tipo de evento",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Campo de ordenação (event_date, title, created_at)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "event_date",
+                                "title",
+                                "created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Direção da ordenação (asc, desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
                         }
                     }
                 ],
@@ -3310,6 +3403,32 @@
                                 "$ref": "#/components/schemas/GraduationDetails"
                             }
                         ],
+                        "nullable": true
+                    },
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "id",
+                                "title",
+                                "typeName"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 12
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Salão Nobre – 13/12"
+                                },
+                                "typeName": {
+                                    "type": "string",
+                                    "example": "Ensaio"
+                                }
+                            },
+                            "type": "object"
+                        },
                         "nullable": true
                     }
                 },
