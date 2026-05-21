@@ -55,7 +55,7 @@ export default function Header() {
               backgroundColor: "var(--st-bg)",
               color: "var(--st-text-sec)",
               "&:hover": {
-                backgroundColor: "var(--st-bg-elevated)",
+                backgroundColor: "var(--st-hover)",
                 borderColor: "var(--st-primary)",
                 color: "var(--st-text)",
               },
@@ -125,7 +125,7 @@ export default function Header() {
                   borderRadius: "10px",
                   color: "var(--st-text-sec)",
                   "&:hover": {
-                    backgroundColor: "var(--st-bg-elevated)",
+                    backgroundColor: "var(--st-hover)",
                     color: "var(--st-text)",
                   },
                 }}
@@ -154,7 +154,7 @@ export default function Header() {
                           fontWeight: 500,
                           color: "var(--st-text)",
                           justifyContent: "flex-start",
-                          "&:hover": { backgroundColor: "var(--st-bg-elevated)" },
+                          "&:hover": { backgroundColor: "var(--st-hover)" },
                         }}
                       >
                         {item.icon}

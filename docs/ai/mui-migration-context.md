@@ -208,6 +208,14 @@ MUI v9 changed several APIs — always use these patterns:
 - **After:** MUI `Dialog`, local `useState` form + manual `validate()`, MUI `Select`, native `<input type="date/time">` via `TextField`, `Checkbox`, `TextField multiline`
 - Required `*` styled with `--st-primary` color via `.required-star` span
 
+### `client/src/components/ui/MuiInputPhone.tsx` *(new file)*
+- MUI-native phone input using `StyledTextField` + `libphonenumber-js` (mirrors old antd `InputPhone`).
+- `onChange` emits digits-only string; formats on display.
+
+### `client/src/components/features/app/clients/Onboarding/CreateManual.tsx`
+- **Before:** antd `Form`, `Input`, `Select`, `AutoComplete`, `DatePicker`, `Checkbox`, `Upload`, `Image`, `Card`, `Row`/`Col`
+- **After:** Local `useState` form + `validate()`, MUI `Grid` (v9 `size` prop), `StyledTextField`, `StyledSelect`, `StyledCheckbox`, `MuiInputPhone`, `Autocomplete` for searchable country/state/city dropdowns, custom MUI photo-upload zone with `ImagePreview` for full-screen preview, `MuiTreeSelect`-based `EventSelector`, `DialogCancelButton`/`DialogPrimaryButton` footer.
+
 ---
 
 ## What Still Uses Ant Design
