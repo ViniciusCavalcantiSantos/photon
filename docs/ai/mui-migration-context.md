@@ -216,6 +216,10 @@ MUI v9 changed several APIs — always use these patterns:
 - **Before:** antd `Form`, `Input`, `Select`, `AutoComplete`, `DatePicker`, `Checkbox`, `Upload`, `Image`, `Card`, `Row`/`Col`
 - **After:** Local `useState` form + `validate()`, MUI `Grid` (v9 `size` prop), `StyledTextField`, `StyledSelect`, `StyledCheckbox`, `MuiInputPhone`, `Autocomplete` for searchable country/state/city dropdowns, custom MUI photo-upload zone with `ImagePreview` for full-screen preview, `MuiTreeSelect`-based `EventSelector`, `DialogCancelButton`/`DialogPrimaryButton` footer.
 
+### `client/src/components/features/app/clients/Onboarding/CreateFromImageName.tsx`
+- **Before:** antd `Form`, `Checkbox`, `Card`, `Statistic`, `Row`/`Col`, `Button`, `@ant-design/icons` `UserOutlined`
+- **After:** Local `useState`, `StyledCheckbox` + `FormControlLabel`, inline `StatCard` (MUI `Paper`), MUI `Grid` v9, `DialogPrimaryButton` as `<Link>`, MUI `PersonAddAlt1Icon` for dropzone icon. `Dropzone` component kept as-is (pending its own migration).
+
 ---
 
 ## What Still Uses Ant Design
