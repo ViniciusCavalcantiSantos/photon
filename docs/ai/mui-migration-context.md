@@ -220,6 +220,11 @@ MUI v9 changed several APIs — always use these patterns:
 - **Before:** antd `Form`, `Checkbox`, `Card`, `Statistic`, `Row`/`Col`, `Button`, `@ant-design/icons` `UserOutlined`
 - **After:** Local `useState`, `StyledCheckbox` + `FormControlLabel`, inline `StatCard` (MUI `Paper`), MUI `Grid` v9, `DialogPrimaryButton` as `<Link>`, MUI `PersonAddAlt1Icon` for dropzone icon. `Dropzone` component kept as-is (pending its own migration).
 
+### `client/src/components/features/guest/register/ClientRegisterForm.tsx` *(new file)*
+- **Before:** `app/[lng]/(guest)/client/register/[linkId]/page.tsx` — 400-line antd mega-page
+- **After:** Dedicated feature component. Design: full-page radial-gradient background, branded hero header with camera icon + event title, `Skeleton` loading, two-column layout (photo panel + form), MUI `Autocomplete` for location, `MuiInputPhone`, `ImagePreview`, inline success state with `CheckCircleOutlineIcon`. `CircularProgress` inside submit button while loading.
+- `page.tsx` reduced to a 4-line shell importing `ClientRegisterForm`.
+
 ---
 
 ## What Still Uses Ant Design
