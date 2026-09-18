@@ -21,6 +21,7 @@ It is composed of three services — a **Next.js** front-end, a **Laravel** API,
   - [4 — Start all services](#4--start-all-services)
   - [5 — Access the application](#5--access-the-application)
 - [Service Ports](#service-ports)
+- [Production](#production)
 - [Useful Commands](#useful-commands)
   - [Updating Frontend Types from Swagger](#updating-frontend-types-from-swagger)
 - [API Documentation](#api-documentation)
@@ -47,8 +48,9 @@ It is composed of three services — a **Next.js** front-end, a **Laravel** API,
 ```
 photon/
 ├── .env.example              # Root-level Docker overrides (optional)
+├── .env.production.example   # Production configuration template
 ├── docker-compose.yml        # Development orchestration
-├── docker-compose.prod.yml   # Production overrides
+├── docker-compose.prod.yml   # Standalone production orchestration
 │
 ├── client/                   # Next.js front-end
 │   ├── src/
@@ -131,7 +133,6 @@ Available overrides:
 | Variable                 | Default              | Description                    |
 |--------------------------|----------------------|--------------------------------|
 | `FORWARD_APP_PORT`       | `8000`               | Laravel API port               |
-| `FORWARD_CLIENT_PORT`    | `3000`               | Next.js client port            |
 | `FORWARD_SSE_PORT`       | `8080`               | SSE microservice port          |
 | `FORWARD_MAILPIT_PORT`   | `8025`               | Mailpit web UI port            |
 | `FORWARD_MINIO_PORT`     | `9000`               | MinIO S3 API port              |
@@ -184,7 +185,7 @@ aws rekognition create-collection \
   --region us-east-1
 ```
 
-> All other variables in `server/.env` (database, Redis, MinIO, mail) are pre-filled with values that match the Docker Compose defaults and require **no changes** for local development.
+> Compose supplies database and Redis connections from the root `.env`. `server/.env` contains Laravel options and references the MinIO credentials injected by Compose. For PHP execution outside Docker, supply those connections and references separately.
 
 ---
 
@@ -230,6 +231,37 @@ Subsequent starts are much faster because images are cached.
 | `minio`      | 9000 / 9001   | 9000 / 9001       |
 
 MySQL and Redis are **not** exposed to the host by default.
+
+---
+
+## Production
+
+`docker-compose.prod.yml` is independent of the development file. It starts the API, Nginx, worker, scheduler, SSE, MySQL, and Redis. Deploy the Next.js client separately.
+
+```bash
+cp .env.production.example .env.production
+cp server/.env.production.example server/.env.production
+# Fill infrastructure credentials in the root file and Laravel settings in server/.env.production.
+docker compose --env-file .env.production -f docker-compose.prod.yml config --quiet
+docker compose --env-file .env.production -f docker-compose.prod.yml build
+docker compose --env-file .env.production -f docker-compose.prod.yml run --rm app php artisan migrate --force
+docker compose --env-file .env.production -f docker-compose.prod.yml up -d
+```
+
+Each configuration has one owner:
+
+| File | Responsibility |
+|------|----------------|
+| Root `.env` / `.env.production` | Ports, Compose project, shared DB/Redis credentials and SSE origins |
+| `server/.env` / `server/.env.production` | Application key, URLs, sessions, email, storage, OAuth and Laravel options |
+| `client/.env` | Next.js settings |
+| Compose | Internal hosts and ports; production mode and disabled debug |
+
+The root file supplies interpolation without being loaded wholesale into PHP containers. Only the necessary shared credentials are injected; `DB_ROOT_PASSWORD` goes only to MySQL. Production Laravel loads `server/.env.production` through `env_file`; `LARAVEL_ENV_FILE` selects an alternate path. Keep `SSE_ALLOWED_ORIGINS` consistent with `APP_URL_CLIENT`.
+
+If you used the former single production example, move Laravel options into `server/.env.production` before recreating containers. In development, remove DB/Redis copies from the old `server/.env` and adopt the example's MinIO references, preserving custom storage options.
+
+Use a generated, stable `APP_KEY`. Configure SMTP, an S3-compatible bucket, and Rekognition for your environment. The API is published on `FORWARD_APP_PORT` (default `8010`); SSE is proxied by Nginx at `/sse/stream`. Production does not run migrations or seed automatically. The images contain the code and Vite assets; the `app-storage` volume keeps files written to `storage` across PHP containers.
 
 ---
 

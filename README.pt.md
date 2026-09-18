@@ -21,6 +21,7 @@ Uma plataforma completa de gerenciamento de fotos com reconhecimento facial por 
   - [4 — Iniciar todos os serviços](#4--iniciar-todos-os-serviços)
   - [5 — Acessar a aplicação](#5--acessar-a-aplicação)
 - [Portas dos Serviços](#portas-dos-serviços)
+- [Produção](#produção)
 - [Comandos Úteis](#comandos-úteis)
   - [Atualizando os Tipos do Frontend a partir do Swagger](#atualizando-os-tipos-do-frontend-a-partir-do-swagger)
 - [Documentação da API](#documentação-da-api)
@@ -47,8 +48,9 @@ Uma plataforma completa de gerenciamento de fotos com reconhecimento facial por 
 ```
 photon/
 ├── .env.example              # Variáveis raiz do Docker (opcionais)
+├── .env.production.example   # Modelo de configuração de produção
 ├── docker-compose.yml        # Orquestração do ambiente de desenvolvimento
-├── docker-compose.prod.yml   # Sobrescritas de produção
+├── docker-compose.prod.yml   # Orquestração independente de produção
 │
 ├── client/                   # Front-end Next.js
 │   ├── src/
@@ -131,7 +133,6 @@ Variáveis disponíveis para sobrescrita:
 | Variável                     | Padrão               | Descrição                          |
 |------------------------------|----------------------|------------------------------------|
 | `FORWARD_APP_PORT`           | `8000`               | Porta da API Laravel               |
-| `FORWARD_CLIENT_PORT`        | `3000`               | Porta do cliente Next.js           |
 | `FORWARD_SSE_PORT`           | `8080`               | Porta do microserviço SSE          |
 | `FORWARD_MAILPIT_PORT`       | `8025`               | Porta da interface web do Mailpit  |
 | `FORWARD_MINIO_PORT`         | `9000`               | Porta da API S3 do MinIO           |
@@ -184,7 +185,7 @@ aws rekognition create-collection \
   --region us-east-1
 ```
 
-> Todas as outras variáveis em `server/.env` (banco de dados, Redis, MinIO, e-mail) já estão preenchidas com valores compatíveis com os padrões do Docker Compose e **não precisam ser alteradas** para desenvolvimento local.
+> O Compose fornece as conexões de banco e Redis a partir do `.env` da raiz. O `server/.env` contém as opções do Laravel e referencia as credenciais MinIO injetadas pelo Compose. Para executar PHP fora do Docker, forneça essas conexões e referências separadamente.
 
 ---
 
@@ -230,6 +231,37 @@ As execuções seguintes são bem mais rápidas porque as imagens ficam em cache
 | `minio`      | 9000 / 9001   | 9000 / 9001     |
 
 MySQL e Redis **não são expostos** ao host por padrão.
+
+---
+
+## Produção
+
+O `docker-compose.prod.yml` é independente do arquivo de desenvolvimento. Ele inicia API, Nginx, worker, scheduler, SSE, MySQL e Redis. O cliente Next.js deve ser implantado separadamente.
+
+```bash
+cp .env.production.example .env.production
+cp server/.env.production.example server/.env.production
+# Preencha as credenciais de infraestrutura na raiz e as opções Laravel em server/.env.production.
+docker compose --env-file .env.production -f docker-compose.prod.yml config --quiet
+docker compose --env-file .env.production -f docker-compose.prod.yml build
+docker compose --env-file .env.production -f docker-compose.prod.yml run --rm app php artisan migrate --force
+docker compose --env-file .env.production -f docker-compose.prod.yml up -d
+```
+
+Cada configuração tem uma origem:
+
+| Arquivo | Responsabilidade |
+|---------|------------------|
+| `.env` / `.env.production` na raiz | Portas, projeto Compose, credenciais compartilhadas DB/Redis e origens SSE |
+| `server/.env` / `server/.env.production` | Chave da aplicação, URLs, sessões, e-mail, armazenamento, OAuth e opções Laravel |
+| `client/.env` | Configurações do Next.js |
+| Compose | Hosts e portas internos; modo de produção e debug desativado |
+
+O arquivo raiz é usado para interpolação, sem ser carregado inteiro nos contêineres PHP. Apenas as credenciais compartilhadas necessárias são injetadas; `DB_ROOT_PASSWORD` vai somente ao MySQL. O Laravel de produção lê `server/.env.production` via `env_file`; `LARAVEL_ENV_FILE` permite escolher outro caminho. Mantenha `SSE_ALLOWED_ORIGINS` compatível com `APP_URL_CLIENT`.
+
+Se você já usava o exemplo único de produção, mova as opções Laravel para `server/.env.production` antes de recriar os contêineres. Em desenvolvimento, remova as cópias de DB/Redis do antigo `server/.env` e adote as referências MinIO do exemplo, preservando suas opções personalizadas de armazenamento.
+
+Use uma `APP_KEY` gerada e estável. Configure SMTP, bucket S3 compatível e Rekognition conforme o ambiente. A API é publicada em `FORWARD_APP_PORT` (padrão `8010`); SSE passa pelo Nginx em `/sse/stream`. Produção não executa migrações ou seed automaticamente. As imagens contêm o código e os recursos Vite; o volume `app-storage` guarda os dados gravados em `storage` entre os contêineres PHP.
 
 ---
 
