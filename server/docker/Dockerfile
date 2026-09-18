@@ -1,3 +1,12 @@
+FROM node:22-alpine AS assets
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY resources ./resources
+COPY vite.config.js ./
+RUN npm run build
+
 FROM php:8.2-fpm-alpine3.19
 
 WORKDIR /var/www
@@ -53,15 +62,13 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-progress --optimize-autoloader --no-scripts
 
 COPY . .
+COPY --from=assets /app/public/build ./public/build
 
 # Setup final de permissões e scripts
 RUN php artisan package:discover --ansi \
-    && mkdir -p storage/framework/{sessions,views,cache} bootstrap/cache \
+    && mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache \
     && chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
-
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
 USER www-data
 
