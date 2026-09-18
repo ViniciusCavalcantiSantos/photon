@@ -1,20 +1,759 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Vinmo API",
-        "description": "Documentação da API do Vinmo",
+        "title": "Photon API",
+        "description": "Complete API documentation for Photon. For Swagger authentication, call `/api/auth/login` or `/api/auth/register` with `type=token`, then authorize with `Bearer <token>`.",
         "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
-            "description": "Servidor local"
+            "url": "/",
+            "description": "Current application host"
         }
     ],
     "paths": {
+        "/api/clients/{client}/assignments": {
+            "get": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Lista os IDs dos eventos atribuídos a um cliente",
+                "description": "Display the specified resource.",
+                "operationId": "f3f31d009bdda4ab74c01d54e9dfc5cd",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Atribuições recuperadas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments retrieved"
+                                        },
+                                        "assignments": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer",
+                                                "example": 1
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Atribui eventos a um cliente",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "e360cad7aaabc9ce1d9e126de14bec15",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "assignments": {
+                                        "description": "Array de IDs dos eventos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Atribuições atualizadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected event was not found in the system"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients/assignments/bulk": {
+            "post": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Atribui eventos em lote para múltiplos clientes",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "e79b731619353e463a09902b547a1546",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "client_ids": {
+                                        "description": "Array de IDs dos clientes",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "assignments": {
+                                        "description": "Array de IDs dos eventos a serem atribuídos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Atribuições atualizadas em lote",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected client was not found in the system"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Assignments"
+                ],
+                "summary": "Remove atribuições de eventos em lote para múltiplos clientes",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "0bed1a61a7294bf1005c1a2f18e5b833",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "client_ids": {
+                                        "description": "Array de IDs dos clientes",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "assignments": {
+                                        "description": "Array de IDs dos eventos a serem removidos",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Atribuições removidas em lote",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Assignments updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected client was not found in the system"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/available-providers": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Lista os provedores de autenticação social disponíveis",
+                "operationId": "522e21daa0a96ab89de410f1219423a7",
+                "responses": {
+                    "200": {
+                        "description": "Provedores disponíveis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Available providers obtained successfully"
+                                        },
+                                        "providers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "google"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/{provider}/redirect": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Redireciona para o provedor de autenticação (OAuth)",
+                "operationId": "a056a975024516894ed584b37735aaae",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Nome do provedor (ex: google)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "URL de redirecionamento gerada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Url obtained successfully"
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Provedor inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Provider not supported"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/{provider}/callback": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Callback do provedor de autenticação",
+                "operationId": "cddf551d3b6e72e7b88f1e884cb3c79a",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Nome do provedor (ex: google)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirecionamento para o app"
+                    }
+                }
+            }
+        },
+        "/api/auth/send-code": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Envia o código de verificação para o email",
+                "operationId": "0f2ff5da3d5883ef973571776bfcbc27",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthSendCodeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Código enviado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code sent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/send-recovery-link": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Envia o link de recuperação de senha",
+                "operationId": "f9cec95b81add2be08c454123bccd664",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthSendRecoveryLinkRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Link enviado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code sent successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/validate-recovery-token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Valida o token de recuperação de senha",
+                "operationId": "ac946ba9f9c37e55ef77fd4bd0a2bdad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthValidateRecoveryTokenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token válido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token validated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/change-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Altera a senha do usuário",
+                "operationId": "58e67cdbde52513b62902b05abf9abcb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthChangePasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Senha alterada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your password was successfully changed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/confirm-code": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Confirma o código enviado para o email",
+                "operationId": "3445143da2aa0898b49d6847a0811e34",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthConfirmCodeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Código confirmado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email verified successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registra um novo usuário",
+                "operationId": "c7bb21a0d87049e161b8e4c9b0d909f2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuário registrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registration completed successfully"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|tokenstring",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Realiza login na aplicação",
+                "operationId": "dd51a484b7fa0f97c7680fdbde14cf5f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login efetuado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successfully"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|tokenstring",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/me": {
             "get": {
-                "summary": "Current authenticated user",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Usuário autenticado",
                 "description": "Retorna o usuário autenticado.",
                 "operationId": "8367feff40ba10e43187792cad3132c1",
                 "responses": {
@@ -23,10 +762,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "user"
-                                    ],
                                     "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User successfully obtained"
+                                        },
                                         "user": {
                                             "$ref": "#/components/schemas/User"
                                         }
@@ -34,6 +778,2228 @@
                                     "type": "object"
                                 }
                             }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Realiza logout e invalida o token",
+                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "responses": {
+                    "200": {
+                        "description": "Logout efetuado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients": {
+            "get": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Lista clientes",
+                "description": "Display a listing of the resource.",
+                "operationId": "413c12320d4121431e38339f45ecaa7c",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Termo de busca",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Clientes retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Clients retrieved successfully"
+                                        },
+                                        "clients": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Client"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Cria um novo cliente",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "f909473745c1a1d469e0c5a5b54682b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientFormRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cliente criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client created"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/public/clients/register/{linkId}": {
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Registra um cliente via link público",
+                "operationId": "502bad6e3c22f09e708d4a3a2175edec",
+                "parameters": [
+                    {
+                        "name": "linkId",
+                        "in": "path",
+                        "description": "ID codificado em base64 do link",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientPublicRegisterFormRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cliente cadastrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client created"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/clients/{client}": {
+            "get": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Exibe detalhes do cliente",
+                "description": "Display the specified resource.",
+                "operationId": "2852fa5d6ec28da5a92fa47749faa1e1",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente recuperado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client retrieved"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Atualiza os dados de um cliente",
+                "description": "Update the specified resource in storage.",
+                "operationId": "15591365886417bc26fb290a81016499",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientUpdateFormRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cliente atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client updated"
+                                        },
+                                        "client": {
+                                            "$ref": "#/components/schemas/Client"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Remove um cliente",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "833eb8e223eda0f71bee956a8153f8aa",
+                "parameters": [
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente removido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients/links": {
+            "post": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Gera um link de cadastro público de clientes",
+                "operationId": "5c48f879c305b476dcef4d91d8971b4e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientGenerateLinkRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Link criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Link created"
+                                        },
+                                        "link_id": {
+                                            "type": "string",
+                                            "example": "MT1="
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/clients/links/{linkId}": {
+            "get": {
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Recupera as informações de um link público",
+                "operationId": "dfad60e72754cde36b69ee1335f82d64",
+                "parameters": [
+                    {
+                        "name": "linkId",
+                        "in": "path",
+                        "description": "ID codificado em base64",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informações do link",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "link retrieved successfully"
+                                        },
+                                        "linkInfo": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "MT1="
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Cadastro Formatura"
+                                                },
+                                                "maxRegisters": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "requireAddress": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "requireGuardianIfMinor": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "defaultLanguage": {
+                                                    "type": "string",
+                                                    "example": "BR"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contracts": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Lista contratos",
+                "description": "Display a listing of the resource.",
+                "operationId": "971f1fdec41a8eaf0830d94e9ee15496",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Termo de busca",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contratos retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contracts retrieved successfully"
+                                        },
+                                        "contracts": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Contract"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Cria um novo contrato",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "73a91076ec6423051d986a4149fa8d87",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contrato criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract created"
+                                        },
+                                        "contract": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contracts/{contract}": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Exibe os detalhes de um contrato",
+                "description": "Display the specified resource.",
+                "operationId": "3efe2c45b2170cb9f4400d6dd66106fd",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do contrato",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract retrieved"
+                                        },
+                                        "contract": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Atualiza um contrato",
+                "description": "Update the specified resource in storage.",
+                "operationId": "3e85ddb8b10c94bb01c376bb06f4be03",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contrato atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract updated"
+                                        },
+                                        "contract": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Remove um contrato",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "d1ff21f53377f46c99d6cf407e68ca14",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contrato deletado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/contracts/categories": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Lista as categorias de contrato",
+                "operationId": "9ae8f03b8087b524a56f136ad022f86b",
+                "responses": {
+                    "200": {
+                        "description": "Categorias retornadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All categories obtained"
+                                        },
+                                        "categories": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "name",
+                                                    "slug"
+                                                ],
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Formatura Universitaria"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "university_graduation"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Lista eventos",
+                "operationId": "e529c81e6aaec82f49950a87ed881f57",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Termo de busca",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "with_contract",
+                        "in": "query",
+                        "description": "Carrega o contrato relacionado",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eventos retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Events retrieved successfully"
+                                        },
+                                        "events": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Cria um novo evento",
+                "operationId": "e958e1c6c275d5f9b7ebcd837903d0ef",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Evento criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event created"
+                                        },
+                                        "event": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{event}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Exibe os detalhes de um evento",
+                "operationId": "2f5e4d4d8d7989ca1f72be9c20d9daac",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "with_contract",
+                        "in": "query",
+                        "description": "Carrega o contrato relacionado",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do evento",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event retrieved"
+                                        },
+                                        "event": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Atualiza um evento",
+                "operationId": "0c0cf4026635d252353fad3e5b48591c",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Evento atualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event updated"
+                                        },
+                                        "event": {
+                                            "$ref": "#/components/schemas/Event"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Remove um evento",
+                "operationId": "b9043fb311444b3c3bcb101e1a643a9f",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Evento removido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/types/{contract}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Retorna os tipos de evento permitidos para um contrato",
+                "operationId": "c46b71d2e6c3179de743596dd0043d52",
+                "parameters": [
+                    {
+                        "name": "contract",
+                        "in": "path",
+                        "description": "ID do contrato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tipos de evento retornados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event types retrieved"
+                                        },
+                                        "eventTypes": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "id",
+                                                    "name"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Formatura"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{event}/images": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Retorna as imagens de um evento",
+                "operationId": "510c80a3da181fcc15985f736ca258a7",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "description": "ID do evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imagens retornadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event images retrieved"
+                                        },
+                                        "images": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Image"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/photos": {
+            "post": {
+                "tags": [
+                    "EventPhotos"
+                ],
+                "summary": "Faz o upload de uma foto para o evento",
+                "operationId": "9a3ee6c95e56dae0639e7b7053aa5877",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventPhotoUploadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Foto salva com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Photo uploaded"
+                                        },
+                                        "image": {
+                                            "$ref": "#/components/schemas/Image"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Evento não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/images/{image}": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Exibe uma imagem",
+                "operationId": "bb3175b3e40a396bcc3e52c5f7581065",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Stream da imagem",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    },
+                    "404": {
+                        "description": "Não encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Remove uma imagem",
+                "operationId": "25687ab67804accc883dc67eeec16d21",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imagem removida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Image deleted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Could not perform action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/images/{image}/download": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Baixa a imagem original",
+                "operationId": "a3ceaedf365f1f2b46ebf66f56b2c619",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Download da imagem",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/images/{image}/metadata": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Recupera os metadados da imagem",
+                "operationId": "27d2168a6a62464feb894a887e72f209",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Metadados recuperados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Event images retrieved"
+                                        },
+                                        "metadata": {
+                                            "$ref": "#/components/schemas/ImageMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/images/{image}/clients": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Retorna a lista de clientes identificados em uma imagem",
+                "operationId": "06024e37ab06d28d42e807c9a525575f",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Clientes recuperados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client on image retrieved successfully"
+                                        },
+                                        "clients": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Client"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/images/{image}/clients/{client}/crop": {
+            "get": {
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Obtém o recorte do rosto do cliente na imagem",
+                "operationId": "a996404dd897ef0561cee457b4871e74",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "ID da imagem",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "client",
+                        "in": "path",
+                        "description": "ID do cliente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recorte obtido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Client on image retrieved successfully"
+                                        },
+                                        "faceMatch": {
+                                            "$ref": "#/components/schemas/FaceCropMatch"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/locations/countries": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Obtém a lista de países",
+                "operationId": "de7461346fbefe8cd459142cd740618d",
+                "responses": {
+                    "200": {
+                        "description": "Lista de países obtida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All countries obtained"
+                                        },
+                                        "countries": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "value",
+                                                    "label"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "BR"
+                                                    },
+                                                    "label": {
+                                                        "type": "string",
+                                                        "example": "🇧🇷 Brasil (Brasil)"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/locations/countries/{country_cca2}/states": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Obtém a lista de estados de um país",
+                "operationId": "6dce5fd76bb73ac391ff8b0e557327dd",
+                "parameters": [
+                    {
+                        "name": "country_cca2",
+                        "in": "path",
+                        "description": "Código CCA2 do país (ex: BR)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de estados obtida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All states obtained"
+                                        },
+                                        "states": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "value",
+                                                    "label"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "SP"
+                                                    },
+                                                    "label": {
+                                                        "type": "string",
+                                                        "example": "São Paulo"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "País não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/locations/countries/{country_cca2}/states/{state_code}/cities": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Obtém a lista de cidades de um estado",
+                "operationId": "0d75e8710e086c19923c93f1e23d3833",
+                "parameters": [
+                    {
+                        "name": "country_cca2",
+                        "in": "path",
+                        "description": "Código CCA2 do país (ex: BR)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state_code",
+                        "in": "path",
+                        "description": "Código do estado (ex: SP)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de cidades obtida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All cities obtained"
+                                        },
+                                        "cities": {
+                                            "type": "array",
+                                            "items": {
+                                                "required": [
+                                                    "value",
+                                                    "label"
+                                                ],
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "São Paulo"
+                                                    },
+                                                    "label": {
+                                                        "type": "string",
+                                                        "example": "São Paulo"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "País ou estado não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Not Found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/notifications/sse-ticket": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Obtém um ticket para conexão Server-Sent Events (SSE)",
+                "operationId": "4833c7f6d950b93462606585b7e9d134",
+                "responses": {
+                    "200": {
+                        "description": "Ticket obtido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ticket obtained successfully"
+                                        },
+                                        "ticket": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "example": "123e4567-e89b-12d3-a456-426614174000"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Lista as notificações do usuário",
+                "operationId": "6d56a555955089a73fdf3f7229e8ead8",
+                "responses": {
+                    "200": {
+                        "description": "Notificações obtidas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notifications obtained successfully"
+                                        },
+                                        "notifications": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Notification"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "from": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "to": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}/read": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Marca uma notificação como lida",
+                "operationId": "cde64b28769413444ae4ae3c3de1bff5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da notificação",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notificação marcada como lida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notifications updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/read-all": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Marca todas as notificações como lidas",
+                "operationId": "a938b29776d5df701355702f21a24149",
+                "responses": {
+                    "200": {
+                        "description": "Notificações atualizadas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notifications updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}/dismiss": {
+            "delete": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Remove uma notificação",
+                "operationId": "0d3519c4807504e5f2b257ec73721d43",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da notificação",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notificação removida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Notification dismissed successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/stream": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Stream de notificações via SSE",
+                "operationId": "a0dd9a008b949544c5284d565026bf7d",
+                "responses": {
+                    "200": {
+                        "description": "Stream estabelecida",
+                        "content": {
+                            "text/event-stream": {}
                         }
                     }
                 },
@@ -892,11 +3858,11 @@
                     },
                     "type": {
                         "type": "string",
-                        "example": "App\\\\Notifications\\\\SystemNotification"
+                        "example": "App\\Notifications\\SystemNotification"
                     },
                     "notifiableType": {
                         "type": "string",
-                        "example": "App\\\\Models\\\\User"
+                        "example": "App\\Models\\User"
                     },
                     "notifiableId": {
                         "type": "integer",
@@ -950,7 +3916,1113 @@
                     }
                 },
                 "type": "object"
+            },
+            "PaginationMeta": {
+                "required": [
+                    "total",
+                    "current_page",
+                    "last_page",
+                    "per_page",
+                    "from",
+                    "to"
+                ],
+                "properties": {
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 15,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrorResponse": {
+                "required": [
+                    "status",
+                    "message",
+                    "errors"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "error"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "The email field is required."
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UnauthorizedResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "not_authenticated"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Usuário não autenticado."
+                    }
+                },
+                "type": "object"
+            },
+            "ForbiddenResponse": {
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "forbidden"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Ação não autorizada."
+                    }
+                },
+                "type": "object"
+            },
+            "AuthSendCodeRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "type": {
+                        "description": "Use `token` when testing through Swagger and you want the follow-up auth flow to return a bearer token.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AuthSendRecoveryLinkRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthValidateRecoveryTokenRequest": {
+                "required": [
+                    "email",
+                    "token"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "token": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 64,
+                        "example": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthChangePasswordRequest": {
+                "required": [
+                    "email",
+                    "token",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "token": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 64,
+                        "example": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthConfirmCodeRequest": {
+                "required": [
+                    "email",
+                    "code"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 6,
+                        "minLength": 6,
+                        "example": "ABC123"
+                    },
+                    "type": {
+                        "description": "Use `token` when confirming the code for a token-based registration flow.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AuthRegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Vinicius"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "vinicius@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6,
+                        "example": "secret123"
+                    },
+                    "type": {
+                        "description": "Use `token` to get a bearer token response that can be pasted into the Swagger Authorize dialog.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "AuthLoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "vinicius@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret123"
+                    },
+                    "remember_me": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "device_name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "swagger-ui",
+                        "nullable": true
+                    },
+                    "type": {
+                        "description": "Use `token` in Swagger so login returns a Sanctum token. Then click Authorize and paste `Bearer <token>`.",
+                        "type": "string",
+                        "enum": [
+                            "token",
+                            "session"
+                        ],
+                        "example": "token",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientFormRequest": {
+                "required": [
+                    "name",
+                    "profile"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "CLI-0001",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "João dos Testes"
+                    },
+                    "profile": {
+                        "description": "Image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2010-03-25",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 98888-7777",
+                        "nullable": true
+                    },
+                    "inform_address": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "50000-000",
+                        "nullable": true
+                    },
+                    "street": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Rua das Flores",
+                        "nullable": true
+                    },
+                    "number": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "example": "123",
+                        "nullable": true
+                    },
+                    "neighborhood": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Centro",
+                        "nullable": true
+                    },
+                    "complement": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Apto 201",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR",
+                        "nullable": true
+                    },
+                    "inform_guardian": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "guardian_name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "Maria da Silva",
+                        "nullable": true
+                    },
+                    "guardian_type": {
+                        "type": "string",
+                        "enum": [
+                            "mother",
+                            "father",
+                            "grandmother",
+                            "grandfather",
+                            "uncle",
+                            "aunt",
+                            "sister",
+                            "brother",
+                            "godmother",
+                            "godfather",
+                            "other"
+                        ],
+                        "example": "mother",
+                        "nullable": true
+                    },
+                    "guardian_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 60,
+                        "example": "mae@example.com",
+                        "nullable": true
+                    },
+                    "guardian_phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 97777-6666",
+                        "nullable": true
+                    },
+                    "assignments": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientUpdateFormRequest": {
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "CLI-0001",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "João dos Testes"
+                    },
+                    "profile": {
+                        "description": "Optional image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2010-03-25",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 98888-7777",
+                        "nullable": true
+                    },
+                    "inform_address": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "50000-000",
+                        "nullable": true
+                    },
+                    "street": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Rua das Flores",
+                        "nullable": true
+                    },
+                    "number": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "example": "123",
+                        "nullable": true
+                    },
+                    "neighborhood": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Centro",
+                        "nullable": true
+                    },
+                    "complement": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Apto 201",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR",
+                        "nullable": true
+                    },
+                    "inform_guardian": {
+                        "type": "boolean",
+                        "default": false,
+                        "example": true
+                    },
+                    "guardian_name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "Maria da Silva",
+                        "nullable": true
+                    },
+                    "guardian_type": {
+                        "type": "string",
+                        "enum": [
+                            "mother",
+                            "father",
+                            "grandmother",
+                            "grandfather",
+                            "uncle",
+                            "aunt",
+                            "sister",
+                            "brother",
+                            "godmother",
+                            "godfather",
+                            "other"
+                        ],
+                        "example": "mother",
+                        "nullable": true
+                    },
+                    "guardian_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 60,
+                        "example": "mae@example.com",
+                        "nullable": true
+                    },
+                    "guardian_phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 97777-6666",
+                        "nullable": true
+                    },
+                    "assignments": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientPublicRegisterFormRequest": {
+                "required": [
+                    "name",
+                    "profile",
+                    "birthdate",
+                    "phone"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "CLI-0001",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "João dos Testes"
+                    },
+                    "profile": {
+                        "description": "Image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2010-03-25"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 98888-7777"
+                    },
+                    "postal_code": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "50000-000",
+                        "nullable": true
+                    },
+                    "street": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Rua das Flores",
+                        "nullable": true
+                    },
+                    "number": {
+                        "type": "string",
+                        "maxLength": 10,
+                        "example": "123",
+                        "nullable": true
+                    },
+                    "neighborhood": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Centro",
+                        "nullable": true
+                    },
+                    "complement": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Apto 201",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife",
+                        "nullable": true
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR",
+                        "nullable": true
+                    },
+                    "guardian_name": {
+                        "type": "string",
+                        "maxLength": 60,
+                        "example": "Maria da Silva",
+                        "nullable": true
+                    },
+                    "guardian_type": {
+                        "type": "string",
+                        "enum": [
+                            "mother",
+                            "father",
+                            "grandmother",
+                            "grandfather",
+                            "uncle",
+                            "aunt",
+                            "sister",
+                            "brother",
+                            "godmother",
+                            "godfather",
+                            "other"
+                        ],
+                        "example": "mother",
+                        "nullable": true
+                    },
+                    "guardian_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 60,
+                        "example": "mae@example.com",
+                        "nullable": true
+                    },
+                    "guardian_phone": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "+55 81 97777-6666",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ClientGenerateLinkRequest": {
+                "required": [
+                    "title",
+                    "require_address",
+                    "require_guardian_if_minor",
+                    "max_registers"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 80,
+                        "minLength": 3,
+                        "example": "Cadastro Formatura 2026"
+                    },
+                    "require_address": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "require_guardian_if_minor": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "max_registers": {
+                        "type": "integer",
+                        "maximum": 999,
+                        "minimum": 1,
+                        "example": 100
+                    },
+                    "assignments": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ContractCreateRequest": {
+                "required": [
+                    "title",
+                    "country",
+                    "state",
+                    "city",
+                    "category",
+                    "code"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Formatura 3º Ano 2026"
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR"
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE"
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife"
+                    },
+                    "category": {
+                        "description": "Contract category slug",
+                        "type": "string",
+                        "example": "graduation"
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "CONT-2026-01"
+                    },
+                    "type": {
+                        "description": "Required when category is `graduation`.",
+                        "type": "string",
+                        "enum": [
+                            "university",
+                            "school"
+                        ],
+                        "example": "university",
+                        "nullable": true
+                    },
+                    "institution_name": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Universidade Federal do Recife",
+                        "nullable": true
+                    },
+                    "institution_acronym": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "UFR",
+                        "nullable": true
+                    },
+                    "class": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Turma A",
+                        "nullable": true
+                    },
+                    "shift": {
+                        "type": "string",
+                        "enum": [
+                            "morning",
+                            "afternoon",
+                            "night",
+                            "full_time"
+                        ],
+                        "example": "night",
+                        "nullable": true
+                    },
+                    "conclusion_year": {
+                        "type": "string",
+                        "pattern": "^[0-9]{4}$",
+                        "example": "2026",
+                        "nullable": true
+                    },
+                    "university_course": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Computer Science",
+                        "nullable": true
+                    },
+                    "school_grade_level": {
+                        "type": "string",
+                        "enum": [
+                            "elementary_school",
+                            "middle_school",
+                            "high_school"
+                        ],
+                        "example": "high_school",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ContractUpdateRequest": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Formatura 3º Ano 2026"
+                    },
+                    "country": {
+                        "type": "string",
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "example": "BR"
+                    },
+                    "state": {
+                        "type": "string",
+                        "maxLength": 12,
+                        "example": "PE"
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Recife"
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "CONT-2026-01"
+                    },
+                    "type": {
+                        "description": "Required for graduation contracts.",
+                        "type": "string",
+                        "enum": [
+                            "university",
+                            "school"
+                        ],
+                        "example": "university",
+                        "nullable": true
+                    },
+                    "institution_name": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Universidade Federal do Recife",
+                        "nullable": true
+                    },
+                    "institution_acronym": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "example": "UFR",
+                        "nullable": true
+                    },
+                    "class": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "Turma A",
+                        "nullable": true
+                    },
+                    "shift": {
+                        "type": "string",
+                        "enum": [
+                            "morning",
+                            "afternoon",
+                            "night",
+                            "full_time"
+                        ],
+                        "example": "night",
+                        "nullable": true
+                    },
+                    "conclusion_year": {
+                        "type": "string",
+                        "pattern": "^[0-9]{4}$",
+                        "example": "2026",
+                        "nullable": true
+                    },
+                    "university_course": {
+                        "type": "string",
+                        "maxLength": 120,
+                        "example": "Computer Science",
+                        "nullable": true
+                    },
+                    "school_grade_level": {
+                        "type": "string",
+                        "enum": [
+                            "elementary_school",
+                            "middle_school",
+                            "high_school"
+                        ],
+                        "example": "high_school",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "EventCreateRequest": {
+                "required": [
+                    "contract",
+                    "title",
+                    "event_type",
+                    "event_date"
+                ],
+                "properties": {
+                    "contract": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Baile de Formatura"
+                    },
+                    "event_type": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "event_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-12-13"
+                    },
+                    "event_start_time": {
+                        "type": "string",
+                        "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                        "example": "19:30",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 300,
+                        "example": "Cobertura completa do baile",
+                        "nullable": true
+                    },
+                    "auto_assign_clients": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "EventUpdateRequest": {
+                "properties": {
+                    "contract": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 180,
+                        "example": "Baile de Formatura"
+                    },
+                    "event_type": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "event_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-12-13"
+                    },
+                    "event_start_time": {
+                        "type": "string",
+                        "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                        "example": "19:30",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 300,
+                        "example": "Cobertura completa do baile",
+                        "nullable": true
+                    },
+                    "auto_assign_clients": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "EventPhotoUploadRequest": {
+                "required": [
+                    "event_id",
+                    "photo"
+                ],
+                "properties": {
+                    "event_id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "photo": {
+                        "description": "Image file up to 25 MB",
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Sanctum bearer token. Generate it via `/api/auth/login` or `/api/auth/register` with `type=token`.",
+                "bearerFormat": "Bearer token",
+                "scheme": "bearer"
+            },
+            "sessionAuth": {
+                "type": "apiKey",
+                "description": "Laravel session cookie for browser-based authentication.",
+                "name": "laravel_session",
+                "in": "cookie"
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Authentication and current-user endpoints"
+        },
+        {
+            "name": "Locations",
+            "description": "Countries, states, and cities lookup endpoints"
+        },
+        {
+            "name": "Contracts",
+            "description": "Contract management endpoints"
+        },
+        {
+            "name": "Events",
+            "description": "Event management endpoints"
+        },
+        {
+            "name": "EventPhotos",
+            "description": "Event photo upload endpoints"
+        },
+        {
+            "name": "Clients",
+            "description": "Client management endpoints"
+        },
+        {
+            "name": "Assignments",
+            "description": "Client-to-event assignment endpoints"
+        },
+        {
+            "name": "Images",
+            "description": "Image retrieval and metadata endpoints"
+        },
+        {
+            "name": "Notifications",
+            "description": "User notification endpoints"
+        }
+    ]
 }
