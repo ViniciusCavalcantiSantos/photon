@@ -1,7 +1,7 @@
 import {UploadFile} from "antd";
 import {objectToFormData} from "@/lib/objectToFormData";
 import apiFetch from "@/lib/apiFetch";
-import Image from "@/types/Image";
+import type { UploadEventPhotoResponse } from "@/types/api-contracts";
 
 export async function uploadEventPhoto(
   eventId: number | string,
@@ -10,7 +10,7 @@ export async function uploadEventPhoto(
 ) {
   const formData = objectToFormData({event_id: eventId}, {'photo': photo})
 
-  return apiFetch<{ image: Image }>("/events/photos", {
+  return apiFetch<UploadEventPhotoResponse>("/events/photos", {
     method: "POST",
     body: formData,
     driver: 'axios',

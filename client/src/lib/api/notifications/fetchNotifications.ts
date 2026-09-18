@@ -1,10 +1,8 @@
 import apiFetch from "@/lib/apiFetch";
-import Notification from "@/types/Notification";
+import type { FetchNotificationsResponse } from "@/types/api-contracts";
 
 export async function fetchNotifications() {
-  return await apiFetch<{
-    notifications: Notification[]
-  }>(`/notifications`, {
+  return await apiFetch<FetchNotificationsResponse>(`/notifications`, {
     method: "GET"
   });
 }

@@ -1,11 +1,10 @@
 import {UploadFile} from "antd";
 import {objectToFormData} from "@/lib/objectToFormData";
 import apiFetch from "@/lib/apiFetch";
-import Client from "@/types/Client";
-
-export interface CreateClientResponse {
-  client: Client
-}
+import type {
+  CreateClientResponse,
+  CreatePublicClientResponse,
+} from "@/types/api-contracts";
 
 export async function createClient(
   values: any,
@@ -30,7 +29,7 @@ export async function createClientPublic(
 ) {
   const formData = objectToFormData(values, {'profile': profile})
 
-  return apiFetch<CreateClientResponse>(`/public/clients/register/${linkId}`, {
+  return apiFetch<CreatePublicClientResponse>(`/public/clients/register/${linkId}`, {
     method: "POST",
     body: formData,
     driver: 'axios',

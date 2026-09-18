@@ -1,12 +1,12 @@
-import type {Metadata, ResolvingMetadata} from "next";
-import {Geist, Geist_Mono} from "next/font/google";
+import type { Metadata, ResolvingMetadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-import {themeBody} from "@/theme";
-import {languages} from "@/i18n/settings";
-import {fetchUserServer} from "@/lib/api/users/fetchUserServer";
-import {Theme} from "@/contexts/AppThemeContext";
-import {cookies} from "next/headers";
+import { themeBody } from "@/theme";
+import { languages } from "@/i18n/settings";
+import { fetchUserServer } from "@/lib/api/users/fetchUserServer";
+import { Theme } from "@/contexts/AppThemeContext";
+import { cookies } from "next/headers";
 import React from "react";
 
 const geistSans = Geist({
@@ -21,16 +21,16 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateStaticParams() {
-  return languages.map((lng) => ({lng}));
+  return languages.map((lng) => ({ lng }));
 }
 
 export async function generateMetadata(
-  {params}: { params: Promise<any> },
+  { params }: { params: Promise<any> },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const parentMetadata = await parent;
-  const baseUrl = parentMetadata.alternates?.canonical?.url || process.env.NEXT_PUBLIC_APP_URL || "https://vinmo.org";
-  const {lng} = await params;
+  const baseUrl = parentMetadata.alternates?.canonical?.url || process.env.NEXT_PUBLIC_APP_URL || "https://photon.org";
+  const { lng } = await params;
 
   return {
     alternates: {
@@ -52,8 +52,8 @@ async function LocaleLayout(
     children: React.ReactNode;
     params: Promise<any>;
   }>) {
-  const {lng} = await params;
-  const {user} = await fetchUserServer()
+  const { lng } = await params;
+  const { user } = await fetchUserServer()
 
   const cookieStore = await cookies();
   const themeCookie = cookieStore.get('theme')?.value;
@@ -64,14 +64,14 @@ async function LocaleLayout(
 
   return (
     <html lang={lng} className="h-full" suppressHydrationWarning>
-    <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased h-full bg-app-bg`}
-      style={themeBody}
-    >
-    <Providers lang={lng} user={user} theme={initialTheme}>
-      {children}
-    </Providers>
-    </body>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full bg-app-bg`}
+        style={themeBody}
+      >
+        <Providers lang={lng} user={user} theme={initialTheme}>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }

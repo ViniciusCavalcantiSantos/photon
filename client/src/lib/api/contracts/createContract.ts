@@ -1,9 +1,5 @@
 import apiFetch from "@/lib/apiFetch";
-import Contract from "@/types/Contract";
-
-export interface CreateContractResponse {
-  contract: Contract
-}
+import type { CreateContractResponse } from "@/types/api-contracts";
 
 export async function createContract(data: any) {
   return apiFetch<CreateContractResponse>("/contracts", {

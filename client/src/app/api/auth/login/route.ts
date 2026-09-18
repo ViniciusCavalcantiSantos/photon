@@ -2,13 +2,13 @@ import { cookies } from "next/headers";
 import apiFetch from "@/lib/apiFetch";
 import { ApiStatus } from "@/types/ApiResponse";
 import { NextResponse } from "next/server";
-import User from "@/types/User";
+import type { LoginResponse } from "@/types/api-contracts";
 
 export async function POST(
   request: Request
 ) {
   const { email, password, remember_me } = await request.json();
-  const response = await apiFetch<{ token?: string; user?: User }>("/auth/login", {
+  const response = await apiFetch<LoginResponse>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password, remember_me, type: "token" }),
   })

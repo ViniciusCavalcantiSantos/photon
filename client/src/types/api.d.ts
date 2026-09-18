@@ -4,6 +4,224 @@
  */
 
 export interface paths {
+    "/api/clients/{client}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lista os IDs dos eventos atribuídos a um cliente
+         * @description Display the specified resource.
+         */
+        get: operations["f3f31d009bdda4ab74c01d54e9dfc5cd"];
+        put?: never;
+        /**
+         * Atribui eventos a um cliente
+         * @description Store a newly created resource in storage.
+         */
+        post: operations["e360cad7aaabc9ce1d9e126de14bec15"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/clients/assignments/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Atribui eventos em lote para múltiplos clientes
+         * @description Store a newly created resource in storage.
+         */
+        post: operations["e79b731619353e463a09902b547a1546"];
+        /**
+         * Remove atribuições de eventos em lote para múltiplos clientes
+         * @description Store a newly created resource in storage.
+         */
+        delete: operations["0bed1a61a7294bf1005c1a2f18e5b833"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/available-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista os provedores de autenticação social disponíveis */
+        get: operations["522e21daa0a96ab89de410f1219423a7"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/{provider}/redirect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Redireciona para o provedor de autenticação (OAuth) */
+        get: operations["a056a975024516894ed584b37735aaae"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/{provider}/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Callback do provedor de autenticação */
+        get: operations["cddf551d3b6e72e7b88f1e884cb3c79a"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/send-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Envia o código de verificação para o email */
+        post: operations["0f2ff5da3d5883ef973571776bfcbc27"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/send-recovery-link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Envia o link de recuperação de senha */
+        post: operations["f9cec95b81add2be08c454123bccd664"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/validate-recovery-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Valida o token de recuperação de senha */
+        post: operations["ac946ba9f9c37e55ef77fd4bd0a2bdad"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Altera a senha do usuário */
+        post: operations["58e67cdbde52513b62902b05abf9abcb"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/confirm-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirma o código enviado para o email */
+        post: operations["3445143da2aa0898b49d6847a0811e34"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registra um novo usuário */
+        post: operations["c7bb21a0d87049e161b8e4c9b0d909f2"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Realiza login na aplicação */
+        post: operations["dd51a484b7fa0f97c7680fdbde14cf5f"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me": {
         parameters: {
             query?: never;
@@ -12,10 +230,526 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Current authenticated user
+         * Usuário autenticado
          * @description Retorna o usuário autenticado.
          */
         get: operations["8367feff40ba10e43187792cad3132c1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Realiza logout e invalida o token */
+        post: operations["ad65cbbd4e9f201619eae184a5961a98"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lista clientes
+         * @description Display a listing of the resource.
+         */
+        get: operations["413c12320d4121431e38339f45ecaa7c"];
+        put?: never;
+        /**
+         * Cria um novo cliente
+         * @description Store a newly created resource in storage.
+         */
+        post: operations["f909473745c1a1d469e0c5a5b54682b8"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/clients/register/{linkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registra um cliente via link público */
+        post: operations["502bad6e3c22f09e708d4a3a2175edec"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/clients/{client}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Exibe detalhes do cliente
+         * @description Display the specified resource.
+         */
+        get: operations["2852fa5d6ec28da5a92fa47749faa1e1"];
+        /**
+         * Atualiza os dados de um cliente
+         * @description Update the specified resource in storage.
+         */
+        put: operations["15591365886417bc26fb290a81016499"];
+        post?: never;
+        /**
+         * Remove um cliente
+         * @description Remove the specified resource from storage.
+         */
+        delete: operations["833eb8e223eda0f71bee956a8153f8aa"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/clients/links": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Gera um link de cadastro público de clientes */
+        post: operations["5c48f879c305b476dcef4d91d8971b4e"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/clients/links/{linkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recupera as informações de um link público */
+        get: operations["dfad60e72754cde36b69ee1335f82d64"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contracts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lista contratos
+         * @description Display a listing of the resource.
+         */
+        get: operations["971f1fdec41a8eaf0830d94e9ee15496"];
+        put?: never;
+        /**
+         * Cria um novo contrato
+         * @description Store a newly created resource in storage.
+         */
+        post: operations["73a91076ec6423051d986a4149fa8d87"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contracts/{contract}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Exibe os detalhes de um contrato
+         * @description Display the specified resource.
+         */
+        get: operations["3efe2c45b2170cb9f4400d6dd66106fd"];
+        /**
+         * Atualiza um contrato
+         * @description Update the specified resource in storage.
+         */
+        put: operations["3e85ddb8b10c94bb01c376bb06f4be03"];
+        post?: never;
+        /**
+         * Remove um contrato
+         * @description Remove the specified resource from storage.
+         */
+        delete: operations["d1ff21f53377f46c99d6cf407e68ca14"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contracts/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista as categorias de contrato */
+        get: operations["9ae8f03b8087b524a56f136ad022f86b"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista eventos */
+        get: operations["e529c81e6aaec82f49950a87ed881f57"];
+        put?: never;
+        /** Cria um novo evento */
+        post: operations["e958e1c6c275d5f9b7ebcd837903d0ef"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/{event}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exibe os detalhes de um evento */
+        get: operations["2f5e4d4d8d7989ca1f72be9c20d9daac"];
+        /** Atualiza um evento */
+        put: operations["0c0cf4026635d252353fad3e5b48591c"];
+        post?: never;
+        /** Remove um evento */
+        delete: operations["b9043fb311444b3c3bcb101e1a643a9f"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/types/{contract}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retorna os tipos de evento permitidos para um contrato */
+        get: operations["c46b71d2e6c3179de743596dd0043d52"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/{event}/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retorna as imagens de um evento */
+        get: operations["510c80a3da181fcc15985f736ca258a7"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events/photos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Faz o upload de uma foto para o evento */
+        post: operations["9a3ee6c95e56dae0639e7b7053aa5877"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/images/{image}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exibe uma imagem */
+        get: operations["bb3175b3e40a396bcc3e52c5f7581065"];
+        put?: never;
+        post?: never;
+        /** Remove uma imagem */
+        delete: operations["25687ab67804accc883dc67eeec16d21"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/images/{image}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Baixa a imagem original */
+        get: operations["a3ceaedf365f1f2b46ebf66f56b2c619"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/images/{image}/metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recupera os metadados da imagem */
+        get: operations["27d2168a6a62464feb894a887e72f209"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/images/{image}/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retorna a lista de clientes identificados em uma imagem */
+        get: operations["06024e37ab06d28d42e807c9a525575f"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/images/{image}/clients/{client}/crop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtém o recorte do rosto do cliente na imagem */
+        get: operations["a996404dd897ef0561cee457b4871e74"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/locations/countries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtém a lista de países */
+        get: operations["de7461346fbefe8cd459142cd740618d"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/locations/countries/{country_cca2}/states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtém a lista de estados de um país */
+        get: operations["6dce5fd76bb73ac391ff8b0e557327dd"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/locations/countries/{country_cca2}/states/{state_code}/cities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtém a lista de cidades de um estado */
+        get: operations["0d75e8710e086c19923c93f1e23d3833"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/sse-ticket": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtém um ticket para conexão Server-Sent Events (SSE) */
+        get: operations["4833c7f6d950b93462606585b7e9d134"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista as notificações do usuário */
+        get: operations["6d56a555955089a73fdf3f7229e8ead8"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Marca uma notificação como lida */
+        post: operations["cde64b28769413444ae4ae3c3de1bff5"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Marca todas as notificações como lidas */
+        post: operations["a938b29776d5df701355702f21a24149"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove uma notificação */
+        delete: operations["0d3519c4807504e5f2b257ec73721d43"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Stream de notificações via SSE */
+        get: operations["a0dd9a008b949544c5284d565026bf7d"];
         put?: never;
         post?: never;
         delete?: never;
@@ -435,9 +1169,9 @@ export interface components {
              * @example 311d5e06-7fcf-4a33-b79f-0f2c9e15173c
              */
             id: string;
-            /** @example App\\Notifications\\SystemNotification */
+            /** @example App\Notifications\SystemNotification */
             type: string;
-            /** @example App\\Models\\User */
+            /** @example App\Models\User */
             notifiableType: string;
             /** @example 123 */
             notifiableId: number;
@@ -467,6 +1201,477 @@ export interface components {
             picture?: string | null;
             address: components["schemas"]["FullAddress"];
         };
+        PaginationMeta: {
+            /** @example 100 */
+            total: number;
+            /** @example 1 */
+            current_page: number;
+            /** @example 10 */
+            last_page: number;
+            /** @example 15 */
+            per_page: number;
+            /** @example 1 */
+            from: number | null;
+            /** @example 15 */
+            to: number | null;
+        };
+        ValidationErrorResponse: {
+            /** @example error */
+            status: string;
+            /** @example The email field is required. */
+            message: string;
+            errors: {
+                [key: string]: string[];
+            };
+        };
+        UnauthorizedResponse: {
+            /** @example not_authenticated */
+            status: string;
+            /** @example Usuário não autenticado. */
+            message: string;
+        };
+        ForbiddenResponse: {
+            /** @example forbidden */
+            status: string;
+            /** @example Ação não autorizada. */
+            message: string;
+        };
+        AuthSendCodeRequest: {
+            /**
+             * Format: email
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description Use `token` when testing through Swagger and you want the follow-up auth flow to return a bearer token.
+             * @example token
+             * @enum {string|null}
+             */
+            type?: "token" | "session" | null;
+        };
+        AuthSendRecoveryLinkRequest: {
+            /**
+             * Format: email
+             * @example user@example.com
+             */
+            email: string;
+        };
+        AuthValidateRecoveryTokenRequest: {
+            /**
+             * Format: email
+             * @example user@example.com
+             */
+            email: string;
+            /** @example 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef */
+            token: string;
+        };
+        AuthChangePasswordRequest: {
+            /**
+             * Format: email
+             * @example user@example.com
+             */
+            email: string;
+            /** @example 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef */
+            token: string;
+            /**
+             * Format: password
+             * @example secret123
+             */
+            password: string;
+            /**
+             * Format: password
+             * @example secret123
+             */
+            password_confirmation: string;
+        };
+        AuthConfirmCodeRequest: {
+            /**
+             * Format: email
+             * @example user@example.com
+             */
+            email: string;
+            /** @example ABC123 */
+            code: string;
+            /**
+             * @description Use `token` when confirming the code for a token-based registration flow.
+             * @example token
+             * @enum {string|null}
+             */
+            type?: "token" | "session" | null;
+        };
+        AuthRegisterRequest: {
+            /** @example Vinicius */
+            name: string;
+            /**
+             * Format: email
+             * @example vinicius@example.com
+             */
+            email: string;
+            /**
+             * Format: password
+             * @example secret123
+             */
+            password: string;
+            /**
+             * Format: password
+             * @example secret123
+             */
+            password_confirmation: string;
+            /**
+             * @description Use `token` to get a bearer token response that can be pasted into the Swagger Authorize dialog.
+             * @example token
+             * @enum {string|null}
+             */
+            type?: "token" | "session" | null;
+        };
+        AuthLoginRequest: {
+            /**
+             * Format: email
+             * @example vinicius@example.com
+             */
+            email: string;
+            /**
+             * Format: password
+             * @example secret123
+             */
+            password: string;
+            /**
+             * @default false
+             * @example true
+             */
+            remember_me: boolean;
+            /** @example swagger-ui */
+            device_name?: string | null;
+            /**
+             * @description Use `token` in Swagger so login returns a Sanctum token. Then click Authorize and paste `Bearer <token>`.
+             * @example token
+             * @enum {string|null}
+             */
+            type?: "token" | "session" | null;
+        };
+        ClientFormRequest: {
+            /** @example CLI-0001 */
+            code?: string | null;
+            /** @example João dos Testes */
+            name: string;
+            /**
+             * Format: binary
+             * @description Image file up to 25 MB
+             */
+            profile: string;
+            /**
+             * Format: date
+             * @example 2010-03-25
+             */
+            birthdate?: string | null;
+            /** @example +55 81 98888-7777 */
+            phone?: string | null;
+            /**
+             * @default false
+             * @example true
+             */
+            inform_address: boolean;
+            /** @example 50000-000 */
+            postal_code?: string | null;
+            /** @example Rua das Flores */
+            street?: string | null;
+            /** @example 123 */
+            number?: string | null;
+            /** @example Centro */
+            neighborhood?: string | null;
+            /** @example Apto 201 */
+            complement?: string | null;
+            /** @example Recife */
+            city?: string | null;
+            /** @example PE */
+            state?: string | null;
+            /** @example BR */
+            country?: string | null;
+            /**
+             * @default false
+             * @example true
+             */
+            inform_guardian: boolean;
+            /** @example Maria da Silva */
+            guardian_name?: string | null;
+            /**
+             * @example mother
+             * @enum {string|null}
+             */
+            guardian_type?: "mother" | "father" | "grandmother" | "grandfather" | "uncle" | "aunt" | "sister" | "brother" | "godmother" | "godfather" | "other" | null;
+            /**
+             * Format: email
+             * @example mae@example.com
+             */
+            guardian_email?: string | null;
+            /** @example +55 81 97777-6666 */
+            guardian_phone?: string | null;
+            /**
+             * @example [
+             *       1,
+             *       2
+             *     ]
+             */
+            assignments?: number[] | null;
+        };
+        ClientUpdateFormRequest: {
+            /** @example CLI-0001 */
+            code?: string | null;
+            /** @example João dos Testes */
+            name?: string;
+            /**
+             * Format: binary
+             * @description Optional image file up to 25 MB
+             */
+            profile?: string | null;
+            /**
+             * Format: date
+             * @example 2010-03-25
+             */
+            birthdate?: string | null;
+            /** @example +55 81 98888-7777 */
+            phone?: string | null;
+            /**
+             * @default false
+             * @example true
+             */
+            inform_address: boolean;
+            /** @example 50000-000 */
+            postal_code?: string | null;
+            /** @example Rua das Flores */
+            street?: string | null;
+            /** @example 123 */
+            number?: string | null;
+            /** @example Centro */
+            neighborhood?: string | null;
+            /** @example Apto 201 */
+            complement?: string | null;
+            /** @example Recife */
+            city?: string | null;
+            /** @example PE */
+            state?: string | null;
+            /** @example BR */
+            country?: string | null;
+            /**
+             * @default false
+             * @example true
+             */
+            inform_guardian: boolean;
+            /** @example Maria da Silva */
+            guardian_name?: string | null;
+            /**
+             * @example mother
+             * @enum {string|null}
+             */
+            guardian_type?: "mother" | "father" | "grandmother" | "grandfather" | "uncle" | "aunt" | "sister" | "brother" | "godmother" | "godfather" | "other" | null;
+            /**
+             * Format: email
+             * @example mae@example.com
+             */
+            guardian_email?: string | null;
+            /** @example +55 81 97777-6666 */
+            guardian_phone?: string | null;
+            /**
+             * @example [
+             *       1,
+             *       2
+             *     ]
+             */
+            assignments?: number[] | null;
+        };
+        ClientPublicRegisterFormRequest: {
+            /** @example CLI-0001 */
+            code?: string | null;
+            /** @example João dos Testes */
+            name: string;
+            /**
+             * Format: binary
+             * @description Image file up to 25 MB
+             */
+            profile: string;
+            /**
+             * Format: date
+             * @example 2010-03-25
+             */
+            birthdate: string;
+            /** @example +55 81 98888-7777 */
+            phone: string;
+            /** @example 50000-000 */
+            postal_code?: string | null;
+            /** @example Rua das Flores */
+            street?: string | null;
+            /** @example 123 */
+            number?: string | null;
+            /** @example Centro */
+            neighborhood?: string | null;
+            /** @example Apto 201 */
+            complement?: string | null;
+            /** @example Recife */
+            city?: string | null;
+            /** @example PE */
+            state?: string | null;
+            /** @example BR */
+            country?: string | null;
+            /** @example Maria da Silva */
+            guardian_name?: string | null;
+            /**
+             * @example mother
+             * @enum {string|null}
+             */
+            guardian_type?: "mother" | "father" | "grandmother" | "grandfather" | "uncle" | "aunt" | "sister" | "brother" | "godmother" | "godfather" | "other" | null;
+            /**
+             * Format: email
+             * @example mae@example.com
+             */
+            guardian_email?: string | null;
+            /** @example +55 81 97777-6666 */
+            guardian_phone?: string | null;
+        };
+        ClientGenerateLinkRequest: {
+            /** @example Cadastro Formatura 2026 */
+            title: string;
+            /** @example true */
+            require_address: boolean;
+            /** @example true */
+            require_guardian_if_minor: boolean;
+            /** @example 100 */
+            max_registers: number;
+            /**
+             * @example [
+             *       1,
+             *       2
+             *     ]
+             */
+            assignments?: number[] | null;
+        };
+        ContractCreateRequest: {
+            /** @example Formatura 3º Ano 2026 */
+            title: string;
+            /** @example BR */
+            country: string;
+            /** @example PE */
+            state: string;
+            /** @example Recife */
+            city: string;
+            /**
+             * @description Contract category slug
+             * @example graduation
+             */
+            category: string;
+            /** @example CONT-2026-01 */
+            code: string;
+            /**
+             * @description Required when category is `graduation`.
+             * @example university
+             * @enum {string|null}
+             */
+            type?: "university" | "school" | null;
+            /** @example Universidade Federal do Recife */
+            institution_name?: string | null;
+            /** @example UFR */
+            institution_acronym?: string | null;
+            /** @example Turma A */
+            class?: string | null;
+            /**
+             * @example night
+             * @enum {string|null}
+             */
+            shift?: "morning" | "afternoon" | "night" | "full_time" | null;
+            /** @example 2026 */
+            conclusion_year?: string | null;
+            /** @example Computer Science */
+            university_course?: string | null;
+            /**
+             * @example high_school
+             * @enum {string|null}
+             */
+            school_grade_level?: "elementary_school" | "middle_school" | "high_school" | null;
+        };
+        ContractUpdateRequest: {
+            /** @example Formatura 3º Ano 2026 */
+            title?: string;
+            /** @example BR */
+            country?: string;
+            /** @example PE */
+            state?: string;
+            /** @example Recife */
+            city?: string;
+            /** @example CONT-2026-01 */
+            code?: string;
+            /**
+             * @description Required for graduation contracts.
+             * @example university
+             * @enum {string|null}
+             */
+            type?: "university" | "school" | null;
+            /** @example Universidade Federal do Recife */
+            institution_name?: string | null;
+            /** @example UFR */
+            institution_acronym?: string | null;
+            /** @example Turma A */
+            class?: string | null;
+            /**
+             * @example night
+             * @enum {string|null}
+             */
+            shift?: "morning" | "afternoon" | "night" | "full_time" | null;
+            /** @example 2026 */
+            conclusion_year?: string | null;
+            /** @example Computer Science */
+            university_course?: string | null;
+            /**
+             * @example high_school
+             * @enum {string|null}
+             */
+            school_grade_level?: "elementary_school" | "middle_school" | "high_school" | null;
+        };
+        EventCreateRequest: {
+            /** @example 5 */
+            contract: number;
+            /** @example Baile de Formatura */
+            title: string;
+            /** @example 3 */
+            event_type: number;
+            /**
+             * Format: date
+             * @example 2026-12-13
+             */
+            event_date: string;
+            /** @example 19:30 */
+            event_start_time?: string | null;
+            /** @example Cobertura completa do baile */
+            description?: string | null;
+            /** @example true */
+            auto_assign_clients?: boolean | null;
+        };
+        EventUpdateRequest: {
+            /** @example 5 */
+            contract?: number;
+            /** @example Baile de Formatura */
+            title?: string;
+            /** @example 3 */
+            event_type?: number;
+            /**
+             * Format: date
+             * @example 2026-12-13
+             */
+            event_date?: string;
+            /** @example 19:30 */
+            event_start_time?: string | null;
+            /** @example Cobertura completa do baile */
+            description?: string | null;
+            /** @example true */
+            auto_assign_clients?: boolean | null;
+        };
+        EventPhotoUploadRequest: {
+            /** @example 12 */
+            event_id: number;
+            /**
+             * Format: binary
+             * @description Image file up to 25 MB
+             */
+            photo: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -476,6 +1681,480 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    f3f31d009bdda4ab74c01d54e9dfc5cd: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do cliente */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Atribuições recuperadas com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Assignments retrieved */
+                        message?: string;
+                        assignments?: number[];
+                    };
+                };
+            };
+        };
+    };
+    e360cad7aaabc9ce1d9e126de14bec15: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do cliente */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Array de IDs dos eventos */
+                    assignments?: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Atribuições atualizadas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Assignments updated */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Erro de validação */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example The selected event was not found in the system */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    e79b731619353e463a09902b547a1546: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Array de IDs dos clientes */
+                    client_ids?: number[];
+                    /** @description Array de IDs dos eventos a serem atribuídos */
+                    assignments?: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Atribuições atualizadas em lote */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Assignments updated */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Erro de validação */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example The selected client was not found in the system */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "0bed1a61a7294bf1005c1a2f18e5b833": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Array de IDs dos clientes */
+                    client_ids?: number[];
+                    /** @description Array de IDs dos eventos a serem removidos */
+                    assignments?: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Atribuições removidas em lote */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Assignments updated */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Erro de validação */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example The selected client was not found in the system */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "522e21daa0a96ab89de410f1219423a7": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Provedores disponíveis */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Available providers obtained successfully */
+                        message?: string;
+                        providers?: string[];
+                    };
+                };
+            };
+        };
+    };
+    a056a975024516894ed584b37735aaae: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Nome do provedor (ex: google) */
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description URL de redirecionamento gerada */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Url obtained successfully */
+                        message?: string;
+                        /** Format: uri */
+                        url?: string;
+                    };
+                };
+            };
+            /** @description Provedor inválido */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Provider not supported */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    cddf551d3b6e72e7b88f1e884cb3c79a: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Nome do provedor (ex: google) */
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Redirecionamento para o app */
+            302: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "0f2ff5da3d5883ef973571776bfcbc27": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthSendCodeRequest"];
+            };
+        };
+        responses: {
+            /** @description Código enviado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Code sent successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    f9cec95b81add2be08c454123bccd664: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthSendRecoveryLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description Link enviado com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Code sent successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    ac946ba9f9c37e55ef77fd4bd0a2bdad: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthValidateRecoveryTokenRequest"];
+            };
+        };
+        responses: {
+            /** @description Token válido */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Token validated successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "58e67cdbde52513b62902b05abf9abcb": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthChangePasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description Senha alterada */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Your password was successfully changed */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "3445143da2aa0898b49d6847a0811e34": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthConfirmCodeRequest"];
+            };
+        };
+        responses: {
+            /** @description Código confirmado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Email verified successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    c7bb21a0d87049e161b8e4c9b0d909f2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthRegisterRequest"];
+            };
+        };
+        responses: {
+            /** @description Usuário registrado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Registration completed successfully */
+                        message?: string;
+                        user?: components["schemas"]["User"];
+                        /** @example 1|tokenstring */
+                        token?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    dd51a484b7fa0f97c7680fdbde14cf5f: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Login efetuado com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Login successfully */
+                        message?: string;
+                        user?: components["schemas"]["User"];
+                        /** @example 1|tokenstring */
+                        token?: string | null;
+                    };
+                };
+            };
+        };
+    };
     "8367feff40ba10e43187792cad3132c1": {
         parameters: {
             query?: never;
@@ -492,8 +2171,1335 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        user: components["schemas"]["User"];
+                        /** @example success */
+                        status?: string;
+                        /** @example User successfully obtained */
+                        message?: string;
+                        user?: components["schemas"]["User"];
                     };
+                };
+            };
+        };
+    };
+    ad65cbbd4e9f201619eae184a5961a98: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Logout efetuado com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Logout successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "413c12320d4121431e38339f45ecaa7c": {
+        parameters: {
+            query?: {
+                /** @description Itens por página */
+                per_page?: number;
+                /** @description Termo de busca */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Clientes retornados */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Clients retrieved successfully */
+                        message?: string;
+                        clients?: components["schemas"]["Client"][];
+                        meta?: {
+                            /** @example 100 */
+                            total?: number;
+                            /** @example 1 */
+                            current_page?: number;
+                            /** @example 10 */
+                            last_page?: number;
+                            /** @example 15 */
+                            per_page?: number;
+                            /** @example 1 */
+                            from?: number;
+                            /** @example 15 */
+                            to?: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    f909473745c1a1d469e0c5a5b54682b8: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ClientFormRequest"];
+            };
+        };
+        responses: {
+            /** @description Cliente criado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Client created */
+                        message?: string;
+                        client?: components["schemas"]["Client"];
+                    };
+                };
+            };
+            /** @description Erro */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Could not perform action */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "502bad6e3c22f09e708d4a3a2175edec": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID codificado em base64 do link */
+                linkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ClientPublicRegisterFormRequest"];
+            };
+        };
+        responses: {
+            /** @description Cliente cadastrado com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Client created */
+                        message?: string;
+                        client?: components["schemas"]["Client"];
+                    };
+                };
+            };
+        };
+    };
+    "2852fa5d6ec28da5a92fa47749faa1e1": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do cliente */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cliente recuperado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Client retrieved */
+                        message?: string;
+                        client?: components["schemas"]["Client"];
+                    };
+                };
+            };
+        };
+    };
+    "15591365886417bc26fb290a81016499": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do cliente */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ClientUpdateFormRequest"];
+            };
+        };
+        responses: {
+            /** @description Cliente atualizado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Client updated */
+                        message?: string;
+                        client?: components["schemas"]["Client"];
+                    };
+                };
+            };
+        };
+    };
+    "833eb8e223eda0f71bee956a8153f8aa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do cliente */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cliente removido */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Client deleted */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "5c48f879c305b476dcef4d91d8971b4e": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientGenerateLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description Link criado */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Link created */
+                        message?: string;
+                        /** @example MT1= */
+                        link_id?: string;
+                    };
+                };
+            };
+        };
+    };
+    dfad60e72754cde36b69ee1335f82d64: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID codificado em base64 */
+                linkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Informações do link */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example link retrieved successfully */
+                        message?: string;
+                        linkInfo?: {
+                            /** @example MT1= */
+                            id?: string;
+                            /** @example Cadastro Formatura */
+                            title?: string;
+                            /** @example 100 */
+                            maxRegisters?: number;
+                            /** @example true */
+                            requireAddress?: boolean;
+                            /** @example true */
+                            requireGuardianIfMinor?: boolean;
+                            /** @example BR */
+                            defaultLanguage?: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "971f1fdec41a8eaf0830d94e9ee15496": {
+        parameters: {
+            query?: {
+                /** @description Itens por página */
+                per_page?: number;
+                /** @description Termo de busca */
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contratos retornados */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Contracts retrieved successfully */
+                        message?: string;
+                        contracts?: components["schemas"]["Contract"][];
+                        meta?: {
+                            /** @example 100 */
+                            total?: number;
+                            /** @example 1 */
+                            current_page?: number;
+                            /** @example 10 */
+                            last_page?: number;
+                            /** @example 15 */
+                            per_page?: number;
+                            /** @example 1 */
+                            from?: number;
+                            /** @example 15 */
+                            to?: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "73a91076ec6423051d986a4149fa8d87": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContractCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Contrato criado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Contract created */
+                        message?: string;
+                        contract?: components["schemas"]["Contract"];
+                    };
+                };
+            };
+            /** @description Erro */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Could not perform action */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "3efe2c45b2170cb9f4400d6dd66106fd": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do contrato */
+                contract: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Detalhes do contrato */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Contract retrieved */
+                        message?: string;
+                        contract?: components["schemas"]["Contract"];
+                    };
+                };
+            };
+        };
+    };
+    "3e85ddb8b10c94bb01c376bb06f4be03": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do contrato */
+                contract: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContractUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Contrato atualizado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Contract updated */
+                        message?: string;
+                        contract?: components["schemas"]["Contract"];
+                    };
+                };
+            };
+            /** @description Erro */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Could not perform action */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    d1ff21f53377f46c99d6cf407e68ca14: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do contrato */
+                contract: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contrato deletado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Contract deleted */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "9ae8f03b8087b524a56f136ad022f86b": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Categorias retornadas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example All categories obtained */
+                        message?: string;
+                        categories?: {
+                            /** @example Formatura Universitaria */
+                            name: string;
+                            /** @example university_graduation */
+                            slug: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    e529c81e6aaec82f49950a87ed881f57: {
+        parameters: {
+            query?: {
+                /** @description Itens por página */
+                per_page?: number;
+                /** @description Termo de busca */
+                search?: string;
+                /** @description Carrega o contrato relacionado */
+                with_contract?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Eventos retornados */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Events retrieved successfully */
+                        message?: string;
+                        events?: components["schemas"]["Event"][];
+                        meta?: {
+                            /** @example 100 */
+                            total?: number;
+                            /** @example 1 */
+                            current_page?: number;
+                            /** @example 10 */
+                            last_page?: number;
+                            /** @example 15 */
+                            per_page?: number;
+                            /** @example 1 */
+                            from?: number;
+                            /** @example 15 */
+                            to?: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    e958e1c6c275d5f9b7ebcd837903d0ef: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Evento criado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Event created */
+                        message?: string;
+                        event?: components["schemas"]["Event"];
+                    };
+                };
+            };
+            /** @description Erro */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Could not perform action */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "2f5e4d4d8d7989ca1f72be9c20d9daac": {
+        parameters: {
+            query?: {
+                /** @description Carrega o contrato relacionado */
+                with_contract?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description ID do evento */
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Detalhes do evento */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Event retrieved */
+                        message?: string;
+                        event?: components["schemas"]["Event"];
+                    };
+                };
+            };
+        };
+    };
+    "0c0cf4026635d252353fad3e5b48591c": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do evento */
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description Evento atualizado */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Event updated */
+                        message?: string;
+                        event?: components["schemas"]["Event"];
+                    };
+                };
+            };
+        };
+    };
+    b9043fb311444b3c3bcb101e1a643a9f: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do evento */
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Evento removido */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Event deleted */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    c46b71d2e6c3179de743596dd0043d52: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do contrato */
+                contract: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tipos de evento retornados */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Event types retrieved */
+                        message?: string;
+                        eventTypes?: {
+                            /** @example 1 */
+                            id: number;
+                            /** @example Formatura */
+                            name: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "510c80a3da181fcc15985f736ca258a7": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID do evento */
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Imagens retornadas */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Event images retrieved */
+                        message?: string;
+                        images?: components["schemas"]["Image"][];
+                    };
+                };
+            };
+        };
+    };
+    "9a3ee6c95e56dae0639e7b7053aa5877": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["EventPhotoUploadRequest"];
+            };
+        };
+        responses: {
+            /** @description Foto salva com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Photo uploaded */
+                        message?: string;
+                        image?: components["schemas"]["Image"];
+                    };
+                };
+            };
+            /** @description Evento não encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Not Found */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Erro */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Could not perform action */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    bb3175b3e40a396bcc3e52c5f7581065: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da imagem */
+                image: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Stream da imagem */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": unknown;
+                };
+            };
+            /** @description Não encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "25687ab67804accc883dc67eeec16d21": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da imagem */
+                image: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Imagem removida */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Image deleted */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Erro */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Could not perform action */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    a3ceaedf365f1f2b46ebf66f56b2c619: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da imagem */
+                image: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Download da imagem */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": unknown;
+                };
+            };
+        };
+    };
+    "27d2168a6a62464feb894a887e72f209": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da imagem */
+                image: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Metadados recuperados */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Event images retrieved */
+                        message?: string;
+                        metadata?: components["schemas"]["ImageMeta"];
+                    };
+                };
+            };
+        };
+    };
+    "06024e37ab06d28d42e807c9a525575f": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da imagem */
+                image: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Clientes recuperados */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Client on image retrieved successfully */
+                        message?: string;
+                        clients?: components["schemas"]["Client"][];
+                    };
+                };
+            };
+        };
+    };
+    a996404dd897ef0561cee457b4871e74: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da imagem */
+                image: number;
+                /** @description ID do cliente */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Recorte obtido */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Client on image retrieved successfully */
+                        message?: string;
+                        faceMatch?: components["schemas"]["FaceCropMatch"];
+                    };
+                };
+            };
+        };
+    };
+    de7461346fbefe8cd459142cd740618d: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lista de países obtida */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example All countries obtained */
+                        message?: string;
+                        countries?: {
+                            /** @example BR */
+                            value: string;
+                            /** @example 🇧🇷 Brasil (Brasil) */
+                            label: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "6dce5fd76bb73ac391ff8b0e557327dd": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Código CCA2 do país (ex: BR) */
+                country_cca2: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lista de estados obtida */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example All states obtained */
+                        message?: string;
+                        states?: {
+                            /** @example SP */
+                            value: string;
+                            /** @example São Paulo */
+                            label: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description País não encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Not Found */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "0d75e8710e086c19923c93f1e23d3833": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Código CCA2 do país (ex: BR) */
+                country_cca2: string;
+                /** @description Código do estado (ex: SP) */
+                state_code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lista de cidades obtida */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example All cities obtained */
+                        message?: string;
+                        cities?: {
+                            /** @example São Paulo */
+                            value: string;
+                            /** @example São Paulo */
+                            label: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description País ou estado não encontrado */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /** @example Not Found */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "4833c7f6d950b93462606585b7e9d134": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ticket obtido com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Ticket obtained successfully */
+                        message?: string;
+                        /**
+                         * Format: uuid
+                         * @example 123e4567-e89b-12d3-a456-426614174000
+                         */
+                        ticket?: string;
+                    };
+                };
+            };
+        };
+    };
+    "6d56a555955089a73fdf3f7229e8ead8": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notificações obtidas com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Notifications obtained successfully */
+                        message?: string;
+                        notifications?: components["schemas"]["Notification"][];
+                        meta?: {
+                            /** @example 100 */
+                            total?: number;
+                            /** @example 1 */
+                            current_page?: number;
+                            /** @example 10 */
+                            last_page?: number;
+                            /** @example 10 */
+                            per_page?: number;
+                            /** @example 1 */
+                            from?: number;
+                            /** @example 10 */
+                            to?: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    cde64b28769413444ae4ae3c3de1bff5: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da notificação */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notificação marcada como lida */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Notifications updated successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    a938b29776d5df701355702f21a24149: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notificações atualizadas com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Notifications updated successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    "0d3519c4807504e5f2b257ec73721d43": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID da notificação */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Notificação removida com sucesso */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example success */
+                        status?: string;
+                        /** @example Notification dismissed successfully */
+                        message?: string;
+                    };
+                };
+            };
+        };
+    };
+    a0dd9a008b949544c5284d565026bf7d: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Stream estabelecida */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": unknown;
                 };
             };
         };

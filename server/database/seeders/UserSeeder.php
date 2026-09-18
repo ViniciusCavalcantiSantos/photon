@@ -12,6 +12,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        if (User::where('email', 'admin@photon.com')->exists()) {
+            return;
+        }
+
         User::factory()->withOrganization()->create([
             'name' => 'Administrador',
             'email' => 'admin@photon.com',

@@ -1,8 +1,8 @@
 import apiFetch from "@/lib/apiFetch";
-import {RegisterLinkType} from "@/types/RegisterLinkType";
+import type { FetchClientLinkResponse } from "@/types/api-contracts";
 
 export async function fetchLink(linkId: string) {
-  return apiFetch<{ linkInfo: RegisterLinkType }>(`/client/links/${linkId}`, {
+  return apiFetch<FetchClientLinkResponse>(`/clients/links/${linkId}`, {
     method: "GET"
   });
 }

@@ -14,12 +14,52 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Attributes as OA;
 
 class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/api/clients',
+        summary: 'Lista clientes',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\QueryParameter(name: 'per_page', required: false, description: 'Itens por página', schema: new OA\Schema(type: 'integer')),
+            new OA\QueryParameter(name: 'search', required: false, description: 'Termo de busca', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Clientes retornados',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Clients retrieved successfully'),
+                        new OA\Property(
+                            property: 'clients',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Client')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total', type: 'integer', example: 100),
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 10),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 15),
+                                new OA\Property(property: 'from', type: 'integer', example: 1),
+                                new OA\Property(property: 'to', type: 'integer', example: 15),
+                            ]
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function index(Request $request)
     {
         $organizationId = auth()->user()->organization_id;
@@ -54,6 +94,42 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/api/clients',
+        summary: 'Cria um novo cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/ClientFormRequest')
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Cliente criado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client created'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: 'Erro',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'error'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Could not perform action')
+                    ]
+                )
+            )
+        ]
+    )]
     public function store(ClientRequest $request, ClientService $clientService)
     {
         Gate::authorize('create', Client::class);
@@ -76,6 +152,34 @@ class ClientController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/public/clients/register/{linkId}',
+        summary: 'Registra um cliente via link público',
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'linkId', required: true, description: 'ID codificado em base64 do link', schema: new OA\Schema(type: 'string'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/ClientPublicRegisterFormRequest')
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Cliente cadastrado com sucesso',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client created'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            )
+        ]
+    )]
     public function storePublic(string $linkIdEncoded, ClientPublicRequest $request, ClientService $clientService)
     {
         $linkId = base64_decode($linkIdEncoded);
@@ -112,6 +216,28 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/api/clients/{client}',
+        summary: 'Exibe detalhes do cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Cliente recuperado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client retrieved'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            )
+        ]
+    )]
     public function show(Client $client)
     {
         Gate::authorize('view', $client);
@@ -127,6 +253,35 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: '/api/clients/{client}',
+        summary: 'Atualiza os dados de um cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/ClientUpdateFormRequest')
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Cliente atualizado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client updated'),
+                        new OA\Property(property: 'client', ref: '#/components/schemas/Client')
+                    ]
+                )
+            )
+        ]
+    )]
     public function update(ClientRequest $request, Client $client, ClientService $clientService)
     {
         Gate::authorize('update', $client);
@@ -152,6 +307,27 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/api/clients/{client}',
+        summary: 'Remove um cliente',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'client', required: true, description: 'ID do cliente', schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Cliente removido',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Client deleted')
+                    ]
+                )
+            )
+        ]
+    )]
     public function destroy(ClientService $clientService, Client $client)
     {
         Gate::authorize('delete', $client);
@@ -171,6 +347,29 @@ class ClientController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: '/api/clients/links',
+        summary: 'Gera um link de cadastro público de clientes',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/ClientGenerateLinkRequest')
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Link criado',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Link created'),
+                        new OA\Property(property: 'link_id', type: 'string', example: 'MT1=')
+                    ]
+                )
+            )
+        ]
+    )]
     public function generateLink(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -211,6 +410,39 @@ class ClientController extends Controller
         }
     }
 
+    #[OA\Get(
+        path: '/api/clients/links/{linkId}',
+        summary: 'Recupera as informações de um link público',
+        security: [['sanctum' => []]],
+        tags: ['Clients'],
+        parameters: [
+            new OA\PathParameter(name: 'linkId', required: true, description: 'ID codificado em base64', schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Informações do link',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'link retrieved successfully'),
+                        new OA\Property(
+                            property: 'linkInfo',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'string', example: 'MT1='),
+                                new OA\Property(property: 'title', type: 'string', example: 'Cadastro Formatura'),
+                                new OA\Property(property: 'maxRegisters', type: 'integer', example: 100),
+                                new OA\Property(property: 'requireAddress', type: 'boolean', example: true),
+                                new OA\Property(property: 'requireGuardianIfMinor', type: 'boolean', example: true),
+                                new OA\Property(property: 'defaultLanguage', type: 'string', example: 'BR')
+                            ]
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function getLinkInfo($linkIdEncoded)
     {
         $linkId = base64_decode($linkIdEncoded);

@@ -1,8 +1,8 @@
-import {ImageMeta} from "@/types/Image";
 import apiFetch from "@/lib/apiFetch";
+import type { FetchImageMetadataResponse } from "@/types/api-contracts";
 
 export async function fetchImageMetadata(imageId: string) {
-  return await apiFetch<{ metadata: ImageMeta }>(`/images/${imageId}/metadata`, {
+  return await apiFetch<FetchImageMetadataResponse>(`/images/${imageId}/metadata`, {
     method: "GET",
   });
 }

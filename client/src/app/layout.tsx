@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Vinmo";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://vinmo.org";
+  const appName = process.env.NEXT_PUBLIC_APP_NAME ?? "Photon";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://photon.org";
 
   return {
     title: appName,

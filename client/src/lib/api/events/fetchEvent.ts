@@ -1,10 +1,6 @@
 import apiFetch from "@/lib/apiFetch";
-import Event from "@/types/Event";
 import {buildUrl} from "@/lib/http/buildUrl";
-
-export interface FetchEventResponse {
-  event: Event;
-}
+import type { FetchEventResponse } from "@/types/api-contracts";
 
 export async function fetchEvent(eventId: number, withContract: boolean = false) {
   const url = buildUrl(`/events/${eventId}`, {

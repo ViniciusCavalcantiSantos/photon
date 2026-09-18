@@ -2,7 +2,7 @@
 @props(['user', 'token'])
 
 @php
-    $appName = config('app.name', 'Vinmo');
+    $appName = config('app.name', 'Photon');
     $appUrlClient = config('app.url_client');
     $resetUrl = "{$appUrlClient}/reset-password?token={$token}&email=" . urlencode($user->email);
 @endphp

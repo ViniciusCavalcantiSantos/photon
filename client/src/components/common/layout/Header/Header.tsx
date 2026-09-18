@@ -1,6 +1,6 @@
 "use client"
 
-import {CSSProperties, useState} from "react";
+import { CSSProperties, useState } from "react";
 import Link from "next/link";
 import Title from "@/components/ui/Title";
 import {
@@ -12,70 +12,69 @@ import {
   MenuOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import {useT} from "@/i18n/client";
+import { useT } from "@/i18n/client";
 import UserAvatarDropdown from "@/components/common/UserAvatarDropdown";
-import {Button, Divider} from "antd";
-import {useUser} from "@/contexts/UserContext";
+import { Button, Divider } from "antd";
+import { useUser } from "@/contexts/UserContext";
 import logo from "@/assets/logos/logo.svg"
 import Image from "next/image";
 import NotificationsDropdown from "@/components/common/layout/Header/_components/NotificationsDropdown";
 
 export default function Header() {
-  const {user} = useUser();
+  const { user } = useUser();
   const [open, setOpen] = useState(false);
-  const {t} = useT()
+  const { t } = useT()
 
   const iconClass = "text-ant-text-secondary";
-  const iconStyle = {fontSize: 20} as CSSProperties;
+  const iconStyle = { fontSize: 20 } as CSSProperties;
 
   const menu = [
-    {title: t('contracts'), link: "/app/contracts", icon: <FileTextOutlined className={iconClass} style={iconStyle}/>},
-    {title: t('events'), link: "/app/events", icon: <CalendarOutlined className={iconClass} style={iconStyle}/>},
-    {title: t('clients'), link: "/app/clients", icon: <TeamOutlined className={iconClass} style={iconStyle}/>},
+    { title: t('contracts'), link: "/app/contracts", icon: <FileTextOutlined className={iconClass} style={iconStyle} /> },
+    { title: t('events'), link: "/app/events", icon: <CalendarOutlined className={iconClass} style={iconStyle} /> },
+    { title: t('clients'), link: "/app/clients", icon: <TeamOutlined className={iconClass} style={iconStyle} /> },
     {
       title: t('team_members'),
       link: "/app/team-members",
-      icon: <AliwangwangOutlined className={iconClass} style={iconStyle}/>
+      icon: <AliwangwangOutlined className={iconClass} style={iconStyle} />
     },
     {
       title: t('photo_sorter'),
       link: "/app/photo-sorter",
-      icon: <CameraOutlined className={iconClass} style={iconStyle}/>
+      icon: <CameraOutlined className={iconClass} style={iconStyle} />
     },
   ];
 
   return (
     <header className="bg-ant-bg-elevated border-b border-ant-border">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <div className="flex lg:flex-1 items-center">
+        <div className="flex flex-1 items-center">
           <div className="mr-2">
             <button
               className="rounded-md cursor-pointer border border-ant-border bg-ant-bg hover:bg-ant-fill-sec"
               onClick={() => setOpen(true)}
             >
-              <MenuOutlined className="p-2 text-red-500"/>
+              <MenuOutlined className="p-2 text-red-500" />
               <span className="sr-only">{t('open_main_menu')}</span>
             </button>
           </div>
 
           <Link href="/app" className="-m-1.5 p-1.5">
             <div className="flex items-center justify-center text-2xl text-ant-text">
-              <Title/>
+              <Title />
             </div>
           </Link>
         </div>
 
 
-        <NotificationsDropdown/>
-        <UserAvatarDropdown user={user}/>
+        <NotificationsDropdown />
+        <UserAvatarDropdown user={user} />
       </div>
 
       <div className={`fixed w-full h-full top-0 right-0 z-[1001] ${open ? "" : "pointer-events-none"}`}>
         <div
           onClick={() => setOpen(false)}
-          className={`absolute w-full h-full top-0 right-0 transition-opacity duration-300 ${
-            open ? "opacity-100" : "opacity-0 pointer-events-none"
-          } bg-ant-bg-mask`}
+          className={`absolute w-full h-full top-0 right-0 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"
+            } bg-ant-bg-mask`}
         />
 
         <div
@@ -97,7 +96,7 @@ export default function Header() {
             <div className="flex justify-between items-center px-2 pt-2 pb-6">
               <div>
                 <span className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</span>
-                <Image src={logo} width={35} height={35} alt="Title"/>
+                <Image src={logo} width={35} height={35} alt="Title" />
               </div>
 
               <Button
@@ -106,7 +105,7 @@ export default function Header() {
                 onClick={() => setOpen(false)}
               >
                 <span className="sr-only">{t('close_menu')}</span>
-                <CloseOutlined/>
+                <CloseOutlined />
               </Button>
             </div>
 
@@ -128,7 +127,7 @@ export default function Header() {
               </ul>
 
               <div className="px-2">
-                <Divider className="!my-4 !border-ant-border-sec"/>
+                <Divider className="!my-4 !border-ant-border-sec" />
               </div>
             </nav>
           </div>

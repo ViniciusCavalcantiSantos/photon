@@ -5,29 +5,26 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @OA\Schema(
- *   schema="FaceCropMatch",
- *   type="object",
- *   required={"id", "faceCropId", "clientId", "imageId", "matchedBy", "confidence"},
- *   @OA\Property(property="id", type="integer", example=2),
- *   @OA\Property(property="faceCropId", type="integer", example=2),
- *   @OA\Property(property="clientId", type="integer", example=18),
- *   @OA\Property(property="imageId", type="string", example="01kabknvc1fy2cvgen915mb0t3"),
- *   @OA\Property(property="matchedBy", type="string", enum={"rekognition", "manual"}, example="rekognition"),
- *   @OA\Property(property="confidence", type="number", format="float", example=99.97),
- *   @OA\Property(property="notes", type="string", nullable=true, example=null),
- *   @OA\Property(property="createdBy", type="integer", nullable=true, example=null),
- *   @OA\Property(property="aprovedBy", type="integer", nullable=true, example=null),
- *   @OA\Property(property="createdAt", type="string", format="date-time", example="2025-11-18T13:50:17.000000Z"),
- *   @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-11-18T13:50:17.000000Z"),
- *   @OA\Property(
- *     property="faceCrop",
- *     ref="#/components/schemas/FaceCrop",
- *     nullable=true
- *   )
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    schema: "FaceCropMatch",
+    required: ["id", "faceCropId", "clientId", "imageId", "matchedBy", "confidence"],
+    properties: [
+        new OA\Property(property: "id", type: "integer", example: 2),
+        new OA\Property(property: "faceCropId", type: "integer", example: 2),
+        new OA\Property(property: "clientId", type: "integer", example: 18),
+        new OA\Property(property: "imageId", type: "string", example: "01kabknvc1fy2cvgen915mb0t3"),
+        new OA\Property(property: "matchedBy", type: "string", example: "rekognition", enum: ["rekognition", "manual"]),
+        new OA\Property(property: "confidence", type: "number", format: "float", example: 99.97),
+        new OA\Property(property: "notes", type: "string", nullable: true, example: null),
+        new OA\Property(property: "createdBy", type: "integer", nullable: true, example: null),
+        new OA\Property(property: "aprovedBy", type: "integer", nullable: true, example: null),
+        new OA\Property(property: "createdAt", type: "string", format: "date-time", example: "2025-11-18T13:50:17.000000Z"),
+        new OA\Property(property: "updatedAt", type: "string", format: "date-time", example: "2025-11-18T13:50:17.000000Z"),
+        new OA\Property(property: "faceCrop", ref: "#/components/schemas/FaceCrop", nullable: true)
+    ]
+)]
 class FaceCropMatchResource extends JsonResource
 {
     /**

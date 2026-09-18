@@ -1,11 +1,17 @@
 FROM php:8.2-fpm-alpine3.19
 
+# ── Build args: sincroniza UID/GID do host com www-data ──
+ARG WWWUSER=1000
+ARG WWWGROUP=1000
+
 WORKDIR /var/www
 
 # Camada única para DEV
 RUN apk add --no-cache \
         git \
         unzip \
+        shadow \
+        su-exec \
         icu-dev \
         libzip-dev \
         oniguruma-dev \
@@ -37,12 +43,17 @@ RUN apk add --no-cache \
         echo "xdebug.log = /tmp/xdebug-docker.log"; \
     } > /usr/local/etc/php/conf.d/docker-xdebug.ini
 
+# ── Ajusta www-data para o UID/GID do host ──
+RUN if [ ${WWWUSER} -ne 82 ]; then \
+        groupmod -o -g ${WWWGROUP} www-data \
+        && usermod -o -u ${WWWUSER} -g ${WWWGROUP} www-data; \
+    fi
+
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Mantemos root em dev para o entrypoint corrigir permissões de volume host
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 9000

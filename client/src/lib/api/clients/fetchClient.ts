@@ -1,9 +1,5 @@
 import apiFetch from "@/lib/apiFetch";
-import Client from "@/types/Client";
-
-export interface FetchClientResponse {
-  client: Client;
-}
+import type { FetchClientResponse } from "@/types/api-contracts";
 
 export async function fetchClient(id: number) {
   return await apiFetch<FetchClientResponse>(`/clients/${id}`, {
