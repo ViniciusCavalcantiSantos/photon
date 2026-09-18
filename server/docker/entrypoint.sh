@@ -14,10 +14,10 @@ if [ "$CONTAINER_ROLE" = "app" ] || [ "${AUTO_BOOTSTRAP:-true}" = "true" -a -z "
         su-exec www-data composer install --no-interaction --no-progress --optimize-autoloader
     fi
 
-    # Create .env from .env.example if it doesn't exist
+    # Create .env from .env.development.example if it doesn't exist
     if [ ! -f "/var/www/.env" ]; then
-        echo "📄 .env not found — copying from .env.example..."
-        su-exec www-data cp /var/www/.env.example /var/www/.env
+        echo "📄 .env not found — copying from .env.development.example..."
+        su-exec www-data cp /var/www/.env.development.example /var/www/.env
     fi
 
     # Generate APP_KEY if empty

@@ -47,7 +47,7 @@ It is composed of three services — a **Next.js** front-end, a **Laravel** API,
 
 ```
 photon/
-├── .env.example              # Root-level Docker overrides (optional)
+├── .env.development.example  # Root-level development overrides (optional)
 ├── .env.production.example   # Production configuration template
 ├── docker-compose.yml        # Development orchestration
 ├── docker-compose.prod.yml   # Standalone production orchestration
@@ -87,7 +87,7 @@ photon/
 │   ├── routes/               # API & web route definitions
 │   ├── storage/              # Logs, cache, uploaded files
 │   ├── tests/                # Pest / PHPUnit test suites
-│   ├── .env.example          # Server environment variables
+│   ├── .env.development.example # Development server environment variables
 │   └── composer.json
 │
 └── sse/                      # Go SSE microservice
@@ -124,7 +124,7 @@ The `docker-compose.yml` ships with sensible defaults for every service.
 A root `.env` file is only needed if you want to change ports or passwords:
 
 ```bash
-cp .env.example .env
+cp .env.development.example .env
 # Edit .env and uncomment / modify only the values you need
 ```
 
@@ -155,10 +155,10 @@ Available overrides:
 
 Face recognition is powered by **AWS Rekognition**. You must supply valid AWS credentials so that the image-sorting jobs can index and search faces.
 
-Open `server/.env.example`, copy it to `server/.env`, and fill in the `REKOGNITION_*` variables:
+Open `server/.env.development.example`, copy it to `server/.env`, and fill in the `REKOGNITION_*` variables:
 
 ```bash
-cp server/.env.example server/.env
+cp server/.env.development.example server/.env
 ```
 
 Edit `server/.env` and set the following required variables:
@@ -239,27 +239,27 @@ MySQL and Redis are **not** exposed to the host by default.
 `docker-compose.prod.yml` is independent of the development file. It starts the API, Nginx, worker, scheduler, SSE, MySQL, and Redis. Deploy the Next.js client separately.
 
 ```bash
-cp .env.production.example .env.production
-cp server/.env.production.example server/.env.production
-# Fill infrastructure credentials in the root file and Laravel settings in server/.env.production.
-docker compose --env-file .env.production -f docker-compose.prod.yml config --quiet
-docker compose --env-file .env.production -f docker-compose.prod.yml build
-docker compose --env-file .env.production -f docker-compose.prod.yml run --rm app php artisan migrate --force
-docker compose --env-file .env.production -f docker-compose.prod.yml up -d
+cp .env.production.example .env
+cp server/.env.production.example server/.env
+# Fill infrastructure credentials in the root file and Laravel settings in server/.env.
+docker compose -f docker-compose.prod.yml config --quiet
+docker compose -f docker-compose.prod.yml build
+docker compose -f docker-compose.prod.yml run --rm app php artisan migrate --force
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 Each configuration has one owner:
 
 | File | Responsibility |
 |------|----------------|
-| Root `.env` / `.env.production` | Ports, Compose project, shared DB/Redis credentials and SSE origins |
-| `server/.env` / `server/.env.production` | Application key, URLs, sessions, email, storage, OAuth and Laravel options |
+| Root `.env` | Ports, Compose project, shared DB/Redis credentials and SSE origins |
+| `server/.env` | Application key, URLs, sessions, email, storage, OAuth and Laravel options |
 | `client/.env` | Next.js settings |
 | Compose | Internal hosts and ports; production mode and disabled debug |
 
-The root file supplies interpolation without being loaded wholesale into PHP containers. Only the necessary shared credentials are injected; `DB_ROOT_PASSWORD` goes only to MySQL. Production Laravel loads `server/.env.production` through `env_file`; `LARAVEL_ENV_FILE` selects an alternate path. Keep `SSE_ALLOWED_ORIGINS` consistent with `APP_URL_CLIENT`.
+The root file supplies interpolation without being loaded wholesale into PHP containers. Only the necessary shared credentials are injected; `DB_ROOT_PASSWORD` goes only to MySQL. Production Laravel loads `server/.env` through `env_file`. Keep `SSE_ALLOWED_ORIGINS` consistent with `APP_URL_CLIENT`.
 
-If you used the former single production example, move Laravel options into `server/.env.production` before recreating containers. In development, remove DB/Redis copies from the old `server/.env` and adopt the example's MinIO references, preserving custom storage options.
+Use the development examples on your development host and the production examples on your production host. In development, keep shared DB/Redis credentials in the root `.env` and Laravel options in `server/.env`.
 
 Use a generated, stable `APP_KEY`. Configure SMTP, an S3-compatible bucket, and Rekognition for your environment. The API is published on `FORWARD_APP_PORT` (default `8010`); SSE is proxied by Nginx at `/sse/stream`. Production does not run migrations or seed automatically. The images contain the code and Vite assets; the `app-storage` volume keeps files written to `storage` across PHP containers.
 

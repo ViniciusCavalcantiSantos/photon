@@ -36,6 +36,7 @@ services:
       - ./server/public:/var/www/public
     depends_on:
       - app
+      - sse
     networks:
       - main-network
 
@@ -187,7 +188,7 @@ services:
 
   # ─── MinIO (dev S3) ────────────────────────────────────────
   minio:
-    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     command: server /data --console-address ":9001"
     ports:
       - "${FORWARD_MINIO_PORT:-9000}:9000"
@@ -201,12 +202,12 @@ services:
       - main-network
 
   minio-setup:
-    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     depends_on:
       - minio
     entrypoint: >
       sh -c "
-        mc alias set local http://minio:9000 $${MINIO_ROOT_USER:-minio} $${MINIO_ROOT_PASSWORD:-minio12345} &&
+        until mc alias set local http://minio:9000 $${MINIO_ROOT_USER:-minio} $${MINIO_ROOT_PASSWORD:-minio12345}; do sleep 2; done &&
         mc mb -p local/$${MINIO_BUCKET_PRIVATE:-photon-private} || true &&
         mc mb -p local/$${MINIO_BUCKET_PUBLIC:-photon-public} || true &&
         mc anonymous set download local/$${MINIO_BUCKET_PUBLIC:-photon-public}
